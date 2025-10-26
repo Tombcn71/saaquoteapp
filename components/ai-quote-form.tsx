@@ -273,16 +273,18 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
     <Card className={`p-4 sm:p-6 lg:p-8 bg-white shadow-2xl border-0 ${className}`}>
       {currentStep < 3 ? (
         <>
-            <div className="flex items-center gap-2 mb-2">
-              <Sparkles className="w-6 h-6 lg:w-7 lg:h-7 text-primary" />
-              <h2 className="font-bold text-base sm:text-lg lg:text-xl text-foreground">
-                Direct een prijsindicatie en AI preview van uw nieuwe kozijnen.
-              </h2>
+            <div className="bg-[#4285f4] rounded-t-lg -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-4 mb-4">
+              <div className="flex items-center gap-2 mb-2">
+                <Sparkles className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+                <h2 className="font-bold text-base sm:text-lg lg:text-xl text-white">
+                  Direct een prijsindicatie en AI preview van uw nieuwe kozijnen.
+                </h2>
+              </div>
+              <p className="text-xs sm:text-sm italic text-blue-100">
+                {currentStep === 1 && "Vul uw voorkeuren in voor de nieuwe kozijnen"}
+                {currentStep === 2 && "Upload minimaal 1 foto van uw ramen"}
+              </p>
             </div>
-          <p className="text-xs sm:text-sm italic text-muted-foreground mb-3">
-            {currentStep === 1 && "Vul uw voorkeuren in voor de nieuwe kozijnen"}
-            {currentStep === 2 && "Upload minimaal 1 foto van uw ramen"}
-          </p>
 
           <div className="mb-4">
             <div className="flex justify-between text-xs text-foreground mb-2">
@@ -292,7 +294,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             </div>
             <Progress 
               value={progressPercentage} 
-              className="h-2 bg-muted" 
+              className="h-2 bg-gray-200 [&>div]:bg-[#4285f4]" 
               aria-label={`Stap ${currentStep} van 3`}
               aria-valuenow={progressPercentage}
               aria-valuemin={0}

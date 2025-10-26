@@ -66,7 +66,7 @@ export default async function HomePage() {
       </nav>
 
       {/* Hero Section with Live Demo */}
-      <section className="py-12 px-4 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+      <section className="py-12 px-4 bg-white">
         <div className="container mx-auto max-w-7xl">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Left: Hero Text */}
