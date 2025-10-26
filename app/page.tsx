@@ -1,9 +1,14 @@
 import Link from "next/link"
+import { getServerSession } from "next-auth"
+import { authOptions } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Check, Sparkles, Zap, Users, BarChart3, Code, ArrowRight } from "lucide-react"
+import { AIQuoteForm } from "@/components/ai-quote-form"
 
-export default function HomePage() {
+export default async function HomePage() {
+  const session = await getServerSession(authOptions)
+
   return (
     <div className="min-h-screen bg-white">
       {/* Navigation */}
@@ -18,84 +23,154 @@ export default function HomePage() {
             </Link>
             
             <div className="flex items-center gap-4">
-              <Link href="#pricing">
-                <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
-                  Prijzen
-                </Button>
-              </Link>
-              <Link href="/auth/signin">
-                <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
-                  Inloggen
-                </Button>
-              </Link>
-              <Link href="/auth/signup">
-                <Button className="bg-[#4285f4] hover:bg-[#3367d6] text-white">
-                  Gratis Starten
-                </Button>
-              </Link>
+              {session ? (
+                <>
+                  <Link href="/dashboard">
+                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
+                      Dashboard
+                    </Button>
+                  </Link>
+                  <Link href="/dashboard/widgets">
+                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
+                      Widgets
+                    </Button>
+                  </Link>
+                  <Link href="/dashboard/leads">
+                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
+                      Leads
+                    </Button>
+                  </Link>
+                </>
+              ) : (
+                <>
+                  <Link href="#pricing">
+                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
+                      Prijzen
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signin">
+                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
+                      Inloggen
+                    </Button>
+                  </Link>
+                  <Link href="/auth/signup">
+                    <Button className="bg-[#4285f4] hover:bg-[#3367d6] text-white">
+                      Gratis Starten
+                    </Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <section className="pt-20 pb-32 px-4">
-        <div className="container mx-auto max-w-6xl">
-          <div className="text-center max-w-3xl mx-auto mb-16">
-            <div className="inline-flex items-center gap-2 bg-blue-50 text-[#4285f4] px-4 py-2 rounded-full mb-6 text-sm font-medium">
-              <Sparkles className="w-4 h-4" />
-              AI-Powered Quote Generator
-            </div>
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-              Meer leads met<br />
-              <span className="text-[#4285f4]">AI kozijn quotes</span>
-            </h1>
-            <p className="text-xl text-gray-600 mb-8">
-              Plaats onze widget op je website. Klanten uploaden foto's, AI genereert previews 
-              van nieuwe kozijnen en berekent direct de prijs. Jij ontvangt kwalitatieve leads.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link href="/auth/signup">
-                <Button 
-                  size="lg" 
-                  className="bg-[#4285f4] hover:bg-[#3367d6] text-white text-lg px-8 h-14"
-                >
-                  Start Gratis Trial
-                  <ArrowRight className="ml-2 w-5 h-5" />
-                </Button>
-              </Link>
-              <Link href="#demo">
-                <Button 
-                  size="lg" 
-                  variant="outline" 
-                  className="text-gray-700 border-gray-300 text-lg px-8 h-14"
-                >
-                  Bekijk Demo
-                </Button>
-              </Link>
-            </div>
-          </div>
+      {/* Hero Section with Live Demo */}
+      <section className="py-12 px-4 bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+        <div className="container mx-auto max-w-7xl">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
+            {/* Left: Hero Text */}
+            <div className="pt-8">
+              <div className="inline-flex items-center gap-2 bg-blue-100 text-[#4285f4] px-4 py-2 rounded-full mb-6 text-sm font-medium">
+                <Sparkles className="w-4 h-4" />
+                AI-Powered Quote Generator
+              </div>
+              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+                Meer leads met<br />
+                <span className="text-[#4285f4]">AI kozijn quotes</span>
+              </h1>
+              <p className="text-xl text-gray-600 mb-8">
+                Plaats onze widget op je website. Klanten uploaden foto's, AI genereert previews 
+                van nieuwe kozijnen en berekent direct de prijs. Jij ontvangt kwalitatieve leads.
+              </p>
 
-          {/* Stats */}
-          <div className="grid grid-cols-3 gap-8 max-w-3xl mx-auto pt-12 border-t border-gray-200">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gray-900 mb-2">3x</div>
-              <div className="text-sm text-gray-600">Meer conversie</div>
+              <div className="space-y-4 mb-8">
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-1">
+                    <Check className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">AI Preview Generatie</h3>
+                    <p className="text-gray-600">Google Gemini toont klanten hoe nieuwe kozijnen eruit zien</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-1">
+                    <Check className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Instant Prijsberekening</h3>
+                    <p className="text-gray-600">Automatische offerte op basis van materiaal en specificaties</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-1">
+                    <Check className="w-4 h-4 text-green-600" />
+                  </div>
+                  <div>
+                    <h3 className="font-semibold text-gray-900">Copy-Paste Widget</h3>
+                    <p className="text-gray-600">60 seconden implementatie, geen developer nodig</p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link href="/auth/signup">
+                  <Button 
+                    size="lg" 
+                    className="bg-[#4285f4] hover:bg-[#3367d6] text-white text-lg px-8 h-14 w-full sm:w-auto"
+                  >
+                    Start Gratis Trial
+                    <ArrowRight className="ml-2 w-5 h-5" />
+                  </Button>
+                </Link>
+                <Link href="#pricing">
+                  <Button 
+                    size="lg" 
+                    variant="outline" 
+                    className="text-gray-700 border-gray-300 text-lg px-8 h-14 w-full sm:w-auto"
+                  >
+                    Bekijk Prijzen
+                  </Button>
+                </Link>
+              </div>
+
+              {/* Stats */}
+              <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-gray-200">
+                <div>
+                  <div className="text-3xl font-bold text-gray-900 mb-1">3x</div>
+                  <div className="text-sm text-gray-600">Meer conversie</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-gray-900 mb-1">60 sec</div>
+                  <div className="text-sm text-gray-600">Setup tijd</div>
+                </div>
+                <div>
+                  <div className="text-3xl font-bold text-gray-900 mb-1">€12k</div>
+                  <div className="text-sm text-gray-600">Gem. waarde/maand</div>
+                </div>
+              </div>
             </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gray-900 mb-2">60 sec</div>
-              <div className="text-sm text-gray-600">Setup tijd</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-gray-900 mb-2">€12k</div>
-              <div className="text-sm text-gray-600">Gem. waarde/maand</div>
+
+            {/* Right: Live Demo Form */}
+            <div className="lg:sticky lg:top-24">
+              <div className="mb-4 text-center lg:text-left">
+                <span className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold">
+                  <Zap className="w-4 h-4" />
+                  Live Demo - Probeer het nu!
+                </span>
+              </div>
+              <AIQuoteForm />
+              <p className="text-center text-sm text-gray-500 mt-4">
+                👆 Test het formulier - geen account nodig voor de demo
+              </p>
             </div>
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
@@ -189,7 +264,7 @@ export default function HomePage() {
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-white">
+      <section id="pricing" className="py-20 bg-gray-50">
         <div className="container mx-auto max-w-6xl px-4">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
