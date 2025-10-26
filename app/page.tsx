@@ -72,9 +72,9 @@ export default async function HomePage() {
             {/* Left: Hero Text */}
             <div className="pt-8">
               
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-none">
+              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-none tracking-tight">
                 Meer Leads met<br />
-                <span >Slimme AI  Quotes</span>
+                <span>Slimme AI Quotes</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8">
                 Plaats onze widget op je website. Klanten uploaden foto's, AI genereert previews 
