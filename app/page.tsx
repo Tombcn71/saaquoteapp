@@ -71,13 +71,10 @@ export default async function HomePage() {
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Left: Hero Text */}
             <div className="pt-8">
-              <div className="inline-flex items-center gap-2 bg-blue-100 text-[#4285f4] px-4 py-2 rounded-full mb-6 text-sm font-medium">
-                <Sparkles className="w-4 h-4" />
-                AI-Powered Quote Generator
-              </div>
+              
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
                 Meer leads met<br />
-                <span className="text-[#4285f4]">AI kozijn quotes</span>
+                <span >AI kozijn quotes</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8">
                 Plaats onze widget op je website. Klanten uploaden foto's, AI genereert previews 
@@ -155,7 +152,7 @@ export default async function HomePage() {
             {/* Right: Live Demo Form */}
             <div className="lg:sticky lg:top-24">
               <div className="mb-4 text-center lg:text-left">
-                <span className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold">
+                <span className="inline-flex items-center gap-2 bg-blue-400 text-white px-4 py-2 rounded-full text-sm font-semibold">
                   <Zap className="w-4 h-4" />
                   Live Demo - Probeer het nu!
                 </span>
