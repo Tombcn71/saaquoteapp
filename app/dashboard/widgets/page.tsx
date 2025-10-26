@@ -182,25 +182,57 @@ export default async function WidgetsPage() {
 
           <Card className="bg-blue-50 border-blue-200">
             <CardHeader>
-              <CardTitle className="text-blue-900">💡 Installatie instructies</CardTitle>
+              <CardTitle className="text-blue-900">📋 Hoe te installeren?</CardTitle>
             </CardHeader>
-            <CardContent className="text-sm space-y-3 text-blue-800">
+            <CardContent className="text-sm space-y-4 text-blue-900">
               <div>
-                <strong>Voor WordPress:</strong>
-                <ol className="list-decimal ml-5 mt-2 space-y-1">
-                  <li>Ga naar je pagina of post editor</li>
-                  <li>Voeg een "Custom HTML" block toe</li>
-                  <li>Plak de embed code</li>
-                  <li>Publiceer de pagina</li>
+                <strong className="text-lg">🔹 WordPress</strong>
+                <ol className="list-decimal ml-5 mt-2 space-y-1.5">
+                  <li>Klik op <strong>"Kopieer"</strong> bij de embed code hierboven</li>
+                  <li>Ga naar WordPress → Pagina bewerken</li>
+                  <li>Klik op <strong>"+"</strong> → Zoek naar <strong>"Custom HTML"</strong></li>
+                  <li>Plak de code erin (Ctrl+V of Cmd+V)</li>
+                  <li>Klik <strong>"Publiceren"</strong></li>
                 </ol>
               </div>
-              <div>
-                <strong>Voor andere websites:</strong>
-                <ol className="list-decimal ml-5 mt-2 space-y-1">
-                  <li>Open je HTML bestand</li>
-                  <li>Plak de embed code waar je de widget wilt</li>
-                  <li>Upload het bestand naar je server</li>
+              
+              <div className="border-t border-blue-300 pt-4">
+                <strong className="text-lg">🔹 Next.js / React</strong>
+                <ol className="list-decimal ml-5 mt-2 space-y-1.5">
+                  <li>Klik op <strong>"Kopieer"</strong> bij de <strong>iFrame Code</strong></li>
+                  <li>Open je page.tsx of component</li>
+                  <li>Plak de iframe code in je JSX:</li>
                 </ol>
+                <pre className="bg-slate-900 text-green-400 p-3 rounded mt-2 text-xs overflow-x-auto">
+{`export default function ContactPage() {
+  return (
+    <div>
+      <h1>Vraag een offerte aan</h1>
+      
+      {/* Plak hier je iframe code */}
+      <iframe src="https://jouw-app.vercel.app/embed/..." 
+              width="100%" 
+              height="900" 
+              style={{border: 'none'}}
+      />
+    </div>
+  )
+}`}
+                </pre>
+              </div>
+
+              <div className="border-t border-blue-300 pt-4">
+                <strong className="text-lg">🔹 Normale HTML website</strong>
+                <ol className="list-decimal ml-5 mt-2 space-y-1.5">
+                  <li>Klik op <strong>"Kopieer"</strong> bij de embed code</li>
+                  <li>Open je <code>index.html</code> of <code>contact.html</code></li>
+                  <li>Plak de code waar je de widget wilt hebben</li>
+                  <li>Upload naar je server - KLAAR!</li>
+                </ol>
+              </div>
+
+              <div className="bg-white p-3 rounded border border-blue-300 mt-4">
+                <strong>✅ Dat is alles!</strong> De widget werkt direct - geen extra installatie nodig.
               </div>
             </CardContent>
           </Card>
