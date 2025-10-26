@@ -422,7 +422,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                       id="montage"
                       checked={formData.montage}
                       onCheckedChange={(checked) => setFormData({ ...formData, montage: checked as boolean })}
-                      className="border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                      className="border-input data-[state=checked]:bg-[#4285f4] data-[state=checked]:text-white"
                     />
                     <label htmlFor="montage" className="text-sm text-foreground cursor-pointer">
                       Montage (aangeraden)
@@ -434,7 +434,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                       id="afvoer"
                       checked={formData.afvoerOudeKozijnen}
                       onCheckedChange={(checked) => setFormData({ ...formData, afvoerOudeKozijnen: checked as boolean })}
-                      className="border-input data-[state=checked]:bg-primary data-[state=checked]:text-primary-foreground"
+                      className="border-input data-[state=checked]:bg-[#4285f4] data-[state=checked]:text-white"
                     />
                     <label htmlFor="afvoer" className="text-sm text-foreground cursor-pointer">
                       Afvoer oude kozijnen
@@ -496,7 +496,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                   (currentStep === 2 && photos.length < 1) ||
                   isAnalyzing
                 }
-                className="flex-1 bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-10 text-sm disabled:opacity-50"
+                className="flex-1 bg-[#4285f4] hover:bg-[#3367d6] text-white font-bold h-10 text-sm disabled:opacity-50"
               >
                 {isAnalyzing ? (
                   <>
@@ -718,7 +718,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             type="button"
             onClick={handleSubmitLead}
             disabled={!formData.naam || !formData.email || isSavingLead || leadSaved}
-            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-bold h-12 text-base disabled:opacity-50"
+            className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white font-bold h-12 text-base disabled:opacity-50"
           >
             {isSavingLead ? (
               <>
