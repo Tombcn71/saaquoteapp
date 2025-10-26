@@ -150,14 +150,16 @@ export default async function HomePage() {
             </div>
 
             {/* Right: Live Demo Form */}
-            <div className="lg:sticky lg:top-24">
+            <div className="lg:sticky lg:top-24 max-w-md mx-auto lg:mx-0">
               <div className="mb-4 text-center lg:text-left">
                 <span className="inline-flex items-center gap-2 bg-blue-400 text-white px-4 py-2 rounded-full text-sm font-semibold">
                   <Zap className="w-4 h-4" />
                   Live Demo - Probeer het nu!
                 </span>
               </div>
-              <AIQuoteForm />
+              <div className="scale-90 origin-top">
+                <AIQuoteForm />
+              </div>
               <p className="text-center text-sm text-gray-500 mt-4">
                 👆 Test het formulier - geen account nodig voor de demo
               </p>
