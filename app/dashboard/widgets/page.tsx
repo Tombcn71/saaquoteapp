@@ -39,7 +39,7 @@ export default async function WidgetsPage() {
     return <div>No widget found. Please contact support.</div>
   }
 
-  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+  const baseUrl = (process.env.NEXTAUTH_URL || 'http://localhost:3000').replace(/\/$/, '')
   const embedUrl = `${baseUrl}/embed/${widget.id}`
   
   const iframeCode = `<iframe 
@@ -223,12 +223,17 @@ export default async function WidgetsPage() {
               <div>
                 <strong className="text-lg">🔹 WordPress</strong>
                 <ol className="list-decimal ml-5 mt-2 space-y-1.5">
-                  <li>Klik op <strong>"Kopieer"</strong> bij de embed code hierboven</li>
-                  <li>Ga naar WordPress → Pagina bewerken</li>
-                  <li>Klik op <strong>"+"</strong> → Zoek naar <strong>"Custom HTML"</strong></li>
-                  <li>Plak de code erin (Ctrl+V of Cmd+V)</li>
-                  <li>Klik <strong>"Publiceren"</strong></li>
+                  <li>Ga naar WordPress → Pagina's → Bewerk je pagina</li>
+                  <li>Klik op de <strong>"+"</strong> knop (Add block)</li>
+                  <li>Zoek naar <strong>"Custom HTML"</strong> en klik erop</li>
+                  <li>Kopieer de <strong>"HTML iFrame Code"</strong> (onderste code hierboven)</li>
+                  <li>Plak de code in het Custom HTML block (Ctrl+V of Cmd+V)</li>
+                  <li>Klik <strong>"Publiceren"</strong> of <strong>"Update"</strong></li>
+                  <li>Bekijk je pagina - het formulier staat er nu!</li>
                 </ol>
+                <div className="bg-white p-3 rounded border border-blue-300 mt-3">
+                  <strong>💡 Tip:</strong> Als je het niet ziet, probeer dan de pagina in een incognito venster te openen (soms cached WordPress).
+                </div>
               </div>
               
               <div className="border-t border-blue-300 pt-4">
