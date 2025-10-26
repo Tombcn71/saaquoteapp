@@ -73,8 +73,8 @@ export default async function HomePage() {
             <div className="pt-8">
               
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Meer leads met<br />
-                <span >AI kozijn quotes</span>
+                Meer Leads met<br />
+                <span >Slimme AI  Quotes</span>
               </h1>
               <p className="text-xl text-gray-600 mb-8">
                 Plaats onze widget op je website. Klanten uploaden foto's, AI genereert previews 
@@ -150,16 +150,14 @@ export default async function HomePage() {
             </div>
 
             {/* Right: Live Demo Form */}
-            <div className="lg:sticky lg:top-24 max-w-md mx-auto lg:mx-0">
+            <div className="lg:sticky lg:top-24 max-w-lg mx-auto lg:mx-0">
               <div className="mb-4 text-center lg:text-left">
                 <span className="inline-flex items-center gap-2 bg-blue-400 text-white px-4 py-2 rounded-full text-sm font-semibold">
                   <Zap className="w-4 h-4" />
                   Live Demo - Probeer het nu!
                 </span>
               </div>
-              <div className="scale-90 origin-top">
-                <AIQuoteForm />
-              </div>
+              <AIQuoteForm />
               <p className="text-center text-sm text-gray-500 mt-4">
                 👆 Test het formulier - geen account nodig voor de demo
               </p>
