@@ -66,7 +66,7 @@ export default async function HomePage() {
       </nav>
 
       {/* Hero Section with Live Demo */}
-      <section className="py-12 px-4 bg-white">
+      <section className="py-12 px-4 bg-gray-50">
         <div className="container mx-auto max-w-7xl">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Left: Hero Text */}
