@@ -5,7 +5,8 @@ import { neon } from "@neondatabase/serverless"
 import { DashboardHeader } from "@/components/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Code, Copy, ExternalLink, Eye } from "lucide-react"
+import { CopyButton } from "@/components/copy-button"
+import { Code, ExternalLink, Eye } from "lucide-react"
 
 function getDatabase() {
   const connectionString = process.env.DATABASE_URL
@@ -38,22 +39,33 @@ export default async function WidgetsPage() {
     return <div>No widget found. Please contact support.</div>
   }
 
-  const widgetUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/widget/${widget.id}`
+  const embedUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/embed/${widget.id}`
   
-  const embedCode = `<!-- Kozijn SaaS Widget -->
-<div id="kozijn-widget"></div>
-<script src="${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/widget.js" 
-        data-widget-id="${widget.id}" 
-        async>
-</script>`
-
   const iframeCode = `<iframe 
-  src="${widgetUrl}" 
+  src="${embedUrl}" 
   width="100%" 
-  height="800" 
+  height="900" 
   frameborder="0"
-  style="border: none; border-radius: 8px;"
+  style="border: none; border-radius: 8px; max-width: 800px; margin: 0 auto; display: block;"
 ></iframe>`
+
+  const scriptCode = `<!-- Kozijn Widget - Simpele Embed -->
+<div id="kozijn-widget-${widget.id}"></div>
+<script>
+(function() {
+  var iframe = document.createElement('iframe');
+  iframe.src = '${embedUrl}';
+  iframe.style.width = '100%';
+  iframe.style.height = '900px';
+  iframe.style.border = 'none';
+  iframe.style.borderRadius = '8px';
+  iframe.style.maxWidth = '800px';
+  iframe.style.margin = '0 auto';
+  iframe.style.display = 'block';
+  iframe.frameBorder = '0';
+  document.getElementById('kozijn-widget-${widget.id}').appendChild(iframe);
+})();
+</script>`
 
   return (
     <div className="min-h-screen bg-background">
@@ -113,10 +125,10 @@ export default async function WidgetsPage() {
             </CardHeader>
             <CardContent>
               <a
-                href={widgetUrl}
+                href={embedUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex"
+                className="inline-flex w-full"
               >
                 <Button className="w-full">
                   <ExternalLink className="w-4 h-4 mr-2" />
@@ -135,25 +147,15 @@ export default async function WidgetsPage() {
                 Embed Code (JavaScript)
               </CardTitle>
               <CardDescription>
-                Aanbevolen: Plaats deze code op je website waar je de widget wilt tonen
+                Aanbevolen: Automatisch responsive iframe met JavaScript
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="relative">
                 <pre className="bg-slate-950 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-                  {embedCode}
+                  {scriptCode}
                 </pre>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="absolute top-2 right-2"
-                  onClick={() => {
-                    navigator.clipboard.writeText(embedCode)
-                  }}
-                >
-                  <Copy className="w-4 h-4 mr-1" />
-                  Kopieer
-                </Button>
+                <CopyButton text={scriptCode} />
               </div>
             </CardContent>
           </Card>
@@ -173,17 +175,7 @@ export default async function WidgetsPage() {
                 <pre className="bg-slate-950 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
                   {iframeCode}
                 </pre>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="absolute top-2 right-2"
-                  onClick={() => {
-                    navigator.clipboard.writeText(iframeCode)
-                  }}
-                >
-                  <Copy className="w-4 h-4 mr-1" />
-                  Kopieer
-                </Button>
+                <CopyButton text={iframeCode} />
               </div>
             </CardContent>
           </Card>
