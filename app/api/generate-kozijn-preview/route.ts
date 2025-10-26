@@ -1,17 +1,17 @@
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenerativeAI } from "@google/generative-ai";
 import { NextResponse } from 'next/server';
 
 export const maxDuration = 60;
 
 // Initialize Gemini client
 function getGeminiClient() {
-  const apiKey = process.env.GOOGLE_AI_API_KEY || process.env.GEMINI_API_KEY;
+  const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
   
   if (!apiKey) {
     throw new Error('GOOGLE_AI_API_KEY or GEMINI_API_KEY is not configured');
   }
   
-  return new GoogleGenAI({ apiKey });
+  return new GoogleGenerativeAI(apiKey);
 }
 
 interface KozijnSpecs {
