@@ -39,7 +39,8 @@ export default async function WidgetsPage() {
     return <div>No widget found. Please contact support.</div>
   }
 
-  const embedUrl = `${process.env.NEXTAUTH_URL || 'http://localhost:3000'}/embed/${widget.id}`
+  const baseUrl = process.env.NEXTAUTH_URL || 'http://localhost:3000'
+  const embedUrl = `${baseUrl}/embed/${widget.id}`
   
   const iframeCode = `<iframe 
   src="${embedUrl}" 
@@ -48,6 +49,20 @@ export default async function WidgetsPage() {
   frameborder="0"
   style="border: none; border-radius: 8px; max-width: 800px; margin: 0 auto; display: block;"
 ></iframe>`
+
+  const nextjsIframeCode = `<iframe 
+  src="${embedUrl}" 
+  width="100%" 
+  height="900" 
+  frameBorder="0"
+  style={{
+    border: 'none',
+    borderRadius: '8px',
+    maxWidth: '800px',
+    margin: '0 auto',
+    display: 'block'
+  }}
+/>`
 
   const scriptCode = `<!-- Kozijn Widget - Simpele Embed -->
 <div id="kozijn-widget-${widget.id}"></div>
@@ -164,10 +179,30 @@ export default async function WidgetsPage() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <Code className="w-5 h-5" />
-                iFrame Code
+                Next.js / React Code
               </CardTitle>
               <CardDescription>
-                Alternatief: Gebruik een iframe om de widget in te sluiten
+                Voor Next.js, React en andere JSX frameworks (let op: JSX syntax!)
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="relative">
+                <pre className="bg-slate-950 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
+                  {nextjsIframeCode}
+                </pre>
+                <CopyButton text={nextjsIframeCode} />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Code className="w-5 h-5" />
+                HTML iFrame Code
+              </CardTitle>
+              <CardDescription>
+                Voor WordPress, normale HTML websites en andere platforms
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -199,26 +234,13 @@ export default async function WidgetsPage() {
               <div className="border-t border-blue-300 pt-4">
                 <strong className="text-lg">🔹 Next.js / React</strong>
                 <ol className="list-decimal ml-5 mt-2 space-y-1.5">
-                  <li>Klik op <strong>"Kopieer"</strong> bij de <strong>iFrame Code</strong></li>
-                  <li>Open je page.tsx of component</li>
-                  <li>Plak de iframe code in je JSX:</li>
+                  <li>Klik op <strong>"Kopieer"</strong> bij <strong>"Next.js / React Code"</strong> (de tweede code hierboven!)</li>
+                  <li>Open je page.tsx of component bestand</li>
+                  <li>Plak de code direct in je JSX - KLAAR! Het werkt meteen.</li>
                 </ol>
-                <pre className="bg-slate-900 text-green-400 p-3 rounded mt-2 text-xs overflow-x-auto">
-{`export default function ContactPage() {
-  return (
-    <div>
-      <h1>Vraag een offerte aan</h1>
-      
-      {/* Plak hier je iframe code */}
-      <iframe src="https://jouw-app.vercel.app/embed/..." 
-              width="100%" 
-              height="900" 
-              style={{border: 'none'}}
-      />
-    </div>
-  )
-}`}
-                </pre>
+                <div className="bg-yellow-50 border border-yellow-300 p-3 rounded mt-2">
+                  <strong>⚠️ Let op:</strong> Gebruik NIET de HTML iFrame Code in Next.js! Die werkt niet vanwege JSX syntax verschillen.
+                </div>
               </div>
 
               <div className="border-t border-blue-300 pt-4">
