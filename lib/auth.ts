@@ -4,10 +4,10 @@ import { neon } from "@neondatabase/serverless"
 import { compare } from "bcryptjs"
 
 function getDatabase() {
-  const connectionString = process.env.NEON_NEON_DATABASE_URL
+  const connectionString = process.env.DATABASE_URL
   if (!connectionString) {
-    console.error("[v0] NEON_DATABASE_URL is not defined")
-    throw new Error("NEON_DATABASE_URL is not defined")
+    console.error("DATABASE_URL is not defined")
+    throw new Error("DATABASE_URL is not defined")
   }
   return neon(connectionString)
 }
@@ -47,6 +47,7 @@ export const authOptions: NextAuthOptions = {
           id: user.id,
           email: user.email,
           name: user.name,
+          companyId: user.company_id,
         }
       },
     }),
@@ -55,12 +56,14 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id
+        token.companyId = (user as any).companyId
       }
       return token
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string
+        ;(session.user as any).companyId = token.companyId as string
       }
       return session
     },

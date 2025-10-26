@@ -4,19 +4,19 @@ import { hash } from "bcryptjs"
 import { randomUUID } from "crypto"
 
 function getDatabase() {
-  const connectionString = process.env.NEON_NEON_DATABASE_URL
+  const connectionString = process.env.DATABASE_URL
   if (!connectionString) {
-    throw new Error("NEON_DATABASE_URL is not defined")
+    throw new Error("DATABASE_URL is not defined")
   }
   return neon(connectionString)
 }
 
 export async function POST(request: Request) {
   try {
-    const { email, password, name } = await request.json()
+    const { email, password, name, companyName } = await request.json()
 
     if (!email || !password) {
-      return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
+      return NextResponse.json({ error: "Email and password are required" }, { status: 400 })
     }
 
     const sql = getDatabase()
@@ -33,16 +33,37 @@ export async function POST(request: Request) {
     // Hash password
     const hashedPassword = await hash(password, 12)
 
-    // Create user
+    // Generate IDs
+    const companyId = randomUUID()
     const userId = randomUUID()
+    const widgetId = randomUUID()
+
+    // 1. Create company
     await sql`
-      INSERT INTO users (id, email, password, name, created_at, updated_at)
-      VALUES (${userId}, ${email}, ${hashedPassword}, ${name || null}, NOW(), NOW())
+      INSERT INTO companies (id, name, email, created_at, updated_at)
+      VALUES (${companyId}, ${companyName || name || 'Mijn Bedrijf'}, ${email}, NOW(), NOW())
     `
 
-    return NextResponse.json({ message: "User created successfully" }, { status: 201 })
+    // 2. Create user linked to company
+    await sql`
+      INSERT INTO users (id, email, password, name, company_id, role, created_at, updated_at)
+      VALUES (${userId}, ${email}, ${hashedPassword}, ${name || null}, ${companyId}, 'owner', NOW(), NOW())
+    `
+
+    // 3. Create default widget for the company
+    await sql`
+      INSERT INTO widgets (id, company_id, name, is_active, created_at, updated_at)
+      VALUES (${widgetId}, ${companyId}, 'Mijn Widget', true, NOW(), NOW())
+    `
+
+    return NextResponse.json({ 
+      message: "Account created successfully",
+      companyId,
+      userId,
+      widgetId
+    }, { status: 201 })
   } catch (error) {
-    console.error("[v0] Signup error:", error)
+    console.error("Signup error:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }

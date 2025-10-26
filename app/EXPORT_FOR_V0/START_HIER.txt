@@ -1,0 +1,48 @@
+================================================================================
+                    KOZIJNSAAS - AI FUNCTIONALITEIT EXPORT
+================================================================================
+
+✅ DEZE FOLDER BEVAT ALLE WERKENDE AI CODE
+
+📁 INHOUD:
+  /components/        - ai-quote-form.tsx, photo-upload.tsx
+  /api/               - analyze, generate-kozijn-preview, upload, leads routes
+  /lib/               - pricing calculators
+  /public/            - widget.js (embed code)
+  INSTRUCTIES.md      - Stappen voor jou (user)
+  
+📄 LEES OOK:
+  ../VOOR_AI_ASSISTENT.md  - Context voor wanneer je terug bent met v0 project
+
+================================================================================
+                              VOLGENDE STAPPEN
+================================================================================
+
+1. Ga naar v0.dev
+   
+2. Gebruik deze prompt:
+   "Maak een SaaS platform voor kozijn bedrijven met:
+    - Email/password authentication
+    - PostgreSQL database (companies, users, leads, widgets tables)
+    - Dashboard met stats
+    - Leads overzicht pagina
+    - Settings pagina
+    - Modern UI met shadcn/ui
+    - Multi-tenant met Row Level Security"
+
+3. Export het v0 project
+
+4. Kopieer de files uit deze folder naar je v0 project
+
+5. Kom terug - ik help met de integratie
+
+================================================================================
+
+BELANGRIJKE ENV VARS DIE JE NODIG HEBT:
+- GOOGLE_GENERATIVE_AI_API_KEY
+- BLOB_READ_WRITE_TOKEN
+
+Deze heb je al, gewoon overzetten naar nieuwe project.
+
+================================================================================
+

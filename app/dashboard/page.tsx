@@ -1,9 +1,18 @@
 import { getServerSession } from "next-auth"
 import { redirect } from "next/navigation"
 import { authOptions } from "@/lib/auth"
+import { neon } from "@neondatabase/serverless"
 import { DashboardHeader } from "@/components/dashboard-header"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { BarChart3, Users, FileText, TrendingUp } from "lucide-react"
+import { BarChart3, Users, FileText, TrendingUp, Code, Euro } from "lucide-react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+
+function getDatabase() {
+  const connectionString = process.env.DATABASE_URL
+  if (!connectionString) throw new Error("DATABASE_URL is not defined")
+  return neon(connectionString)
+}
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
@@ -12,34 +21,67 @@ export default async function DashboardPage() {
     redirect("/auth/signin")
   }
 
+  const companyId = (session.user as any).companyId
+
+  if (!companyId) {
+    return <div className="p-8">No company found. Please contact support.</div>
+  }
+
+  const sql = getDatabase()
+
+  // Get company info
+  const companies = await sql`
+    SELECT * FROM companies WHERE id = ${companyId}
+  `
+  const company = companies[0]
+
+  // Get leads stats
+  const leads = await sql`
+    SELECT * FROM leads WHERE company_id = ${companyId}
+  `
+  
+  const totalLeads = leads.length
+  const newLeads = leads.filter((l: any) => l.status === 'new').length
+  const totalRevenue = leads.reduce((sum: number, l: any) => sum + (Number(l.quote_total) || 0), 0)
+  const avgQuote = totalLeads > 0 ? totalRevenue / totalLeads : 0
+
+  // Get widgets stats
+  const widgets = await sql`
+    SELECT * FROM widgets WHERE company_id = ${companyId}
+  `
+  
+  const totalViews = widgets.reduce((sum: number, w: any) => sum + (w.views || 0), 0)
+  const totalConversions = widgets.reduce((sum: number, w: any) => sum + (w.conversions || 0), 0)
+  const conversionRate = totalViews > 0 ? (totalConversions / totalViews) * 100 : 0
+
   const stats = [
     {
-      title: "Total Quotes",
-      value: "0",
-      description: "No quotes generated yet",
-      icon: FileText,
-      trend: "+0%",
-    },
-    {
-      title: "Active Forms",
-      value: "0",
-      description: "Create your first form",
-      icon: BarChart3,
-      trend: "+0%",
-    },
-    {
-      title: "Leads Collected",
-      value: "0",
-      description: "Start collecting leads",
+      title: "Totaal Leads",
+      value: totalLeads.toString(),
+      description: `${newLeads} nieuwe`,
       icon: Users,
-      trend: "+0%",
+      trend: totalLeads > 0 ? `+${totalLeads}` : "0",
     },
     {
-      title: "Conversion Rate",
-      value: "0%",
-      description: "Track your conversions",
+      title: "Totale Waarde",
+      value: `€${totalRevenue.toLocaleString('nl-NL', { maximumFractionDigits: 0 })}`,
+      description: "Alle offertes samen",
+      icon: Euro,
+      trend: `Ø €${avgQuote.toLocaleString('nl-NL', { maximumFractionDigits: 0 })}`,
+    },
+    {
+      title: "Widget Views",
+      value: totalViews.toString(),
+      description: `${totalConversions} conversies`,
+      icon: BarChart3,
+      trend: `${widgets.length} actieve widget${widgets.length !== 1 ? 's' : ''}`,
+    },
+    {
+      title: "Conversie Ratio",
+      value: `${conversionRate.toFixed(1)}%`,
+      description: "Views → Leads",
       icon: TrendingUp,
-      trend: "+0%",
+      trend: totalViews > 0 ? `${totalViews} views` : "Nog geen views",
     },
   ]
 
@@ -50,9 +92,11 @@ export default async function DashboardPage() {
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-navy mb-2">
-            Welcome back, {session.user?.name || session.user?.email}!
+            Welkom terug, {session.user?.name || session.user?.email}!
           </h1>
-          <p className="text-muted-foreground">Here's an overview of your QuoteSaaS account</p>
+          <p className="text-muted-foreground">
+            {company?.name} - Overzicht van je kozijn SaaS platform
+          </p>
         </div>
 
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 mb-8">
@@ -76,8 +120,8 @@ export default async function DashboardPage() {
         <div className="grid gap-6 md:grid-cols-2">
           <Card>
             <CardHeader>
-              <CardTitle>Quick Start Guide</CardTitle>
-              <CardDescription>Get started with QuoteSaaS in 3 easy steps</CardDescription>
+              <CardTitle>🚀 Quick Start Guide</CardTitle>
+              <CardDescription>Plaats je widget in 3 simpele stappen</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-3">
@@ -85,8 +129,8 @@ export default async function DashboardPage() {
                   1
                 </div>
                 <div>
-                  <h3 className="font-medium mb-1">Create Your First Form</h3>
-                  <p className="text-sm text-muted-foreground">Design a quote form tailored to your business needs</p>
+                  <h3 className="font-medium mb-1">Pak je widget code</h3>
+                  <p className="text-sm text-muted-foreground">Ga naar Widgets en kopieer de embed code</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -94,8 +138,8 @@ export default async function DashboardPage() {
                   2
                 </div>
                 <div>
-                  <h3 className="font-medium mb-1">Embed on Your Website</h3>
-                  <p className="text-sm text-muted-foreground">Copy the code snippet and paste it into your site</p>
+                  <h3 className="font-medium mb-1">Plaats op je website</h3>
+                  <p className="text-sm text-muted-foreground">Plak de code waar je de widget wilt tonen</p>
                 </div>
               </div>
               <div className="flex items-start gap-3">
@@ -103,24 +147,64 @@ export default async function DashboardPage() {
                   3
                 </div>
                 <div>
-                  <h3 className="font-medium mb-1">Start Collecting Leads</h3>
+                  <h3 className="font-medium mb-1">Ontvang Leads</h3>
                   <p className="text-sm text-muted-foreground">
-                    Watch as AI-powered quotes convert visitors to customers
+                    AI-powered quotes verschijnen direct in je Leads overzicht
                   </p>
                 </div>
               </div>
+              
+              <Link href="/dashboard/widgets">
+                <Button className="w-full mt-4">
+                  <Code className="w-4 h-4 mr-2" />
+                  Bekijk Widget Code
+                </Button>
+              </Link>
             </CardContent>
           </Card>
 
           <Card>
             <CardHeader>
-              <CardTitle>Recent Activity</CardTitle>
-              <CardDescription>Your latest actions and updates</CardDescription>
+              <CardTitle>📊 Recente Leads</CardTitle>
+              <CardDescription>Je laatste offerteaanvragen</CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-center h-32 text-muted-foreground">
-                <p className="text-sm">No recent activity</p>
-              </div>
+              {totalLeads === 0 ? (
+                <div className="flex items-center justify-center h-32 text-muted-foreground">
+                  <div className="text-center">
+                    <p className="text-sm mb-2">Nog geen leads</p>
+                    <Link href="/dashboard/widgets">
+                      <Button variant="outline" size="sm">
+                        Plaats je widget
+                      </Button>
+                    </Link>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {leads.slice(0, 3).map((lead: any) => (
+                    <div key={lead.id} className="flex justify-between items-start border-b pb-2 last:border-0">
+                      <div>
+                        <p className="font-medium">{lead.naam}</p>
+                        <p className="text-sm text-muted-foreground">{lead.email}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-bold text-green-600">
+                          €{Number(lead.quote_total).toLocaleString('nl-NL')}
+                        </p>
+                        <p className="text-xs text-muted-foreground">
+                          {new Date(lead.created_at).toLocaleDateString('nl-NL')}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                  <Link href="/dashboard/leads">
+                    <Button variant="outline" className="w-full mt-3">
+                      Bekijk alle leads →
+                    </Button>
+                  </Link>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>

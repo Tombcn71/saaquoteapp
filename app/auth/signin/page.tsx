@@ -50,17 +50,17 @@ export default function SignInPage() {
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-12 h-12 rounded-lg bg-brand-blue flex items-center justify-center">
+            <div className="w-12 h-12 rounded-lg bg-[#4285f4] flex items-center justify-center">
               <Sparkles className="w-7 h-7 text-white" />
             </div>
-            <span className="text-2xl font-bold text-navy">QuoteSaaS</span>
+            <span className="text-2xl font-bold text-gray-900">KozijnSaaS</span>
           </Link>
         </div>
 
         <Card className="border-2">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Welcome back</CardTitle>
-            <CardDescription className="text-center">Sign in to your account to continue</CardDescription>
+            <CardTitle className="text-2xl font-bold text-center">Welkom terug</CardTitle>
+            <CardDescription className="text-center">Log in op je account om door te gaan</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
@@ -90,18 +90,18 @@ export default function SignInPage() {
               {error && <p className="text-sm text-destructive">{error}</p>}
               <Button
                 type="submit"
-                className="w-full bg-brand-blue hover:bg-brand-blue-light text-white"
+                className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white"
                 disabled={isLoading}
               >
-                {isLoading ? "Signing in..." : "Sign In"}
+                {isLoading ? "Inloggen..." : "Inloggen"}
               </Button>
             </form>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
             <div className="text-sm text-center text-muted-foreground">
-              Don't have an account?{" "}
-              <Link href="/auth/signup" className="text-brand-blue hover:underline font-medium">
-                Sign up
+              Heb je nog geen account?{" "}
+              <Link href="/auth/signup" className="text-[#4285f4] hover:underline font-medium">
+                Registreer
               </Link>
             </div>
           </CardFooter>
