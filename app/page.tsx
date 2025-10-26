@@ -70,7 +70,7 @@ export default async function HomePage() {
         <div className="container mx-auto max-w-7xl">
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Left: Hero Text */}
-            <div className="pt-8">
+            <div className="pt-8 pl-8">
               
               <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-none tracking-tight">
                 Meer Leads met<br />
