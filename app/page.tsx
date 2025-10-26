@@ -445,9 +445,15 @@ export default async function HomePage() {
   src="https://saaquoteapp.vercel.app//embed/57bd0788-e9e5-465a-ac2b-b7dd0b0c3485" 
   width="100%" 
   height="900" 
-  frameborder="0"
-  style="border: none; border-radius: 8px; max-width: 800px; margin: 0 auto; display: block;"
-></iframe>
+  frameBorder="0"
+  style={{
+    border: 'none',
+    borderRadius: '8px',
+    maxWidth: '800px',
+    margin: '0 auto',
+    display: 'block'
+  }}
+/>
       </section>
 
       {/* Footer */}
