@@ -132,19 +132,28 @@ export default async function HomePage() {
                 </Link>
               </div>
 
-              {/* Stats */}
-              <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-gray-200">
-                <div>
-                  <div className="text-3xl font-bold text-gray-900 mb-1">3x</div>
-                  <div className="text-sm text-gray-600">Meer conversie</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-gray-900 mb-1">60 sec</div>
-                  <div className="text-sm text-gray-600">Setup tijd</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold text-gray-900 mb-1">€12k</div>
-                  <div className="text-sm text-gray-600">Gem. waarde/maand</div>
+              {/* Platform Compatibility */}
+              <div className="mt-12 pt-8 border-t border-gray-200">
+                <p className="text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">Werkt op alle platforms</p>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
+                    <div className="font-bold text-gray-900">WordPress</div>
+                  </div>
+                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
+                    <div className="font-bold text-gray-900">Wix</div>
+                  </div>
+                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
+                    <div className="font-bold text-gray-900">Squarespace</div>
+                  </div>
+                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
+                    <div className="font-bold text-gray-900">Webflow</div>
+                  </div>
+                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
+                    <div className="font-bold text-gray-900">Shopify</div>
+                  </div>
+                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
+                    <div className="font-bold text-gray-900 text-sm">+ Meer</div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -441,19 +450,7 @@ export default async function HomePage() {
               </Button>
             </Link>
           </div>
-        </div><iframe 
-  src="https://saaquoteapp.vercel.app//embed/57bd0788-e9e5-465a-ac2b-b7dd0b0c3485" 
-  width="100%" 
-  height="900" 
-  frameBorder="0"
-  style={{
-    border: 'none',
-    borderRadius: '8px',
-    maxWidth: '800px',
-    margin: '0 auto',
-    display: 'block'
-  }}
-/>
+        </div>
       </section>
 
       {/* Footer */}
