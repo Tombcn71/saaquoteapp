@@ -72,7 +72,7 @@ export default async function HomePage() {
             {/* Left: Hero Text */}
             <div className="pt-8">
               
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-none">
                 Meer Leads met<br />
                 <span >Slimme AI  Quotes</span>
               </h1>
