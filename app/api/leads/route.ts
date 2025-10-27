@@ -18,6 +18,12 @@ export async function POST(request: Request) {
     const {
       companyId,
       widgetId,
+      formType = 'kozijnen', // Default to kozijnen for backwards compatibility
+      formData,
+      customerInfo,
+      photos = [],
+      estimatedPrice,
+      // Legacy kozijnen fields (for backwards compatibility)
       naam,
       email,
       telefoon,
@@ -37,8 +43,13 @@ export async function POST(request: Request) {
       widgetReferrer,
     } = body
 
+    // Extract customer info (new format or legacy)
+    const customerName = customerInfo?.name || naam
+    const customerEmail = customerInfo?.email || email
+    const customerPhone = customerInfo?.phone || telefoon
+
     // Validatie
-    if (!naam || !email) {
+    if (!customerName || !customerEmail) {
       return NextResponse.json(
         { error: 'Naam en email zijn verplicht' },
         { status: 400 }
@@ -72,11 +83,16 @@ export async function POST(request: Request) {
     // Lead opslaan
     const leadId = randomUUID()
     
+    // Determine final values (new format or legacy)
+    const finalPhotoUrls = photos.length > 0 ? photos : (photoUrls || [])
+    const finalQuoteTotal = estimatedPrice || quoteTotal
+    
     await sql`
       INSERT INTO leads (
         id,
         company_id,
         widget_id,
+        form_type,
         naam,
         email,
         telefoon,
@@ -101,20 +117,21 @@ export async function POST(request: Request) {
         ${leadId},
         ${companyId || null},
         ${widgetId || null},
-        ${naam},
-        ${email},
-        ${telefoon || null},
-        ${materiaal || null},
-        ${kleur || null},
-        ${kozijnType || null},
-        ${glasType || null},
-        ${aantalRamen || null},
-        ${vierkanteMeterRamen || null},
-        ${montage ?? true},
-        ${afvoerOudeKozijnen ?? false},
-        ${quoteTotal ? parseFloat(quoteTotal) : null},
-        ${quoteBreakdown ? JSON.stringify(quoteBreakdown) : null},
-        ${photoUrls ? JSON.stringify(photoUrls) : '[]'},
+        ${formType},
+        ${customerName},
+        ${customerEmail},
+        ${customerPhone || null},
+        ${formData?.material || materiaal || null},
+        ${formData?.color || formData?.style || kleur || null},
+        ${formData?.type || kozijnType || null},
+        ${formData?.glassType || glasType || null},
+        ${formData?.windowCount || aantalRamen || null},
+        ${formData?.surfaceArea || vierkanteMeterRamen || null},
+        ${formData?.installation ?? montage ?? true},
+        ${formData?.removeOld ?? afvoerOudeKozijnen ?? false},
+        ${finalQuoteTotal ? parseFloat(finalQuoteTotal.toString()) : null},
+        ${formData ? JSON.stringify(formData) : (quoteBreakdown ? JSON.stringify(quoteBreakdown) : null)},
+        ${JSON.stringify(finalPhotoUrls)},
         ${previewUrls ? JSON.stringify(previewUrls) : '[]'},
         ${source},
         ${widgetReferrer || null},

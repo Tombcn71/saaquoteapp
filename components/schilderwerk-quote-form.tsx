@@ -1,23 +1,50 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useCallback } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Upload, Sparkles } from 'lucide-react'
+import { Upload, Sparkles, X, Loader2, CheckCircle } from 'lucide-react'
+import { useDropzone } from 'react-dropzone'
 
-export function SchilderwerkQuoteForm() {
+interface SchilderwerkQuoteFormProps {
+  companyId?: string
+  widgetId?: string
+  className?: string
+}
+
+export function SchilderwerkQuoteForm({ companyId, widgetId, className = '' }: SchilderwerkQuoteFormProps) {
   const [step, setStep] = useState(1)
+  const [loading, setLoading] = useState(false)
+  const [submitted, setSubmitted] = useState(false)
+  const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null)
+  
   const [formData, setFormData] = useState({
     type: '',
+    surfaceArea: '',
     color: '',
-    area: '',
-    ceiling: '',
+    includeCeiling: '',
+    name: '',
     email: '',
     phone: '',
-    name: ''
   })
+
+  const [photos, setPhotos] = useState<File[]>([])
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    setPhotos(prev => [...prev, ...acceptedFiles].slice(0, 5))
+  }, [])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: { 'image/*': ['.png', '.jpg', '.jpeg', '.webp'] },
+    maxFiles: 5
+  })
+
+  const removePhoto = (index: number) => {
+    setPhotos(prev => prev.filter((_, i) => i !== index))
+  }
 
   const handleNext = () => {
     setStep(step + 1)
@@ -28,17 +55,130 @@ export function SchilderwerkQuoteForm() {
   }
 
   const handleSubmit = async () => {
-    // Hier komt later de API call
-    alert('Schilderwerk offerte verstuurd! (Demo)')
+    setLoading(true)
+
+    try {
+      // Upload photos first
+      const uploadedPhotoUrls = await Promise.all(
+        photos.map(async (file) => {
+          const formData = new FormData()
+          formData.append('file', file)
+          const res = await fetch('/api/upload', {
+            method: 'POST',
+            body: formData
+          })
+          const data = await res.json()
+          return data.url
+        })
+      )
+
+      // Submit lead
+      const leadData = {
+        formType: 'schilderwerk',
+        formData: {
+          type: formData.type,
+          surfaceArea: parseFloat(formData.surfaceArea),
+          color: formData.color,
+          includeCeiling: formData.includeCeiling === 'yes'
+        },
+        customerInfo: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone
+        },
+        photos: uploadedPhotoUrls,
+        companyId,
+        widgetId,
+        estimatedPrice
+      }
+
+      const response = await fetch('/api/leads', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(leadData)
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setSubmitted(true)
+      } else {
+        alert('Er ging iets mis. Probeer het opnieuw.')
+      }
+    } catch (error) {
+      console.error('Error submitting form:', error)
+      alert('Er ging iets mis. Probeer het opnieuw.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  // Calculate price when moving to step 3
+  const calculatePrice = async () => {
+    if (!formData.surfaceArea || !formData.type) return
+
+    try {
+      const res = await fetch('/api/pricing/calculate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          formType: 'schilderwerk',
+          formData: {
+            type: formData.type,
+            surfaceArea: parseFloat(formData.surfaceArea)
+          },
+          companyId
+        })
+      })
+
+      const data = await res.json()
+      if (data.success) {
+        setEstimatedPrice(data.total)
+      }
+    } catch (error) {
+      console.error('Error calculating price:', error)
+      // Fallback to simple calculation
+      const basePrice = formData.type === 'buiten' ? 18 : 12
+      const area = parseFloat(formData.surfaceArea)
+      setEstimatedPrice(Math.round((basePrice + 8) * area))
+    }
+  }
+
+  if (submitted) {
+    return (
+      <Card className={`overflow-hidden bg-white shadow-2xl border-0 p-0 ${className}`}>
+        <div className="bg-[#4285f4] px-4 sm:px-6 lg:px-8 py-6 rounded-t-xl">
+          <div className="flex items-center gap-2">
+            <CheckCircle className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+            <h2 className="font-bold text-base sm:text-lg lg:text-xl text-white">
+              Bedankt voor uw aanvraag!
+            </h2>
+          </div>
+        </div>
+        <div className="px-4 sm:px-6 lg:px-8 py-12 text-center space-y-4">
+          <p className="text-lg text-gray-900">
+            We hebben uw offerte aanvraag ontvangen en nemen binnen 24 uur contact met u op.
+          </p>
+          {estimatedPrice && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 inline-block">
+              <p className="text-sm text-gray-600 mb-1">Geschatte prijs</p>
+              <p className="text-3xl font-bold text-[#4285f4]">
+                {new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 }).format(estimatedPrice)}
+              </p>
+            </div>
+          )}
+        </div>
+      </Card>
+    )
   }
 
   return (
-    <Card className="w-full bg-white overflow-hidden shadow-2xl border-0 p-0">
+    <Card className={`overflow-hidden bg-white shadow-2xl border-0 p-0 ${className}`}>
       <div className="bg-[#4285f4] px-4 sm:px-6 lg:px-8 py-6 rounded-t-xl">
         <div className="flex items-center gap-2 mb-2">
           <Sparkles className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
           <h2 className="font-bold text-base sm:text-lg lg:text-xl text-white">
-            Direct een prijsindicatie en AI preview van uw geschilderde ruimte.
+            Direct een prijsindicatie van uw schilderwerk.
           </h2>
         </div>
         <p className="text-xs sm:text-sm italic text-blue-100">
@@ -60,16 +200,15 @@ export function SchilderwerkQuoteForm() {
           </div>
         </div>
 
-        {/* Step 1: Type Verf & Kleur */}
+        {/* Step 1: Schilderwerk details */}
         {step === 1 && (
           <div className="space-y-6">
             <div>
-              <Label className="text-base font-semibold mb-3 block">Type verf</Label>
+              <Label className="text-base font-semibold mb-3 block">Type schilderwerk</Label>
               <div className="grid grid-cols-2 gap-3">
                 {[
-                  { value: 'latex', label: 'Latex (muurverf)' },
-                  { value: 'acryl', label: 'Acrylaat (buiten)' },
-                  { value: 'primer', label: 'Primer + Latex' },
+                  { value: 'binnen', label: 'Binnenschilderwerk' },
+                  { value: 'buiten', label: 'Buitenschilderwerk' },
                 ].map((option) => (
                   <button
                     key={option.value}
@@ -87,67 +226,81 @@ export function SchilderwerkQuoteForm() {
             </div>
 
             <div>
-              <Label className="text-base font-semibold mb-3 block">Kleur</Label>
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { value: 'wit', label: 'Wit' },
-                  { value: 'gebroken-wit', label: 'Gebroken wit' },
-                  { value: 'grijs', label: 'Grijs' },
-                  { value: 'blauw', label: 'Blauw' },
-                  { value: 'groen', label: 'Groen' },
-                  { value: 'custom', label: 'Custom (RAL)' },
-                ].map((option) => (
-                  <button
-                    key={option.value}
-                    onClick={() => setFormData({ ...formData, color: option.value })}
-                    className={`p-3 border-2 rounded-lg text-sm font-medium transition-all ${
-                      formData.color === option.value
-                        ? 'border-[#4285f4] bg-blue-50 text-[#4285f4]'
-                        : 'border-gray-200 hover:border-[#4285f4]'
-                    }`}
-                  >
-                    {option.label}
-                  </button>
-                ))}
-              </div>
+              <Label htmlFor="surfaceArea">Oppervlakte (m²)</Label>
+              <Input
+                id="surfaceArea"
+                type="number"
+                placeholder="Bijv. 50"
+                value={formData.surfaceArea}
+                onChange={(e) => setFormData({ ...formData, surfaceArea: e.target.value })}
+                className="mt-2"
+              />
             </div>
 
             <div>
-              <Label htmlFor="area">Oppervlakte muren (m²)</Label>
+              <Label htmlFor="color">Gewenste kleur (optioneel)</Label>
               <Input
-                id="area"
-                type="number"
-                placeholder="Bijv. 40"
-                value={formData.area}
-                onChange={(e) => setFormData({ ...formData, area: e.target.value })}
+                id="color"
+                type="text"
+                placeholder="Bijv. RAL 9010 (Wit)"
+                value={formData.color}
+                onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                 className="mt-2"
               />
             </div>
 
             <Button
               onClick={handleNext}
-              disabled={!formData.type || !formData.color || !formData.area}
-              className="w-full bg-[#4285f4] hover:bg-[#3367d6]"
+              disabled={!formData.type || !formData.surfaceArea}
+              className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white"
             >
               Volgende: Upload foto's
             </Button>
           </div>
         )}
 
-        {/* Step 2: Upload Foto's */}
+        {/* Step 2: Photos */}
         {step === 2 && (
           <div className="space-y-6">
             <div>
-              <Label className="text-base font-semibold mb-3 block">Upload foto's van de te schilderen ruimte</Label>
-              <div className="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-[#4285f4] transition-colors cursor-pointer">
+              <Label className="text-base font-semibold mb-3 block">Upload foto's van de ruimte (optioneel)</Label>
+              <div
+                {...getRootProps()}
+                className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors cursor-pointer ${
+                  isDragActive ? 'border-[#4285f4] bg-blue-50' : 'border-gray-300 hover:border-[#4285f4]'
+                }`}
+              >
+                <input {...getInputProps()} />
                 <Upload className="w-12 h-12 mx-auto mb-3 text-gray-400" />
-                <p className="text-sm text-gray-600 mb-2">Klik om foto's te uploaden</p>
-                <p className="text-xs text-gray-400">Of sleep foto's hierheen</p>
+                <p className="text-sm text-gray-600 mb-2">
+                  {isDragActive ? 'Sleep hier...' : 'Klik om foto\'s te uploaden'}
+                </p>
+                <p className="text-xs text-gray-400">Of sleep foto's hierheen (max 5)</p>
               </div>
+
+              {photos.length > 0 && (
+                <div className="grid grid-cols-2 gap-3 mt-4">
+                  {photos.map((file, index) => (
+                    <div key={index} className="relative group">
+                      <img
+                        src={URL.createObjectURL(file)}
+                        alt={`Upload ${index + 1}`}
+                        className="w-full h-32 object-cover rounded-lg"
+                      />
+                      <button
+                        onClick={() => removePhoto(index)}
+                        className="absolute top-2 right-2 bg-[#4285f4]/80 hover:bg-[#4285f4] text-white rounded-full p-1"
+                      >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             <div>
-              <Label className="text-base font-semibold mb-3 block">Ook plafond schilderen?</Label>
+              <Label className="text-base font-semibold mb-3 block">Plafond meeschilderen?</Label>
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { value: 'yes', label: 'Ja' },
@@ -155,9 +308,9 @@ export function SchilderwerkQuoteForm() {
                 ].map((option) => (
                   <button
                     key={option.value}
-                    onClick={() => setFormData({ ...formData, ceiling: option.value })}
+                    onClick={() => setFormData({ ...formData, includeCeiling: option.value })}
                     className={`p-4 border-2 rounded-lg text-sm font-medium transition-all ${
-                      formData.ceiling === option.value
+                      formData.includeCeiling === option.value
                         ? 'border-[#4285f4] bg-blue-50 text-[#4285f4]'
                         : 'border-gray-200 hover:border-[#4285f4]'
                     }`}
@@ -173,8 +326,11 @@ export function SchilderwerkQuoteForm() {
                 Vorige
               </Button>
               <Button
-                onClick={handleNext}
-                className="flex-1 bg-[#4285f4] hover:bg-[#3367d6]"
+                onClick={() => {
+                  calculatePrice()
+                  handleNext()
+                }}
+                className="flex-1 bg-[#4285f4] hover:bg-[#3367d6] text-white"
               >
                 Volgende: Contactgegevens
               </Button>
@@ -182,11 +338,11 @@ export function SchilderwerkQuoteForm() {
           </div>
         )}
 
-        {/* Step 3: Contact Info */}
+        {/* Step 3: Contact & Submit */}
         {step === 3 && (
           <div className="space-y-6">
             <div>
-              <Label htmlFor="name">Naam</Label>
+              <Label htmlFor="name">Naam *</Label>
               <Input
                 id="name"
                 type="text"
@@ -198,7 +354,7 @@ export function SchilderwerkQuoteForm() {
             </div>
 
             <div>
-              <Label htmlFor="email">E-mailadres</Label>
+              <Label htmlFor="email">E-mailadres *</Label>
               <Input
                 id="email"
                 type="email"
@@ -210,7 +366,7 @@ export function SchilderwerkQuoteForm() {
             </div>
 
             <div>
-              <Label htmlFor="phone">Telefoonnummer</Label>
+              <Label htmlFor="phone">Telefoonnummer (optioneel)</Label>
               <Input
                 id="phone"
                 type="tel"
@@ -221,13 +377,15 @@ export function SchilderwerkQuoteForm() {
               />
             </div>
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-              <p className="text-sm font-semibold text-blue-900 mb-2">📊 Geschatte prijs</p>
-              <p className="text-2xl font-bold text-[#4285f4]">
-                €{formData.area ? (parseInt(formData.area) * 12).toLocaleString('nl-NL') : '0'},-
-              </p>
-              <p className="text-xs text-gray-600 mt-1">Inclusief materiaal en arbeid, exclusief BTW</p>
-            </div>
+            {estimatedPrice !== null && (
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <p className="text-sm font-semibold text-blue-900 mb-2">📊 Geschatte prijs</p>
+                <p className="text-2xl font-bold text-[#4285f4]">
+                  {new Intl.NumberFormat('nl-NL', { style: 'currency', currency: 'EUR', minimumFractionDigits: 0 }).format(estimatedPrice)}
+                </p>
+                <p className="text-xs text-gray-600 mt-1">Inclusief materiaal en arbeid, exclusief BTW</p>
+              </div>
+            )}
 
             <div className="flex gap-3">
               <Button onClick={handleBack} variant="outline" className="flex-1">
@@ -235,10 +393,17 @@ export function SchilderwerkQuoteForm() {
               </Button>
               <Button
                 onClick={handleSubmit}
-                disabled={!formData.email || !formData.name}
-                className="flex-1 bg-[#4285f4] hover:bg-[#3367d6]"
+                disabled={!formData.email || !formData.name || loading}
+                className="flex-1 bg-[#4285f4] hover:bg-[#3367d6] text-white"
               >
-                Offerte aanvragen
+                {loading ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Verzenden...
+                  </>
+                ) : (
+                  'Offerte aanvragen'
+                )}
               </Button>
             </div>
           </div>
@@ -247,4 +412,3 @@ export function SchilderwerkQuoteForm() {
     </Card>
   )
 }
-
