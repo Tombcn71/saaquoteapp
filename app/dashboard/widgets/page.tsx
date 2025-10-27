@@ -177,7 +177,7 @@ export default async function WidgetsPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">1</div>
+                    <div className="w-8 h-8 rounded-full bg-[#4285f4] text-white flex items-center justify-center font-bold">1</div>
                     Inline Embed
                   </CardTitle>
                   <CardDescription className="mt-2">
@@ -202,7 +202,7 @@ export default async function WidgetsPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <div className="w-8 h-8 rounded-full bg-purple-500 text-white flex items-center justify-center font-bold">2</div>
+                    <div className="w-8 h-8 rounded-full bg-[#4285f4] text-white flex items-center justify-center font-bold">2</div>
                     Popup Text Link
                   </CardTitle>
                   <CardDescription className="mt-2">
@@ -212,8 +212,8 @@ export default async function WidgetsPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="mb-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
-                <p className="text-sm text-purple-900">
+              <div className="mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-sm text-blue-900">
                   <strong>Voorbeeld:</strong> "Wil je een offerte? <span className="text-blue-600 underline cursor-pointer">Klik hier</span>"
                 </p>
               </div>
@@ -232,7 +232,7 @@ export default async function WidgetsPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle className="flex items-center gap-2 text-lg">
-                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">3</div>
+                    <div className="w-8 h-8 rounded-full bg-[#4285f4] text-white flex items-center justify-center font-bold">3</div>
                     Floating Widget Button
                   </CardTitle>
                   <CardDescription className="mt-2">
@@ -242,8 +242,8 @@ export default async function WidgetsPage() {
               </div>
             </CardHeader>
             <CardContent>
-              <div className="mb-3 p-3 bg-green-50 rounded-lg border border-green-200">
-                <p className="text-sm text-green-900">
+              <div className="mb-3 p-3 bg-blue-50 rounded-lg border border-blue-200">
+                <p className="text-sm text-blue-900">
                   <strong>Voorbeeld:</strong> <span className="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-full text-xs font-semibold">💬 Offerte aanvragen</span> (rechtsonder op je pagina)
                 </p>
               </div>
