@@ -154,7 +154,7 @@ export default async function WidgetsPage() {
                 rel="noopener noreferrer"
                 className="inline-flex w-full"
               >
-                <Button className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white">
+                <Button variant="default" className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white">
                   <ExternalLink className="w-4 h-4 mr-2" />
                   Open Widget Preview
                 </Button>
