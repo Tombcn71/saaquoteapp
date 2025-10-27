@@ -583,7 +583,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                                 e.stopPropagation()
                                 handleShare(result.url, 'Huidige kozijnen')
                               }}
-                              className="bg-black/60 p-1.5 rounded-full hover:bg-black/80 transition-colors"
+                              className="bg-[#4285f4]/80 p-1.5 rounded-full hover:bg-[#4285f4] transition-colors"
                               aria-label="Deel huidige kozijn foto"
                               title="Deel foto"
                             >
@@ -591,7 +591,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                             </button>
                             <button
                               onClick={() => setEnlargedImage(result.url)}
-                              className="bg-black/60 p-1.5 rounded-full hover:bg-black/80 transition-colors"
+                              className="bg-[#4285f4]/80 p-1.5 rounded-full hover:bg-[#4285f4] transition-colors"
                               aria-label="Vergroot huidige kozijn foto"
                               title="Vergroot foto"
                             >
@@ -621,7 +621,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                                 e.stopPropagation()
                                 handleShare(result.previewUrl || result.url, 'Nieuwe kozijnen')
                               }}
-                              className="bg-black/60 p-1.5 rounded-full hover:bg-black/80 transition-colors"
+                              className="bg-[#4285f4]/80 p-1.5 rounded-full hover:bg-[#4285f4] transition-colors"
                               aria-label="Deel nieuwe kozijn preview"
                               title="Deel preview"
                             >
@@ -629,7 +629,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                             </button>
                             <button
                               onClick={() => setEnlargedImage(result.previewUrl || result.url)}
-                              className="bg-black/60 p-1.5 rounded-full hover:bg-black/80 transition-colors"
+                              className="bg-[#4285f4]/80 p-1.5 rounded-full hover:bg-[#4285f4] transition-colors"
                               aria-label="Vergroot nieuwe kozijn preview"
                               title="Vergroot preview"
                             >
