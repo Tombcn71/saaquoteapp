@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Upload } from 'lucide-react'
+import { Upload, Sparkles } from 'lucide-react'
 
 export function SchilderwerkQuoteForm() {
   const [step, setStep] = useState(1)
@@ -33,13 +33,20 @@ export function SchilderwerkQuoteForm() {
   }
 
   return (
-    <Card className="w-full bg-white">
-      <CardHeader className="bg-[#4285f4] text-white -mx-6 -mt-6 px-6 py-4 rounded-t-lg">
-        <h3 className="text-xl font-bold">Direct een prijsindicatie en AI preview van uw geschilderde ruimte</h3>
-        <p className="text-sm opacity-90">Vul uw voorkeuren in voor het schilderwerk</p>
-      </CardHeader>
+    <Card className="w-full bg-white overflow-hidden shadow-2xl border-0">
+      <div className="bg-[#4285f4] px-4 sm:px-6 lg:px-8 py-6 mb-6 -mt-0">
+        <div className="flex items-center gap-2 mb-2">
+          <Sparkles className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+          <h2 className="font-bold text-base sm:text-lg lg:text-xl text-white">
+            Direct een prijsindicatie en AI preview van uw geschilderde ruimte.
+          </h2>
+        </div>
+        <p className="text-xs sm:text-sm italic text-blue-100">
+          Vul uw voorkeuren in voor het schilderwerk
+        </p>
+      </div>
 
-      <CardContent className="pt-6">
+      <CardContent className="pt-0">
         {/* Progress Bar */}
         <div className="mb-6">
           <div className="flex justify-between mb-2 text-sm text-gray-600">
