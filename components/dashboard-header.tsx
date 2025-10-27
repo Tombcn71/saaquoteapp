@@ -34,11 +34,11 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
     <header className="border-b bg-white">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-[#4285f4] flex items-center justify-center">
-              <Sparkles className="w-6 h-6 text-white" />
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-[#4285f4] flex items-center justify-center">
+              <Sparkles className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl font-bold text-gray-900">QuoteForm</span>
+            <span className="text-lg font-bold text-gray-900">QuoteForm</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
