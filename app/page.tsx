@@ -3,8 +3,10 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Check, Sparkles, Zap, Users, BarChart3, Code, ArrowRight } from "lucide-react"
 import { AIQuoteForm } from "@/components/ai-quote-form"
+import { formConfigs } from "@/lib/form-configs"
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions)
@@ -145,7 +147,7 @@ export default async function HomePage() {
               </div>
             </div>
 
-            {/* Right: Live Demo Form */}
+            {/* Right: Live Demo Form with Tabs */}
             <div className="lg:sticky lg:top-24 max-w-lg mx-auto lg:mx-0">
               <div className="mb-4 text-center lg:text-left">
                 <span className="inline-flex items-center gap-2 bg-blue-400 text-white px-4 py-2 rounded-full text-sm font-semibold">
@@ -153,7 +155,33 @@ export default async function HomePage() {
                   Live Demo - Probeer het nu!
                 </span>
               </div>
-              <AIQuoteForm />
+              
+              <Tabs defaultValue="kozijnen" className="w-full">
+                <TabsList className="grid w-full grid-cols-3 mb-4">
+                  <TabsTrigger value="kozijnen" className="text-sm">
+                    {formConfigs.kozijnen.icon} Kozijnen
+                  </TabsTrigger>
+                  <TabsTrigger value="vloeren" className="text-sm">
+                    {formConfigs.vloeren.icon} Vloeren
+                  </TabsTrigger>
+                  <TabsTrigger value="schilderwerk" className="text-sm">
+                    {formConfigs.schilderwerk.icon} Schilderwerk
+                  </TabsTrigger>
+                </TabsList>
+                
+                <TabsContent value="kozijnen">
+                  <AIQuoteForm formType="kozijnen" />
+                </TabsContent>
+                
+                <TabsContent value="vloeren">
+                  <AIQuoteForm formType="vloeren" />
+                </TabsContent>
+                
+                <TabsContent value="schilderwerk">
+                  <AIQuoteForm formType="schilderwerk" />
+                </TabsContent>
+              </Tabs>
+              
               <p className="text-center text-sm text-gray-500 mt-4">
                 👆 Test het formulier - geen account nodig voor de demo
               </p>
