@@ -42,7 +42,9 @@ export default async function WidgetsPage() {
   const baseUrl = (process.env.NEXTAUTH_URL || 'http://localhost:3000').replace(/\/$/, '')
   const embedUrl = `${baseUrl}/embed/${widget.id}`
   
-  const iframeCode = `<iframe 
+  // 1. INLINE EMBED - Direct op de pagina
+  const inlineCode = `<!-- Kozijn Widget - Inline -->
+<iframe 
   src="${embedUrl}" 
   width="100%" 
   height="900" 
@@ -50,35 +52,42 @@ export default async function WidgetsPage() {
   style="border: none; border-radius: 8px; max-width: 800px; margin: 0 auto; display: block;"
 ></iframe>`
 
-  const nextjsIframeCode = `<iframe 
-  src="${embedUrl}" 
-  width="100%" 
-  height="900" 
-  frameBorder="0"
-  style={{
-    border: 'none',
-    borderRadius: '8px',
-    maxWidth: '800px',
-    margin: '0 auto',
-    display: 'block'
-  }}
-/>`
+  // 2. POPUP TEXT LINK - Link die popup opent
+  const popupTextCode = `<!-- Kozijn Widget - Popup Link -->
+<a href="#" id="kozijn-popup-link" style="color: #4285f4; text-decoration: underline; cursor: pointer;">
+  Vraag een offerte aan
+</a>
 
-  const scriptCode = `<!-- Kozijn Widget - Simpele Embed -->
-<div id="kozijn-widget-${widget.id}"></div>
 <script>
 (function() {
-  var iframe = document.createElement('iframe');
-  iframe.src = '${embedUrl}';
-  iframe.style.width = '100%';
-  iframe.style.height = '900px';
-  iframe.style.border = 'none';
-  iframe.style.borderRadius = '8px';
-  iframe.style.maxWidth = '800px';
-  iframe.style.margin = '0 auto';
-  iframe.style.display = 'block';
-  iframe.frameBorder = '0';
-  document.getElementById('kozijn-widget-${widget.id}').appendChild(iframe);
+  document.getElementById('kozijn-popup-link').addEventListener('click', function(e) {
+    e.preventDefault();
+    var modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+    modal.innerHTML = '<div style="background: white; border-radius: 12px; width: 100%; max-width: 900px; max-height: 90vh; overflow: auto; position: relative;"><button onclick="this.parentElement.parentElement.remove()" style="position: absolute; top: 16px; right: 16px; background: white; border: none; font-size: 28px; cursor: pointer; z-index: 10; width: 32px; height: 32px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">&times;</button><iframe src="${embedUrl}" style="width: 100%; height: 90vh; border: none;"></iframe></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e) { if(e.target === modal) modal.remove(); });
+  });
+})();
+</script>`
+
+  // 3. FLOATING WIDGET BUTTON - Altijd zichtbare button
+  const floatingWidgetCode = `<!-- Kozijn Widget - Floating Button -->
+<div id="kozijn-floating-btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998;">
+  <button style="background: #4285f4; color: white; border: none; padding: 16px 24px; border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4); display: flex; align-items: center; gap: 8px;">
+    <span>💬</span> Offerte aanvragen
+  </button>
+</div>
+
+<script>
+(function() {
+  document.getElementById('kozijn-floating-btn').addEventListener('click', function() {
+    var modal = document.createElement('div');
+    modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;';
+    modal.innerHTML = '<div style="background: white; border-radius: 12px; width: 100%; max-width: 900px; max-height: 90vh; overflow: auto; position: relative;"><button onclick="this.parentElement.parentElement.remove()" style="position: absolute; top: 16px; right: 16px; background: white; border: none; font-size: 28px; cursor: pointer; z-index: 10; width: 32px; height: 32px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">&times;</button><iframe src="${embedUrl}" style="width: 100%; height: 90vh; border: none;"></iframe></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(e) { if(e.target === modal) modal.remove(); });
+  });
 })();
 </script>`
 
@@ -154,112 +163,125 @@ export default async function WidgetsPage() {
           </Card>
         </div>
 
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-navy mb-2">Kies je embed stijl</h2>
+          <p className="text-muted-foreground mb-6">
+            Selecteer de optie die het beste werkt voor jouw website
+          </p>
+        </div>
+
         <div className="space-y-6">
-          <Card>
+          {/* OPTION 1: INLINE EMBED */}
+          <Card className="border-2 border-blue-200 bg-blue-50/30">
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Code className="w-5 h-5" />
-                Embed Code (JavaScript)
-              </CardTitle>
-              <CardDescription>
-                Aanbevolen: Automatisch responsive iframe met JavaScript
-              </CardDescription>
+              <div className="flex items-start justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <div className="w-8 h-8 rounded-full bg-blue-500 text-white flex items-center justify-center font-bold">1</div>
+                    Inline Embed
+                  </CardTitle>
+                  <CardDescription className="mt-2">
+                    <strong>✅ Aanbevolen</strong> - Formulier verschijnt direct op je pagina. Werkt op WordPress, Wix, Squarespace, etc.
+                  </CardDescription>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
               <div className="relative">
                 <pre className="bg-slate-950 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-                  {scriptCode}
+                  {inlineCode}
                 </pre>
-                <CopyButton text={scriptCode} />
+                <CopyButton text={inlineCode} />
               </div>
             </CardContent>
           </Card>
 
+          {/* OPTION 2: POPUP TEXT LINK */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Code className="w-5 h-5" />
-                Next.js / React Code
-              </CardTitle>
-              <CardDescription>
-                Voor Next.js, React en andere JSX frameworks (let op: JSX syntax!)
-              </CardDescription>
+              <div className="flex items-start justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <div className="w-8 h-8 rounded-full bg-purple-500 text-white flex items-center justify-center font-bold">2</div>
+                    Popup Text Link
+                  </CardTitle>
+                  <CardDescription className="mt-2">
+                    Een klikbare link die het formulier in een popup opent. Perfect voor in je tekst of menu.
+                  </CardDescription>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
+              <div className="mb-3 p-3 bg-purple-50 rounded-lg border border-purple-200">
+                <p className="text-sm text-purple-900">
+                  <strong>Voorbeeld:</strong> "Wil je een offerte? <span className="text-blue-600 underline cursor-pointer">Klik hier</span>"
+                </p>
+              </div>
               <div className="relative">
                 <pre className="bg-slate-950 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-                  {nextjsIframeCode}
+                  {popupTextCode}
                 </pre>
-                <CopyButton text={nextjsIframeCode} />
+                <CopyButton text={popupTextCode} />
               </div>
             </CardContent>
           </Card>
 
+          {/* OPTION 3: FLOATING WIDGET BUTTON */}
           <Card>
             <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Code className="w-5 h-5" />
-                HTML iFrame Code
-              </CardTitle>
-              <CardDescription>
-                Voor WordPress, normale HTML websites en andere platforms
-              </CardDescription>
+              <div className="flex items-start justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <div className="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold">3</div>
+                    Floating Widget Button
+                  </CardTitle>
+                  <CardDescription className="mt-2">
+                    Een zwevende button rechtsonder die altijd zichtbaar blijft (zoals een chat widget). Maximale zichtbaarheid!
+                  </CardDescription>
+                </div>
+              </div>
             </CardHeader>
             <CardContent>
+              <div className="mb-3 p-3 bg-green-50 rounded-lg border border-green-200">
+                <p className="text-sm text-green-900">
+                  <strong>Voorbeeld:</strong> <span className="inline-flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-full text-xs font-semibold">💬 Offerte aanvragen</span> (rechtsonder op je pagina)
+                </p>
+              </div>
               <div className="relative">
                 <pre className="bg-slate-950 text-green-400 p-4 rounded-lg overflow-x-auto text-sm">
-                  {iframeCode}
+                  {floatingWidgetCode}
                 </pre>
-                <CopyButton text={iframeCode} />
+                <CopyButton text={floatingWidgetCode} />
               </div>
             </CardContent>
           </Card>
 
           <Card className="bg-blue-50 border-blue-200">
             <CardHeader>
-              <CardTitle className="text-blue-900">📋 Hoe te installeren?</CardTitle>
+              <CardTitle className="text-blue-900">📋 Snelle Installatie</CardTitle>
             </CardHeader>
             <CardContent className="text-sm space-y-4 text-blue-900">
               <div>
-                <strong className="text-lg">🔹 WordPress</strong>
+                <strong className="text-lg">Voor alle platforms (WordPress, Wix, etc.)</strong>
                 <ol className="list-decimal ml-5 mt-2 space-y-1.5">
-                  <li>Ga naar WordPress → Pagina's → Bewerk je pagina</li>
-                  <li>Klik op de <strong>"+"</strong> knop (Add block)</li>
-                  <li>Zoek naar <strong>"Custom HTML"</strong> en klik erop</li>
-                  <li>Kopieer de <strong>"HTML iFrame Code"</strong> (onderste code hierboven)</li>
-                  <li>Plak de code in het Custom HTML block (Ctrl+V of Cmd+V)</li>
-                  <li>Klik <strong>"Publiceren"</strong> of <strong>"Update"</strong></li>
-                  <li>Bekijk je pagina - het formulier staat er nu!</li>
-                </ol>
-                <div className="bg-white p-3 rounded border border-blue-300 mt-3">
-                  <strong>💡 Tip:</strong> Als je het niet ziet, probeer dan de pagina in een incognito venster te openen (soms cached WordPress).
-                </div>
-              </div>
-              
-              <div className="border-t border-blue-300 pt-4">
-                <strong className="text-lg">🔹 Next.js / React</strong>
-                <ol className="list-decimal ml-5 mt-2 space-y-1.5">
-                  <li>Klik op <strong>"Kopieer"</strong> bij <strong>"Next.js / React Code"</strong> (de tweede code hierboven!)</li>
-                  <li>Open je page.tsx of component bestand</li>
-                  <li>Plak de code direct in je JSX - KLAAR! Het werkt meteen.</li>
-                </ol>
-                <div className="bg-yellow-50 border border-yellow-300 p-3 rounded mt-2">
-                  <strong>⚠️ Let op:</strong> Gebruik NIET de HTML iFrame Code in Next.js! Die werkt niet vanwege JSX syntax verschillen.
-                </div>
-              </div>
-
-              <div className="border-t border-blue-300 pt-4">
-                <strong className="text-lg">🔹 Normale HTML website</strong>
-                <ol className="list-decimal ml-5 mt-2 space-y-1.5">
-                  <li>Klik op <strong>"Kopieer"</strong> bij de embed code</li>
-                  <li>Open je <code>index.html</code> of <code>contact.html</code></li>
-                  <li>Plak de code waar je de widget wilt hebben</li>
-                  <li>Upload naar je server - KLAAR!</li>
+                  <li>Kies een embed stijl hierboven</li>
+                  <li>Klik op <strong>"Kopieer"</strong></li>
+                  <li>Ga naar je website editor</li>
+                  <li>Voeg een <strong>"Custom HTML"</strong> block toe</li>
+                  <li>Plak de code</li>
+                  <li>Publiceer - KLAAR! 🎉</li>
                 </ol>
               </div>
 
-              <div className="bg-white p-3 rounded border border-blue-300 mt-4">
-                <strong>✅ Dat is alles!</strong> De widget werkt direct - geen extra installatie nodig.
+              <div className="bg-white p-4 rounded border border-blue-300 space-y-2">
+                <div>
+                  <strong>💡 Welke kiezen?</strong>
+                </div>
+                <ul className="space-y-1 ml-4">
+                  <li>• <strong>Inline:</strong> Voor een contactpagina of offertepagina</li>
+                  <li>• <strong>Popup Link:</strong> Voor in je menu of tekst</li>
+                  <li>• <strong>Floating Button:</strong> Voor maximale zichtbaarheid op elke pagina</li>
+                </ul>
               </div>
             </CardContent>
           </Card>
