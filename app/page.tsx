@@ -133,28 +133,9 @@ export default async function HomePage() {
               </div>
 
               {/* Platform Compatibility */}
-              <div className="mt-12 pt-8 border-t border-gray-200">
-                <p className="text-sm font-semibold text-gray-500 mb-4 uppercase tracking-wide">Werkt op alle platforms</p>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
-                    <div className="font-bold text-gray-900">WordPress</div>
-                  </div>
-                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
-                    <div className="font-bold text-gray-900">Wix</div>
-                  </div>
-                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
-                    <div className="font-bold text-gray-900">Squarespace</div>
-                  </div>
-                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
-                    <div className="font-bold text-gray-900">Webflow</div>
-                  </div>
-                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
-                    <div className="font-bold text-gray-900">Shopify</div>
-                  </div>
-                  <div className="bg-white px-4 py-3 rounded-lg border border-gray-200 text-center hover:border-blue-400 transition-colors">
-                    <div className="font-bold text-gray-900 text-sm">+ Meer</div>
-                  </div>
-                </div>
+              <div className="mt-8">
+                <p className="text-xs text-gray-500 mb-2">Werkt op alle platforms:</p>
+                <p className="text-sm text-gray-600">WordPress · Wix · Squarespace · Webflow · Shopify · en meer</p>
               </div>
             </div>
 
