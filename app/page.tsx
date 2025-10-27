@@ -19,7 +19,7 @@ export default async function HomePage() {
               <div className="w-10 h-10 rounded-lg bg-[#4285f4] flex items-center justify-center">
                 <Sparkles className="w-6 h-6 text-white" />
               </div>
-              <span className="text-xl font-bold text-gray-900">KozijnSaaS</span>
+              <span className="text-xl text-gray-900">QuoteForm</span>
             </Link>
             
             <div className="flex items-center gap-4">
@@ -135,7 +135,7 @@ export default async function HomePage() {
               {/* Platform Compatibility */}
               <div className="mt-8">
                 <p className="text-xs text-gray-500 mb-2">Werkt op alle platforms:</p>
-                <p className="text-sm text-gray-600">WordPress · Wix · Squarespace · Webflow · Shopify · en meer</p>
+                <p className="text-sm text-gray-600">WordPress · Wix · Squarespace · Webflow · Shopify · en meer</p>o
               </div>
             </div>
 
@@ -442,7 +442,7 @@ export default async function HomePage() {
               <div className="w-8 h-8 rounded-lg bg-[#4285f4] flex items-center justify-center">
                 <Sparkles className="w-5 h-5 text-white" />
               </div>
-              <span className="font-bold text-gray-900">KozijnSaaS</span>
+              <span className="text-gray-900">QuoteForm</span>
             </div>
             <div className="flex gap-8 text-sm text-gray-600">
               <Link href="#" className="hover:text-[#4285f4]">Privacy</Link>
@@ -450,7 +450,7 @@ export default async function HomePage() {
               <Link href="#" className="hover:text-[#4285f4]">Contact</Link>
             </div>
             <p className="text-sm text-gray-600">
-              © 2024 KozijnSaaS. All rights reserved.
+              © 2024 QuoteForm. All rights reserved.
             </p>
           </div>
         </div>
