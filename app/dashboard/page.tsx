@@ -155,7 +155,7 @@ export default async function DashboardPage() {
               </div>
               
               <Link href="/dashboard/widgets">
-                <Button className="w-full mt-4">
+                <Button className="w-full mt-4 bg-[#4285f4] hover:bg-[#3367d6] text-white">
                   <Code className="w-4 h-4 mr-2" />
                   Bekijk Widget Code
                 </Button>
