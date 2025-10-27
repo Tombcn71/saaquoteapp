@@ -50,10 +50,10 @@ export default function SignInPage() {
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-12 h-12 rounded-lg bg-[#4285f4] flex items-center justify-center">
-              <Sparkles className="w-7 h-7 text-white" />
+            <div className="w-6 h-6 rounded-lg bg-[#4285f4] flex items-center justify-center">
+              <Sparkles className="w-4 h-4 text-white" />
             </div>
-            <span className="text-2xl font-bold text-gray-900">KozijnSaaS</span>
+            <span className="text-xl text-gray-900">QuoteForm</span>
           </Link>
         </div>
 
