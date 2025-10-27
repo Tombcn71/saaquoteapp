@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Check, Sparkles, Zap, Users, BarChart3, Code, ArrowRight } from "lucide-react"
 import { AIQuoteForm } from "@/components/ai-quote-form"
+import { VloerenQuoteForm } from "@/components/vloeren-quote-form"
+import { SchilderwerkQuoteForm } from "@/components/schilderwerk-quote-form"
 import { formConfigs } from "@/lib/form-configs"
 
 export default async function HomePage() {
@@ -170,15 +172,15 @@ export default async function HomePage() {
                 </TabsList>
                 
                 <TabsContent value="kozijnen">
-                  <AIQuoteForm formType="kozijnen" />
+                  <AIQuoteForm />
                 </TabsContent>
                 
                 <TabsContent value="vloeren">
-                  <AIQuoteForm formType="vloeren" />
+                  <VloerenQuoteForm />
                 </TabsContent>
                 
                 <TabsContent value="schilderwerk">
-                  <AIQuoteForm formType="schilderwerk" />
+                  <SchilderwerkQuoteForm />
                 </TabsContent>
               </Tabs>
               
