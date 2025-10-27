@@ -15,7 +15,7 @@ export function Navigation() {
                 <line x1="8" y1="13" x2="16" y2="13" />
                 <line x1="8" y1="17" x2="16" y2="17" />
               </svg>
-              <Sparkles className="w-2.5 h-2.5 text-yellow-300 absolute -top-0.5 -right-0.5" />
+              <Sparkles className="w-2 h-2 text-white absolute top-1 right-1" />
             </div>
             <span className="text-xl text-gray-900">QuoteForm</span>
           </Link>
