@@ -95,7 +95,7 @@ export default async function DashboardPage() {
             Welkom terug, {session.user?.name || session.user?.email}!
           </h1>
           <p className="text-muted-foreground">
-            {company?.name} - Overzicht van je kozijn SaaS platform
+            {company?.name} - Overzicht van je QuoteForm platform
           </p>
         </div>
 
