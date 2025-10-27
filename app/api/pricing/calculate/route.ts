@@ -3,10 +3,15 @@ import { neon } from '@neondatabase/serverless'
 import { calculateVloerenPrice } from '@/lib/pricing/vloeren-calculator'
 import { calculateSchilderwerkPrice } from '@/lib/pricing/schilderwerk-calculator'
 
-const sql = neon(process.env.DATABASE_URL!)
+function getDatabase() {
+  const connectionString = process.env.DATABASE_URL
+  if (!connectionString) throw new Error("DATABASE_URL is not defined")
+  return neon(connectionString)
+}
 
 export async function POST(req: NextRequest) {
   try {
+    const sql = getDatabase()
     const { formType, formData, companyId } = await req.json()
 
     if (!formType || !formData) {

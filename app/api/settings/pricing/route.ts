@@ -3,11 +3,16 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { neon } from '@neondatabase/serverless'
 
-const sql = neon(process.env.DATABASE_URL!)
+function getDatabase() {
+  const connectionString = process.env.DATABASE_URL
+  if (!connectionString) throw new Error("DATABASE_URL is not defined")
+  return neon(connectionString)
+}
 
 // GET: Fetch pricing configs for the logged-in company
 export async function GET(req: NextRequest) {
   try {
+    const sql = getDatabase()
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.companyId) {
@@ -55,6 +60,7 @@ export async function GET(req: NextRequest) {
 // POST: Update pricing configs for the logged-in company
 export async function POST(req: NextRequest) {
   try {
+    const sql = getDatabase()
     const session = await getServerSession(authOptions)
     
     if (!session?.user?.companyId) {
