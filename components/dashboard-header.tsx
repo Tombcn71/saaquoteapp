@@ -55,10 +55,10 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
               Dashboard
             </Link>
             <Link
-              href="/dashboard/forms"
+              href="/dashboard/widgets"
               className="text-sm font-medium text-muted-foreground hover:text-[#4285f4] transition-colors"
             >
-              Forms
+              Widgets
             </Link>
             <Link
               href="/dashboard/leads"
@@ -67,10 +67,10 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
               Leads
             </Link>
             <Link
-              href="/dashboard/analytics"
+              href="/dashboard/settings"
               className="text-sm font-medium text-muted-foreground hover:text-[#4285f4] transition-colors"
             >
-              Analytics
+              Instellingen
             </Link>
           </nav>
 
@@ -94,9 +94,11 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
                 <User className="mr-2 h-4 w-4" />
                 <span>Profile</span>
               </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
+              <DropdownMenuItem asChild>
+                <Link href="/dashboard/settings" className="flex items-center">
+                  <Settings className="mr-2 h-4 w-4" />
+                  <span>Instellingen</span>
+                </Link>
               </DropdownMenuItem>
               <DropdownMenuSeparator />
               <DropdownMenuItem onClick={() => signOut({ callbackUrl: "/" })} className="text-destructive">
