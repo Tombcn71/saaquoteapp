@@ -270,10 +270,10 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
   const progressPercentage = (currentStep / 3) * 100
 
   return (
-    <Card className={`overflow-hidden bg-white shadow-2xl border-0 ${className}`}>
+    <Card className={`overflow-hidden bg-white shadow-2xl border-0 p-0 ${className}`}>
       {currentStep < 3 ? (
         <>
-            <div className="bg-[#4285f4] px-4 sm:px-6 lg:px-8 py-6 mb-6">
+            <div className="bg-[#4285f4] px-4 sm:px-6 lg:px-8 py-6 rounded-t-xl">
               <div className="flex items-center gap-2 mb-2">
                 <Sparkles className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
                 <h2 className="font-bold text-base sm:text-lg lg:text-xl text-white">
@@ -286,7 +286,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
               </p>
             </div>
 
-          <div className="px-4 sm:px-6 lg:px-8">
+          <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="mb-4">
             <div className="flex justify-between text-xs text-foreground mb-2">
               <span className={currentStep >= 1 ? "font-bold" : ""}>Gegevens</span>

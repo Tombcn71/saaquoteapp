@@ -33,8 +33,8 @@ export function VloerenQuoteForm() {
   }
 
   return (
-    <Card className="w-full bg-white overflow-hidden shadow-2xl border-0">
-      <div className="bg-[#4285f4] px-4 sm:px-6 lg:px-8 py-6 mb-6">
+    <Card className="w-full bg-white overflow-hidden shadow-2xl border-0 p-0">
+      <div className="bg-[#4285f4] px-4 sm:px-6 lg:px-8 py-6 rounded-t-xl">
         <div className="flex items-center gap-2 mb-2">
           <Sparkles className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
           <h2 className="font-bold text-base sm:text-lg lg:text-xl text-white">
@@ -46,7 +46,7 @@ export function VloerenQuoteForm() {
         </p>
       </div>
 
-      <div className="px-4 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-6 lg:px-8 py-6">
         {/* Progress Bar */}
         <div className="mb-6">
           <div className="flex justify-between mb-2 text-sm text-gray-600">
