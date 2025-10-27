@@ -8,22 +8,22 @@ export function Navigation() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-brand-blue flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-[#4285f4] flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-navy">QuoteSaaS</span>
+            <span className="text-xl font-bold text-gray-900">QuoteForm</span>
           </Link>
 
           <div className="hidden md:flex items-center gap-8">
             <Link
               href="#pricing"
-              className="text-sm font-medium text-foreground hover:text-brand-blue transition-colors"
+              className="text-sm font-medium text-foreground hover:text-[#4285f4] transition-colors"
             >
               Pricing
             </Link>
             <Link
               href="#features"
-              className="text-sm font-medium text-foreground hover:text-brand-blue transition-colors"
+              className="text-sm font-medium text-foreground hover:text-[#4285f4] transition-colors"
             >
               Features
             </Link>
@@ -33,7 +33,7 @@ export function Navigation() {
           </div>
 
           <Link href="/auth/signin">
-            <Button className="bg-brand-blue hover:bg-brand-blue-light text-white">Get Started Free</Button>
+            <Button className="bg-[#4285f4] hover:bg-[#3367d6] text-white">Get Started Free</Button>
           </Link>
         </div>
       </div>

@@ -10,9 +10,8 @@ const rubik = Rubik({
 })
 
 export const metadata: Metadata = {
-  title: "QuoteSaaS - AI-Powered Quote Forms",
-  description: "Generate instant quotes with AI photo analysis in 3 lines of code",
-    generator: 'v0.app'
+  title: "QuoteForm - AI-Powered Quote Generation",
+  description: "Generate instant quotes with AI photo analysis. Embed on any website in minutes.",
 }
 
 export default function RootLayout({

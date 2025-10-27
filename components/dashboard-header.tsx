@@ -35,34 +35,34 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <Link href="/dashboard" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-brand-blue flex items-center justify-center">
+            <div className="w-10 h-10 rounded-lg bg-[#4285f4] flex items-center justify-center">
               <Sparkles className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl font-bold text-navy">QuoteSaaS</span>
+            <span className="text-xl font-bold text-gray-900">QuoteForm</span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-6">
             <Link
               href="/dashboard"
-              className="text-sm font-medium text-foreground hover:text-brand-blue transition-colors"
+              className="text-sm font-medium text-foreground hover:text-[#4285f4] transition-colors"
             >
               Dashboard
             </Link>
             <Link
               href="/dashboard/forms"
-              className="text-sm font-medium text-muted-foreground hover:text-brand-blue transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-[#4285f4] transition-colors"
             >
               Forms
             </Link>
             <Link
               href="/dashboard/leads"
-              className="text-sm font-medium text-muted-foreground hover:text-brand-blue transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-[#4285f4] transition-colors"
             >
               Leads
             </Link>
             <Link
               href="/dashboard/analytics"
-              className="text-sm font-medium text-muted-foreground hover:text-brand-blue transition-colors"
+              className="text-sm font-medium text-muted-foreground hover:text-[#4285f4] transition-colors"
             >
               Analytics
             </Link>
@@ -72,7 +72,7 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-10 w-10 rounded-full">
                 <Avatar>
-                  <AvatarFallback className="bg-brand-blue text-white">{initials}</AvatarFallback>
+                  <AvatarFallback className="bg-[#4285f4] text-white">{initials}</AvatarFallback>
                 </Avatar>
               </Button>
             </DropdownMenuTrigger>

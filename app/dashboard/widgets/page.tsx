@@ -43,7 +43,7 @@ export default async function WidgetsPage() {
   const embedUrl = `${baseUrl}/embed/${widget.id}`
   
   // 1. INLINE EMBED - Direct op de pagina
-  const inlineCode = `<!-- Kozijn Widget - Inline -->
+  const inlineCode = `<!-- QuoteForm Widget - Inline -->
 <iframe 
   src="${embedUrl}" 
   width="100%" 
@@ -53,14 +53,14 @@ export default async function WidgetsPage() {
 ></iframe>`
 
   // 2. POPUP TEXT LINK - Link die popup opent
-  const popupTextCode = `<!-- Kozijn Widget - Popup Link -->
-<a href="#" id="kozijn-popup-link" style="color: #4285f4; text-decoration: underline; cursor: pointer;">
+  const popupTextCode = `<!-- QuoteForm Widget - Popup Link -->
+<a href="#" id="quoteform-popup-link" style="color: #4285f4; text-decoration: underline; cursor: pointer;">
   Vraag een offerte aan
 </a>
 
 <script>
 (function() {
-  document.getElementById('kozijn-popup-link').addEventListener('click', function(e) {
+  document.getElementById('quoteform-popup-link').addEventListener('click', function(e) {
     e.preventDefault();
     var modal = document.createElement('div');
     modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;';
@@ -72,8 +72,8 @@ export default async function WidgetsPage() {
 </script>`
 
   // 3. FLOATING WIDGET BUTTON - Altijd zichtbare button
-  const floatingWidgetCode = `<!-- Kozijn Widget - Floating Button -->
-<div id="kozijn-floating-btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998;">
+  const floatingWidgetCode = `<!-- QuoteForm Widget - Floating Button -->
+<div id="quoteform-floating-btn" style="position: fixed; bottom: 20px; right: 20px; z-index: 9998;">
   <button style="background: #4285f4; color: white; border: none; padding: 16px 24px; border-radius: 50px; font-size: 16px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(66, 133, 244, 0.4); display: flex; align-items: center; gap: 8px;">
     <span>💬</span> Offerte aanvragen
   </button>
@@ -81,7 +81,7 @@ export default async function WidgetsPage() {
 
 <script>
 (function() {
-  document.getElementById('kozijn-floating-btn').addEventListener('click', function() {
+  document.getElementById('quoteform-floating-btn').addEventListener('click', function() {
     var modal = document.createElement('div');
     modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 9999; display: flex; align-items: center; justify-content: center; padding: 20px;';
     modal.innerHTML = '<div style="background: white; border-radius: 12px; width: 100%; max-width: 900px; max-height: 90vh; overflow: auto; position: relative;"><button onclick="this.parentElement.parentElement.remove()" style="position: absolute; top: 16px; right: 16px; background: white; border: none; font-size: 28px; cursor: pointer; z-index: 10; width: 32px; height: 32px; border-radius: 50%; box-shadow: 0 2px 8px rgba(0,0,0,0.15);">&times;</button><iframe src="${embedUrl}" style="width: 100%; height: 90vh; border: none;"></iframe></div>';
@@ -97,7 +97,7 @@ export default async function WidgetsPage() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy mb-2">Widget Beheer</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Widget Beheer</h1>
           <p className="text-muted-foreground">
             Plaats de AI quote widget op je website en ontvang automatisch leads
           </p>
