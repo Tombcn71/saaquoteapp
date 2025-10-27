@@ -16,8 +16,7 @@ export function CopyButton({ text }: { text: string }) {
   return (
     <Button
       size="sm"
-      variant="outline"
-      className="absolute top-2 right-2"
+      className="absolute top-2 right-2 bg-[#4285f4] hover:bg-[#3367d6] text-white border-none"
       onClick={handleCopy}
     >
       {copied ? (
