@@ -91,7 +91,7 @@ export default async function DashboardPage() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy mb-2">
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">
             Welkom terug, {session.user?.name || session.user?.email}!
           </h1>
           <p className="text-muted-foreground">
@@ -125,7 +125,7 @@ export default async function DashboardPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-[#4285f4] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                   1
                 </div>
                 <div>
@@ -134,7 +134,7 @@ export default async function DashboardPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-[#4285f4] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                   2
                 </div>
                 <div>
@@ -143,7 +143,7 @@ export default async function DashboardPage() {
                 </div>
               </div>
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-full bg-brand-blue text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
+                <div className="w-8 h-8 rounded-full bg-[#4285f4] text-white flex items-center justify-center font-bold text-sm flex-shrink-0">
                   3
                 </div>
                 <div>

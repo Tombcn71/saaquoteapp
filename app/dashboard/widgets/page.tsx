@@ -164,7 +164,7 @@ export default async function WidgetsPage() {
         </div>
 
         <div className="mb-8">
-          <h2 className="text-2xl font-bold text-navy mb-2">Kies je embed stijl</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Kies je embed stijl</h2>
           <p className="text-muted-foreground mb-6">
             Selecteer de optie die het beste werkt voor jouw website
           </p>

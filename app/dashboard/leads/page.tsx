@@ -60,7 +60,7 @@ export default async function LeadsPage() {
 
       <main className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-navy mb-2">Leads</h1>
+          <h1 className="text-3xl font-bold text-gray-900 mb-2">Leads</h1>
           <p className="text-muted-foreground">
             Alle quote aanvragen van je klanten
           </p>
