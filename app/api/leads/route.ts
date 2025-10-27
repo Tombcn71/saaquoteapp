@@ -87,6 +87,10 @@ export async function POST(request: Request) {
     const finalPhotoUrls = photos.length > 0 ? photos : (photoUrls || [])
     const finalQuoteTotal = estimatedPrice || quoteTotal
     
+    // Convert arrays to PostgreSQL format
+    const photoUrlsArray = Array.isArray(finalPhotoUrls) ? finalPhotoUrls : []
+    const previewUrlsArray = Array.isArray(previewUrls) ? previewUrls : []
+    
     await sql`
       INSERT INTO leads (
         id,
@@ -131,8 +135,8 @@ export async function POST(request: Request) {
         ${formData?.removeOld ?? afvoerOudeKozijnen ?? false},
         ${finalQuoteTotal ? parseFloat(finalQuoteTotal.toString()) : null},
         ${formData ? JSON.stringify(formData) : (quoteBreakdown ? JSON.stringify(quoteBreakdown) : null)},
-        ${JSON.stringify(finalPhotoUrls)},
-        ${previewUrls ? JSON.stringify(previewUrls) : '[]'},
+        ${photoUrlsArray},
+        ${previewUrlsArray},
         ${source},
         ${widgetReferrer || null},
         'new',
