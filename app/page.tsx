@@ -172,15 +172,15 @@ export default async function HomePage() {
                 </TabsList>
                 
                 <TabsContent value="kozijnen">
-                  <AIQuoteForm />
+                  <AIQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} />
                 </TabsContent>
                 
                 <TabsContent value="vloeren">
-                  <VloerenQuoteForm />
+                  <VloerenQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} />
                 </TabsContent>
                 
                 <TabsContent value="schilderwerk">
-                  <SchilderwerkQuoteForm />
+                  <SchilderwerkQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} />
                 </TabsContent>
               </Tabs>
               
