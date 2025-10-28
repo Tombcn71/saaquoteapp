@@ -27,6 +27,7 @@ export function VloerenQuoteForm({ companyId, widgetId, className = '' }: Vloere
     surfaceArea: '',
     style: '',
     underfloorHeating: '',
+    companyName: '',
     name: '',
     email: '',
     phone: '',
@@ -344,6 +345,18 @@ export function VloerenQuoteForm({ companyId, widgetId, className = '' }: Vloere
         {/* Step 3: Contact & Submit */}
         {step === 3 && (
           <div className="space-y-6">
+            <div>
+              <Label htmlFor="companyName">Bedrijfsnaam (optioneel)</Label>
+              <Input
+                id="companyName"
+                type="text"
+                placeholder="Uw bedrijf"
+                value={formData.companyName}
+                onChange={(e) => setFormData({ ...formData, companyName: e.target.value })}
+                className="mt-2"
+              />
+            </div>
+
             <div>
               <Label htmlFor="name">Naam *</Label>
               <Input

@@ -12,9 +12,6 @@ import { formConfigs } from "@/lib/form-configs"
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions)
-  
-  // Use logged-in user's company ID, or demo company ID
-  const companyId = (session?.user as any)?.companyId || process.env.NEXT_PUBLIC_DEMO_COMPANY_ID
 
   return (
     <div className="min-h-screen bg-white">
@@ -180,15 +177,15 @@ export default async function HomePage() {
                 </TabsList>
                 
                 <TabsContent value="kozijnen">
-                  <AIQuoteForm companyId={companyId} />
+                  <AIQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} />
                 </TabsContent>
                 
                 <TabsContent value="vloeren">
-                  <VloerenQuoteForm companyId={companyId} />
+                  <VloerenQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} />
                 </TabsContent>
                 
                 <TabsContent value="schilderwerk">
-                  <SchilderwerkQuoteForm companyId={companyId} />
+                  <SchilderwerkQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} />
                 </TabsContent>
               </Tabs>
               

@@ -39,6 +39,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
     glasType: "", // dubbel glas, HR++, triple glas
     montage: true,
     afvoerOudeKozijnen: true,
+    bedrijfsnaam: "",
     naam: "",
     email: "",
     telefoon: "",
@@ -697,6 +698,12 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
 
           <div className="space-y-3 text-left pt-4">
             <Label className="text-foreground text-sm">Uw gegevens voor bevestiging:</Label>
+            <Input
+              placeholder="Bedrijfsnaam (optioneel)"
+              value={formData.bedrijfsnaam}
+              onChange={(e) => setFormData({ ...formData, bedrijfsnaam: e.target.value })}
+              className="bg-background border-0 h-11"
+            />
             <Input
               placeholder="Naam"
               value={formData.naam}
