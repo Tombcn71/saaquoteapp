@@ -184,8 +184,62 @@ export default function FunnelPage() {
               </div>
             </div>
 
-            {/* Stage 4: Follow-up */}
+            {/* Stage 4: Gratis Adviesgesprek */}
             <div className="relative pl-24">
+              <div className="flex items-start gap-6">
+                <div className="flex-shrink-0 w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+                  <Calendar className="w-8 h-8 text-[#4285f4]" />
+                </div>
+                <div className="flex-1">
+                  <div className="bg-blue-50 border-2 border-[#4285f4] rounded-lg p-6">
+                    <div className="flex items-center justify-between mb-4">
+                      <h3 className="text-2xl font-bold text-gray-900">4. Gratis Adviesgesprek 🎯</h3>
+                      <div className="text-right">
+                        <div className="text-3xl font-bold text-[#4285f4]">300</div>
+                        <div className="text-sm text-gray-600">afspraken ingepland</div>
+                      </div>
+                    </div>
+                    <p className="text-gray-700 mb-4">
+                      <strong>Lead plant zelf een adviesgesprek in!</strong> Het systeem biedt automatisch een gratis adviesgesprek aan. Geen hard sales nodig:
+                    </p>
+                    <div className="space-y-3">
+                      <div className="flex items-start gap-3">
+                        <CheckCircle2 className="w-6 h-6 text-[#4285f4] flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-gray-900">Lead kiest zelf datum/tijd</p>
+                          <p className="text-sm text-gray-600">Simpele kalender picker, direct na offerte</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <CheckCircle2 className="w-6 h-6 text-[#4285f4] flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-gray-900">Email bevestiging + kalender invite</p>
+                          <p className="text-sm text-gray-600">Lead krijgt ICS file voor Google/Apple/Outlook</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start gap-3">
+                        <CheckCircle2 className="w-6 h-6 text-[#4285f4] flex-shrink-0 mt-0.5" />
+                        <div>
+                          <p className="font-medium text-gray-900">Jij krijgt notificatie</p>
+                          <p className="text-sm text-gray-600">Afspraak staat in dashboard met reminder</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-4 bg-white border border-blue-200 rounded p-3">
+                      <p className="text-sm text-blue-900 font-medium">
+                        💡 Vrijblijvend advies = <strong>zachte sales aanpak</strong> = hogere conversie!
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="flex justify-center my-4">
+                <ArrowRight className="w-8 h-8 text-[#4285f4] rotate-90" />
+              </div>
+            </div>
+
+            {/* Stage 5: Het Gesprek */}
+            <div className="relative pl-32">
               <div className="flex items-start gap-6">
                 <div className="flex-shrink-0 w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center">
                   <Phone className="w-8 h-8 text-purple-600" />
@@ -193,14 +247,14 @@ export default function FunnelPage() {
                 <div className="flex-1">
                   <div className="bg-white border-2 border-gray-200 rounded-lg p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-2xl font-bold text-gray-900">4. Jouw Follow-up</h3>
+                      <h3 className="text-2xl font-bold text-gray-900">5. Het Adviesgesprek</h3>
                       <div className="text-right">
-                        <div className="text-3xl font-bold text-purple-600">300</div>
-                        <div className="text-sm text-gray-600">leads te contacten</div>
+                        <div className="text-3xl font-bold text-purple-600">15 min</div>
+                        <div className="text-sm text-gray-600">gemiddelde duur</div>
                       </div>
                     </div>
                     <p className="text-gray-700 mb-4">
-                      Alle leads verschijnen direct in je dashboard. Nu is het tijd om te converteren:
+                      Op de afgesproken tijd bel jij de lead. Geen cold calling, ze verwachten je!
                     </p>
                     <div className="space-y-3">
                       <div className="flex items-start gap-3">
@@ -208,8 +262,8 @@ export default function FunnelPage() {
                           <span className="text-sm font-bold text-purple-600">1</span>
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">Bel binnen 5 minuten</p>
-                          <p className="text-sm text-gray-600">Snelle reactie = 9x hogere conversie</p>
+                          <p className="font-medium text-gray-900">Bespreek AI preview samen</p>
+                          <p className="text-sm text-gray-600">Lead heeft visueel beeld van resultaat</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
@@ -217,8 +271,8 @@ export default function FunnelPage() {
                           <span className="text-sm font-bold text-purple-600">2</span>
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">Verwijs naar AI preview</p>
-                          <p className="text-sm text-gray-600">Klant heeft al visueel beeld van resultaat</p>
+                          <p className="font-medium text-gray-900">Beantwoord vragen</p>
+                          <p className="text-sm text-gray-600">Lead is geïnteresseerd, wil meer weten</p>
                         </div>
                       </div>
                       <div className="flex items-start gap-3">
@@ -226,8 +280,8 @@ export default function FunnelPage() {
                           <span className="text-sm font-bold text-purple-600">3</span>
                         </div>
                         <div>
-                          <p className="font-medium text-gray-900">Plan afspraak in</p>
-                          <p className="text-sm text-gray-600">Werk de offerte uit en sluit de deal</p>
+                          <p className="font-medium text-gray-900">Plan opname/offerte in</p>
+                          <p className="text-sm text-gray-600">Soft close naar volgende stap</p>
                         </div>
                       </div>
                     </div>
@@ -239,8 +293,8 @@ export default function FunnelPage() {
               </div>
             </div>
 
-            {/* Stage 5: Customers */}
-            <div className="relative pl-32">
+            {/* Stage 6: Customers */}
+            <div className="relative pl-40">
               <div className="flex items-start gap-6">
                 <div className="flex-shrink-0 w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center">
                   <CheckCircle2 className="w-8 h-8 text-yellow-600" />
@@ -248,7 +302,7 @@ export default function FunnelPage() {
                 <div className="flex-1">
                   <div className="bg-gradient-to-br from-yellow-50 to-orange-50 border-2 border-yellow-400 rounded-lg p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-2xl font-bold text-gray-900">5. Betalende Klanten</h3>
+                      <h3 className="text-2xl font-bold text-gray-900">6. Betalende Klanten</h3>
                       <div className="text-right">
                         <div className="text-3xl font-bold text-yellow-600">75</div>
                         <div className="text-sm text-gray-600">nieuwe klanten/maand</div>
