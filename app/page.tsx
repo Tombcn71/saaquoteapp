@@ -53,6 +53,11 @@ export default async function HomePage() {
                 </>
               ) : (
                 <>
+                  <Link href="/funnel">
+                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
+                      Hoe het werkt
+                    </Button>
+                  </Link>
                   <Link href="#pricing">
                     <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
                       Prijzen
