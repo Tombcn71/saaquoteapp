@@ -729,23 +729,22 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
           {!leadSaved && formData.naam && formData.email && (
             <div className="mt-6">
               <div className="mb-3">
-                <p className="text-sm font-semibold text-foreground mb-2">📅 Plan een gratis adviesgesprek (optioneel)</p>
-                <p className="text-xs text-muted-foreground mb-3">15 minuten telefonisch advies over uw project</p>
+                <p className="text-sm font-semibold text-foreground mb-2">📅 Plan gratis adviesgesprek voor precieze offerte</p>
+                <p className="text-xs text-muted-foreground mb-3">
+                  In 15 minuten bepalen we samen de exacte prijs. Deze valt meestal lager uit! 💰
+                </p>
               </div>
               <AppointmentPicker 
                 onAppointmentSelected={setAppointmentDatetime}
                 customerName={formData.naam}
               />
-              <p className="text-xs text-center text-muted-foreground mt-3">
-                Of ontvang eerst alleen de offerte per email →
-              </p>
             </div>
           )}
 
           <Button 
             type="button"
             onClick={handleSubmitLead}
-            disabled={!formData.naam || !formData.email || isSavingLead || leadSaved}
+            disabled={!formData.naam || !formData.email || !appointmentDatetime || isSavingLead || leadSaved}
             className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white font-bold h-12 text-base disabled:opacity-50"
           >
             {isSavingLead ? (
@@ -756,12 +755,10 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             ) : leadSaved ? (
               <>
                 <Check className="w-4 h-4 mr-2" />
-                Verzonden! Check je email voor de offerte{appointmentDatetime && ' en afspraakbevestiging'}
+                Verzonden! Check je email voor de afspraakbevestiging
               </>
-            ) : appointmentDatetime ? (
-              'Bevestig Afspraak & Ontvang Offerte'
             ) : (
-              'Ontvang Offerte per Email'
+              'Bevestig Afspraak & Ontvang Offerte'
             )}
           </Button>
 

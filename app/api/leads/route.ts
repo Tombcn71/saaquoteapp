@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { neon } from '@neondatabase/serverless'
 import { randomUUID } from 'crypto'
-import { sendAppointmentConfirmation, sendBusinessNotification, sendQuoteOnly } from '@/lib/email'
+import { sendAppointmentConfirmation, sendBusinessNotification } from '@/lib/email'
 
 export const maxDuration = 60
 
@@ -198,10 +198,9 @@ export async function POST(request: Request) {
             : 'Op aanvraag'
 
           const baseUrl = process.env.NEXTAUTH_URL || 'https://saaquoteapp.vercel.app'
-          const bookingUrl = `${baseUrl}/book-appointment/${leadId}`
 
+          // Appointment is now required, so appointmentDatetime should always exist
           if (appointmentDatetime) {
-            // Has appointment - send confirmation with appointment details
             const appointmentDate = new Date(appointmentDatetime)
             const formatDate = (date: Date) => {
               const days = ['Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag']
@@ -242,22 +241,6 @@ export async function POST(request: Request) {
               appointmentTime: formattedTime,
               dashboardUrl: `${baseUrl}/dashboard/leads`
             })
-          } else {
-            // No appointment - send quote only with booking link
-            await sendQuoteOnly({
-              to: customerEmail,
-              customerName,
-              companyName: company.name,
-              companyEmail: company.owner_email,
-              companyPhone: company.owner_email,
-              projectType,
-              estimatedPrice: formattedPrice,
-              previewUrl: previewUrlsArray.length > 0 ? previewUrlsArray[0] : undefined,
-              bookingUrl,
-              leadId
-            })
-            
-            console.log(`✅ Quote-only email sent with booking link: ${bookingUrl}`)
           }
 
           console.log('✅ Email notificaties verstuurd')
