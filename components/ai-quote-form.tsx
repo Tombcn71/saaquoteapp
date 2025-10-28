@@ -137,10 +137,13 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
 
   const handleNext = async () => {
     if (currentStep === 1) {
+      await calculatePrice()
       setCurrentStep(2)
     } else if (currentStep === 2) {
-      await analyzePhotos()
       setCurrentStep(3)
+    } else if (currentStep === 3) {
+      await analyzePhotos()
+      setCurrentStep(4)
     }
   }
 
@@ -271,11 +274,11 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
     }
   }
 
-  const progressPercentage = (currentStep / 3) * 100
+  const progressPercentage = (currentStep / 4) * 100
 
   return (
     <Card className={`overflow-hidden bg-white shadow-2xl border-0 p-0 ${className}`}>
-      {currentStep < 3 ? (
+      {currentStep < 4 ? (
         <>
             <div className="bg-[#4285f4] px-4 sm:px-6 lg:px-8 py-6 rounded-t-xl">
               <div className="flex items-center gap-2 mb-2">
@@ -286,21 +289,23 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
               </div>
               <p className="text-xs sm:text-sm italic text-blue-100">
                 {currentStep === 1 && "Vul uw voorkeuren in voor de nieuwe kozijnen"}
-                {currentStep === 2 && "Upload minimaal 1 foto van uw ramen"}
+                {currentStep === 2 && "Vul uw contactgegevens in"}
+                {currentStep === 3 && "Upload minimaal 1 foto van uw ramen"}
               </p>
             </div>
 
           <div className="px-4 sm:px-6 lg:px-8 py-6">
           <div className="mb-4">
             <div className="flex justify-between text-xs text-foreground mb-2">
-              <span className={currentStep >= 1 ? "font-bold" : ""}>Gegevens</span>
-              <span className={currentStep >= 2 ? "font-bold" : ""}>Foto's</span>
-              <span className={currentStep >= 3 ? "font-bold" : ""}>Resultaat</span>
+              <span className={currentStep >= 1 ? "font-bold" : ""}>Specificaties</span>
+              <span className={currentStep >= 2 ? "font-bold" : ""}>Contact</span>
+              <span className={currentStep >= 3 ? "font-bold" : ""}>Foto's</span>
+              <span className={currentStep >= 4 ? "font-bold" : ""}>Resultaat</span>
             </div>
             <Progress 
               value={progressPercentage} 
               className="h-2 bg-gray-200 [&>div]:bg-[#4285f4]" 
-              aria-label={`Stap ${currentStep} van 3`}
+              aria-label={`Stap ${currentStep} van 4`}
               aria-valuenow={progressPercentage}
               aria-valuemin={0}
               aria-valuemax={100}
@@ -450,6 +455,42 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             )}
 
             {currentStep === 2 && (
+              <div className="space-y-4">
+                <div>
+                  <Label className="text-foreground text-sm mb-2 block">Uw contactgegevens</Label>
+                  <div className="space-y-3">
+                    <Input
+                      placeholder="Bedrijfsnaam (optioneel)"
+                      value={formData.bedrijfsnaam}
+                      onChange={(e) => setFormData({ ...formData, bedrijfsnaam: e.target.value })}
+                      className="bg-background border-0 h-11"
+                    />
+                    <Input
+                      placeholder="Naam *"
+                      value={formData.naam}
+                      onChange={(e) => setFormData({ ...formData, naam: e.target.value })}
+                      className="bg-background border-0 h-11"
+                    />
+                    <Input
+                      type="email"
+                      placeholder="E-mail *"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="bg-background border-0 h-11"
+                    />
+                    <Input
+                      type="tel"
+                      placeholder="Telefoon *"
+                      value={formData.telefoon}
+                      onChange={(e) => setFormData({ ...formData, telefoon: e.target.value })}
+                      className="bg-background border-0 h-11"
+                    />
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {currentStep === 3 && (
               <div className="space-y-2">
                 <div>
                   <Label className="text-foreground text-xs sm:text-sm font-medium mb-1 block">Upload foto's *</Label>
@@ -498,7 +539,8 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                 onClick={handleNext}
                 disabled={
                   (currentStep === 1 && (!formData.materiaal || !formData.kleur || !formData.kozijnType || !formData.glasType || !formData.aantalRamen || !formData.vierkanteMeterRamen)) ||
-                  (currentStep === 2 && photos.length < 1) ||
+                  (currentStep === 2 && (!formData.naam || !formData.email || !formData.telefoon)) ||
+                  (currentStep === 3 && photos.length < 1) ||
                   isAnalyzing
                 }
                 className="flex-1 bg-[#4285f4] hover:bg-[#3367d6] text-white font-bold h-10 text-sm disabled:opacity-50"
@@ -511,9 +553,9 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                   </>
                 ) : (
                   <>
-                    <span className="hidden sm:inline">{currentStep === 2 ? "Bereken Prijs & Preview" : "Volgende"}</span>
-                    <span className="sm:hidden">{currentStep === 2 ? "Bereken" : "Volgende"}</span>
-                    {currentStep < 2 && <ChevronRight className="w-4 h-4 ml-1" />}
+                    <span className="hidden sm:inline">{currentStep === 3 ? "Bereken Prijs & Preview" : "Volgende"}</span>
+                    <span className="sm:hidden">{currentStep === 3 ? "Bereken" : "Volgende"}</span>
+                    {currentStep < 3 && <ChevronRight className="w-4 h-4 ml-1" />}
                   </>
                 )}
               </Button>
@@ -657,36 +699,6 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             </div>
           )}
 
-
-          <div className="space-y-3 text-left pt-4">
-            <Label className="text-foreground text-sm">Uw gegevens voor bevestiging:</Label>
-            <Input
-              placeholder="Bedrijfsnaam (optioneel)"
-              value={formData.bedrijfsnaam}
-              onChange={(e) => setFormData({ ...formData, bedrijfsnaam: e.target.value })}
-              className="bg-background border-0 h-11"
-            />
-            <Input
-              placeholder="Naam"
-              value={formData.naam}
-              onChange={(e) => setFormData({ ...formData, naam: e.target.value })}
-              className="bg-background border-0 h-11"
-            />
-            <Input
-              type="email"
-              placeholder="E-mail"
-              value={formData.email}
-              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="bg-background border-0 h-11"
-            />
-            <Input
-              type="tel"
-              placeholder="Telefoon"
-              value={formData.telefoon}
-              onChange={(e) => setFormData({ ...formData, telefoon: e.target.value })}
-              className="bg-background border-0 h-11"
-            />
-          </div>
 
           {!leadSaved && (
             <div className="mt-6">
