@@ -101,11 +101,6 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
       setLeadSaved(true)
       console.log('✅ Lead verzonden:', data.leadId)
 
-      // Toon succes bericht
-      setTimeout(() => {
-        alert('✅ Offerte verzonden! We nemen zo spoedig mogelijk contact met u op.')
-      }, 500)
-
     } catch (error: any) {
       console.error('❌ Lead verzenden mislukt:', error)
       alert('Er ging iets mis bij het verzenden. Probeer het opnieuw of neem contact op.')
