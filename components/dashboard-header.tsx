@@ -72,6 +72,12 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
             >
               Instellingen
             </Link>
+            <Link
+              href="/funnel"
+              className="text-sm font-medium text-muted-foreground hover:text-[#4285f4] transition-colors"
+            >
+              Hoe het werkt
+            </Link>
           </nav>
 
           <DropdownMenu>
