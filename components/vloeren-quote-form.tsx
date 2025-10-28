@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Upload, Sparkles, X, Loader2, CheckCircle } from 'lucide-react'
 import { useDropzone } from 'react-dropzone'
+import { AppointmentPicker } from '@/components/appointment-picker'
 
 interface VloerenQuoteFormProps {
   companyId?: string
@@ -19,6 +20,7 @@ export function VloerenQuoteForm({ companyId, widgetId, className = '' }: Vloere
   const [loading, setLoading] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [estimatedPrice, setEstimatedPrice] = useState<number | null>(null)
+  const [appointmentDatetime, setAppointmentDatetime] = useState<string>('')
   
   const [formData, setFormData] = useState({
     type: '',
@@ -89,7 +91,8 @@ export function VloerenQuoteForm({ companyId, widgetId, className = '' }: Vloere
         photos: uploadedPhotoUrls,
         companyId,
         widgetId,
-        estimatedPrice
+        estimatedPrice,
+        appointmentDatetime: appointmentDatetime || null
       }
 
       const response = await fetch('/api/leads', {
@@ -387,13 +390,20 @@ export function VloerenQuoteForm({ companyId, widgetId, className = '' }: Vloere
               </div>
             )}
 
+            {!submitted && formData.name && formData.email && (
+              <AppointmentPicker 
+                onAppointmentSelected={setAppointmentDatetime}
+                customerName={formData.name}
+              />
+            )}
+
             <div className="flex gap-3">
               <Button onClick={handleBack} variant="outline" className="flex-1">
                 Vorige
               </Button>
               <Button
                 onClick={handleSubmit}
-                disabled={!formData.email || !formData.name || loading}
+                disabled={!formData.email || !formData.name || !appointmentDatetime || loading}
                 className="flex-1 bg-[#4285f4] hover:bg-[#3367d6] text-white"
               >
                 {loading ? (

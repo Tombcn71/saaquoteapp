@@ -11,6 +11,7 @@ import { Progress } from "@/components/ui/progress"
 import { ChevronLeft, ChevronRight, Loader2, Check, Sparkles, X, ZoomIn, Share2 } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
 import { calculatePriceFromAI } from "@/lib/pricing/ai-calculator"
+import { AppointmentPicker } from "@/components/appointment-picker"
 
 interface AIQuoteFormProps {
   className?: string
@@ -27,6 +28,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null)
   const [isSavingLead, setIsSavingLead] = useState(false)
   const [leadSaved, setLeadSaved] = useState(false)
+  const [appointmentDatetime, setAppointmentDatetime] = useState<string>("")
 
   const [formData, setFormData] = useState({
     materiaal: "", // kunststof, hout, aluminium
@@ -80,6 +82,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
           quoteBreakdown: priceResult?.breakdown || {},
           photoUrls: photoUrls,
           previewUrls: previewUrls,
+          appointmentDatetime: appointmentDatetime || null,
           source: widgetId ? 'widget' : 'direct',
           widgetReferrer: typeof window !== 'undefined' ? window.location.href : null,
         }),
@@ -716,10 +719,19 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             />
           </div>
 
+          {!leadSaved && formData.naam && formData.email && (
+            <div className="mt-6">
+              <AppointmentPicker 
+                onAppointmentSelected={setAppointmentDatetime}
+                customerName={formData.naam}
+              />
+            </div>
+          )}
+
           <Button 
             type="button"
             onClick={handleSubmitLead}
-            disabled={!formData.naam || !formData.email || isSavingLead || leadSaved}
+            disabled={!formData.naam || !formData.email || !appointmentDatetime || isSavingLead || leadSaved}
             className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white font-bold h-12 text-base disabled:opacity-50"
           >
             {isSavingLead ? (
@@ -730,10 +742,10 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             ) : leadSaved ? (
               <>
                 <Check className="w-4 h-4 mr-2" />
-                Verzonden! We nemen contact op
+                Verzonden! We sturen je een bevestigingsmail
               </>
             ) : (
-              'Bevestig Offerte & Plan Opname'
+              'Bevestig Afspraak & Ontvang Offerte'
             )}
           </Button>
 
@@ -746,6 +758,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
               setPriceResult(null)
               setLeadSaved(false)
               setIsSavingLead(false)
+              setAppointmentDatetime("")
               setFormData({
                 materiaal: "",
                 kleur: "",

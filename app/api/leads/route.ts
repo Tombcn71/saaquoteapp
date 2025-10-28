@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { neon } from '@neondatabase/serverless'
 import { randomUUID } from 'crypto'
+import { sendAppointmentConfirmation, sendBusinessNotification } from '@/lib/email'
 
 export const maxDuration = 60
 
@@ -23,6 +24,7 @@ export async function POST(request: Request) {
       customerInfo,
       photos = [],
       estimatedPrice,
+      appointmentDatetime,
       // Legacy kozijnen fields (for backwards compatibility)
       naam,
       email,
@@ -115,6 +117,8 @@ export async function POST(request: Request) {
         source,
         widget_referrer,
         status,
+        appointment_datetime,
+        appointment_status,
         created_at,
         updated_at
       ) VALUES (
@@ -140,6 +144,8 @@ export async function POST(request: Request) {
         ${source},
         ${widgetReferrer || null},
         'new',
+        ${appointmentDatetime || null},
+        ${appointmentDatetime ? 'scheduled' : null},
         NOW(),
         NOW()
       )
@@ -166,6 +172,80 @@ export async function POST(request: Request) {
     }
 
     console.log('✅ Lead opgeslagen:', leadId)
+
+    // Send email notifications if appointment is scheduled
+    if (appointmentDatetime && companyId) {
+      try {
+        // Get company details for email
+        const companies = await sql`
+          SELECT * FROM companies WHERE id = ${companyId}
+        `
+        
+        if (companies.length > 0) {
+          const company = companies[0]
+          
+          // Parse appointment datetime
+          const appointmentDate = new Date(appointmentDatetime)
+          const formatDate = (date: Date) => {
+            const days = ['Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag']
+            const months = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
+            return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`
+          }
+          const formatTime = (date: Date) => {
+            return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+          }
+
+          const formattedDate = formatDate(appointmentDate)
+          const formattedTime = formatTime(appointmentDate)
+          
+          // Format project type for display
+          const projectTypeMap: { [key: string]: string } = {
+            'kozijnen': 'Kozijnen',
+            'vloeren': 'Vloeren',
+            'schilderwerk': 'Schilderwerk'
+          }
+          const projectType = projectTypeMap[formType] || formType
+          
+          // Format price
+          const formattedPrice = finalQuoteTotal 
+            ? `€${parseFloat(finalQuoteTotal.toString()).toLocaleString('nl-NL')}`
+            : 'Op aanvraag'
+
+          // Send confirmation to customer
+          await sendAppointmentConfirmation({
+            to: customerEmail,
+            customerName,
+            companyName: company.name,
+            companyEmail: company.owner_email,
+            companyPhone: company.owner_email, // TODO: Add phone field to companies table
+            projectType,
+            estimatedPrice: formattedPrice,
+            appointmentDate: formattedDate,
+            appointmentTime: formattedTime,
+            previewUrl: previewUrlsArray.length > 0 ? previewUrlsArray[0] : undefined
+          })
+
+          // Send notification to business
+          await sendBusinessNotification({
+            to: company.owner_email,
+            businessName: company.name,
+            leadName: customerName,
+            leadEmail: customerEmail,
+            leadPhone: customerPhone || 'Niet opgegeven',
+            projectType,
+            estimatedPrice: formattedPrice,
+            appointmentDate: formattedDate,
+            appointmentTime: formattedTime,
+            dashboardUrl: `${process.env.NEXTAUTH_URL || 'https://saaquoteapp.vercel.app'}/dashboard/leads`
+          })
+
+          console.log('✅ Email notificaties verstuurd')
+        }
+      } catch (emailError) {
+        console.error('❌ Email error (lead still saved):', emailError)
+        // Don't fail the request if email fails
+      }
+    }
 
     return NextResponse.json({
       success: true,
