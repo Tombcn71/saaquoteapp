@@ -130,7 +130,9 @@ export default async function LeadsPage() {
                         {lead.telefoon && (
                           <span className="flex items-center gap-1">
                             <Phone className="w-3 h-3" />
-                            {lead.telefoon}
+                            <a href={`tel:${lead.telefoon}`} className="hover:underline">
+                              {lead.telefoon}
+                            </a>
                           </span>
                         )}
                         <span className="flex items-center gap-1">
@@ -138,6 +140,31 @@ export default async function LeadsPage() {
                           {formatDate(lead.created_at)}
                         </span>
                       </CardDescription>
+                      {lead.appointment_datetime && (
+                        <div className="mt-3 bg-orange-50 border-2 border-orange-400 rounded-lg p-3">
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-5 h-5 text-orange-600" />
+                            <div>
+                              <p className="text-sm font-semibold text-orange-900">
+                                📞 Geplande Afspraak
+                              </p>
+                              <p className="text-sm text-orange-800">
+                                {new Date(lead.appointment_datetime).toLocaleDateString('nl-NL', {
+                                  weekday: 'long',
+                                  day: 'numeric',
+                                  month: 'long',
+                                  year: 'numeric',
+                                  hour: '2-digit',
+                                  minute: '2-digit'
+                                })}
+                              </p>
+                              <p className="text-xs text-orange-700 mt-1">
+                                Bel {lead.naam} op dit moment!
+                              </p>
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div className="flex items-center gap-3">
                       <Badge className={getStatusBadge(lead.status)}>
