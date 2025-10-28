@@ -137,7 +137,6 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
 
   const handleNext = async () => {
     if (currentStep === 1) {
-      await calculatePrice()
       setCurrentStep(2)
     } else if (currentStep === 2) {
       setCurrentStep(3)
