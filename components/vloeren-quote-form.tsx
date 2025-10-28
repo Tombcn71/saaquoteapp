@@ -85,6 +85,7 @@ export function VloerenQuoteForm({ companyId, widgetId, className = '' }: Vloere
           underfloorHeating: formData.underfloorHeating === 'yes'
         },
         customerInfo: {
+          companyName: formData.companyName,
           name: formData.name,
           email: formData.email,
           phone: formData.phone

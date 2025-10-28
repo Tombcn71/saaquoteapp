@@ -85,6 +85,7 @@ export function SchilderwerkQuoteForm({ companyId, widgetId, className = '' }: S
           includeCeiling: formData.includeCeiling === 'yes'
         },
         customerInfo: {
+          companyName: formData.companyName,
           name: formData.name,
           email: formData.email,
           phone: formData.phone
