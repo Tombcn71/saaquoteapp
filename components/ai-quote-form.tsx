@@ -66,26 +66,29 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
+          formType: 'kozijnen',
+          formData: {
+            materiaal: formData.materiaal,
+            kleur: formData.kleur,
+            kozijnType: formData.kozijnType,
+            glasType: formData.glasType,
+            aantalRamen: formData.aantalRamen,
+            vierkanteMeterRamen: formData.vierkanteMeterRamen,
+            montage: formData.montage,
+            afvoerOudeKozijnen: formData.afvoerOudeKozijnen,
+          },
+          customerInfo: {
+            companyName: formData.bedrijfsnaam,
+            name: formData.naam,
+            email: formData.email,
+            phone: formData.telefoon,
+          },
+          photos: photoUrls,
+          previewUrls: previewUrls,
           companyId: companyId || null,
           widgetId: widgetId || null,
-          naam: formData.naam,
-          email: formData.email,
-          telefoon: formData.telefoon,
-          materiaal: formData.materiaal,
-          kleur: formData.kleur,
-          kozijnType: formData.kozijnType,
-          glasType: formData.glasType,
-          aantalRamen: formData.aantalRamen,
-          vierkanteMeterRamen: formData.vierkanteMeterRamen,
-          montage: formData.montage,
-          afvoerOudeKozijnen: formData.afvoerOudeKozijnen,
-          quoteTotal: priceResult?.total || 0,
-          quoteBreakdown: priceResult?.breakdown || {},
-          photoUrls: photoUrls,
-          previewUrls: previewUrls,
+          estimatedPrice: priceResult?.total || 0,
           appointmentDatetime: appointmentDatetime || null,
-          source: widgetId ? 'widget' : 'direct',
-          widgetReferrer: typeof window !== 'undefined' ? window.location.href : null,
         }),
       })
 
@@ -552,9 +555,9 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                   </>
                 ) : (
                   <>
-                    <span className="hidden sm:inline">{currentStep === 2 ? "Bereken Offerte" : currentStep === 3 ? "Bereken Prijs & Preview" : "Volgende"}</span>
-                    <span className="sm:hidden">{currentStep === 2 ? "Bereken" : currentStep === 3 ? "Bereken" : "Volgende"}</span>
-                    {currentStep < 2 && <ChevronRight className="w-4 h-4 ml-1" />}
+                    <span className="hidden sm:inline">{currentStep === 3 ? "Bereken Prijs & Preview" : "Volgende"}</span>
+                    <span className="sm:hidden">{currentStep === 3 ? "Bereken" : "Volgende"}</span>
+                    {currentStep < 3 && <ChevronRight className="w-4 h-4 ml-1" />}
                   </>
                 )}
               </Button>
