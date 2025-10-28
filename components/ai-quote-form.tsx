@@ -137,10 +137,9 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
     if (currentStep === 1) {
       setCurrentStep(2)
     } else if (currentStep === 2) {
-      setCurrentStep(3)
-    } else if (currentStep === 3) {
+      // Foto's geupload, analyseer en bereken prijs
       await analyzePhotos()
-      setCurrentStep(4)
+      setCurrentStep(3)
     }
   }
 
@@ -271,7 +270,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
     }
   }
 
-  const progressPercentage = (currentStep / 4) * 100
+  const progressPercentage = (currentStep / 3) * 100
 
   return (
     <Card className={`overflow-hidden bg-white shadow-2xl border-0 p-0 ${className}`}>
@@ -452,42 +451,6 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             )}
 
             {currentStep === 2 && (
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-foreground text-sm mb-2 block">Uw contactgegevens</Label>
-                  <div className="space-y-3">
-                    <Input
-                      placeholder="Bedrijfsnaam (optioneel)"
-                      value={formData.bedrijfsnaam}
-                      onChange={(e) => setFormData({ ...formData, bedrijfsnaam: e.target.value })}
-                      className="bg-background border-0 h-11"
-                    />
-                    <Input
-                      placeholder="Naam *"
-                      value={formData.naam}
-                      onChange={(e) => setFormData({ ...formData, naam: e.target.value })}
-                      className="bg-background border-0 h-11"
-                    />
-                    <Input
-                      type="email"
-                      placeholder="E-mail *"
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="bg-background border-0 h-11"
-                    />
-                    <Input
-                      type="tel"
-                      placeholder="Telefoon *"
-                      value={formData.telefoon}
-                      onChange={(e) => setFormData({ ...formData, telefoon: e.target.value })}
-                      className="bg-background border-0 h-11"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {currentStep === 3 && (
               <div className="space-y-2">
                 <div>
                   <Label className="text-foreground text-xs sm:text-sm font-medium mb-1 block">Upload foto's *</Label>
@@ -698,17 +661,72 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
 
 
           {!leadSaved && (
-            <div className="mt-6">
-              <div className="mb-3">
-                <p className="text-sm font-semibold text-foreground mb-2">📅 Plan gratis adviesgesprek voor precieze offerte</p>
-                <p className="text-xs text-muted-foreground mb-3">
-                  In 15 minuten bepalen we samen de exacte prijs. Deze valt meestal lager uit! 💰
-                </p>
+            <div className="mt-6 space-y-4">
+              {/* Contact Informatie */}
+              <div className="bg-background rounded-lg p-4 space-y-3 text-left border-2 border-primary/20">
+                <h3 className="font-semibold text-base text-foreground mb-2">📋 Uw Contactgegevens</h3>
+                
+                <div>
+                  <Label className="text-foreground text-sm mb-1 block">Bedrijfsnaam (optioneel)</Label>
+                  <Input
+                    type="text"
+                    placeholder="Uw bedrijf"
+                    value={formData.bedrijfsnaam}
+                    onChange={(e) => setFormData({ ...formData, bedrijfsnaam: e.target.value })}
+                    className="bg-white border-input h-10"
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-foreground text-sm mb-1 block">Naam *</Label>
+                  <Input
+                    type="text"
+                    placeholder="Volledige naam"
+                    value={formData.naam}
+                    onChange={(e) => setFormData({ ...formData, naam: e.target.value })}
+                    className="bg-white border-input h-10"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-foreground text-sm mb-1 block">E-mail *</Label>
+                  <Input
+                    type="email"
+                    placeholder="uw@email.nl"
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    className="bg-white border-input h-10"
+                    required
+                  />
+                </div>
+
+                <div>
+                  <Label className="text-foreground text-sm mb-1 block">Telefoon *</Label>
+                  <Input
+                    type="tel"
+                    placeholder="06 12345678"
+                    value={formData.telefoon}
+                    onChange={(e) => setFormData({ ...formData, telefoon: e.target.value })}
+                    className="bg-white border-input h-10"
+                    required
+                  />
+                </div>
               </div>
-              <AppointmentPicker 
-                onAppointmentSelected={setAppointmentDatetime}
-                customerName={formData.naam || 'Klant'}
-              />
+
+              {/* Appointment Booking */}
+              <div className="bg-primary/5 rounded-lg p-4 border-2 border-primary/20">
+                <div className="mb-3">
+                  <p className="text-sm font-semibold text-foreground mb-2">📅 Plan gratis adviesgesprek voor precieze offerte</p>
+                  <p className="text-xs text-muted-foreground mb-3">
+                    In 15 minuten bepalen we samen de exacte prijs. Deze valt meestal lager uit! 💰
+                  </p>
+                </div>
+                <AppointmentPicker 
+                  onAppointmentSelected={setAppointmentDatetime}
+                  customerName={formData.naam || 'Klant'}
+                />
+              </div>
             </div>
           )}
 
