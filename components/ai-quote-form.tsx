@@ -657,44 +657,6 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             </div>
           )}
 
-          {/* Specificaties overzicht */}
-          <div className="bg-muted/30 rounded-lg p-4 text-left">
-            <h3 className="font-bold text-base text-foreground mb-3">📋 Uw Specificaties:</h3>
-                
-                <div className="bg-background rounded-md p-3 space-y-2 text-sm">
-                  <div className="flex justify-between">
-                <span className="text-muted-foreground">Aantal ramen:</span>
-                <span className="font-medium text-foreground">{formData.aantalRamen}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Totaal m² glas:</span>
-                <span className="font-medium text-foreground">{formData.vierkanteMeterRamen}</span>
-                  </div>
-                  <div className="flex justify-between">
-                <span className="text-muted-foreground">Materiaal:</span>
-                <span className="font-medium text-foreground">{formData.materiaal}</span>
-                  </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Kleur:</span>
-                <span className="font-medium text-foreground">{formData.kleur}</span>
-                    </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Type:</span>
-                <span className="font-medium text-foreground">{formData.kozijnType}</span>
-                </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">Glastype:</span>
-                <span className="font-medium text-foreground">{formData.glasType}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="bg-primary/10 rounded-lg p-4">
-            <p className="text-foreground font-bold text-lg mb-2">💰 Laagste Prijs Garantie</p>
-            <p className="text-foreground text-sm">
-              Vindt u dezelfde kozijnen elders goedkoper? Dan betalen wij het verschil terug!
-            </p>
-          </div>
 
           <div className="space-y-3 text-left pt-4">
             <Label className="text-foreground text-sm">Uw gegevens voor bevestiging:</Label>
