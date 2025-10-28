@@ -1,6 +1,13 @@
 import { Resend } from 'resend'
 
-const resend = new Resend(process.env.RESEND_API_KEY)
+function getResendClient() {
+  const apiKey = process.env.RESEND_API_KEY
+  if (!apiKey) {
+    console.warn('⚠️ RESEND_API_KEY not configured - emails will not be sent')
+    return null
+  }
+  return new Resend(apiKey)
+}
 
 interface SendAppointmentConfirmationParams {
   to: string
@@ -56,6 +63,12 @@ export async function sendAppointmentConfirmation(params: SendAppointmentConfirm
   })
 
   try {
+    const resend = getResendClient()
+    if (!resend) {
+      console.log('📧 Skipping customer confirmation email - Resend not configured')
+      return { success: true, skipped: true }
+    }
+
     const { data, error } = await resend.emails.send({
       from: 'QuoteForm <noreply@yourdomain.com>', // Update this with your verified domain
       to: [to],
@@ -158,6 +171,12 @@ export async function sendBusinessNotification(params: SendBusinessNotificationP
   } = params
 
   try {
+    const resend = getResendClient()
+    if (!resend) {
+      console.log('📧 Skipping business notification email - Resend not configured')
+      return { success: true, skipped: true }
+    }
+
     const { data, error } = await resend.emails.send({
       from: 'QuoteForm <noreply@yourdomain.com>', // Update this with your verified domain
       to: [to],
