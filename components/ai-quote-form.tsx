@@ -726,7 +726,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             />
           </div>
 
-          {!leadSaved && formData.naam && formData.email && (
+          {!leadSaved && (
             <div className="mt-6">
               <div className="mb-3">
                 <p className="text-sm font-semibold text-foreground mb-2">📅 Plan gratis adviesgesprek voor precieze offerte</p>
@@ -736,7 +736,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
               </div>
               <AppointmentPicker 
                 onAppointmentSelected={setAppointmentDatetime}
-                customerName={formData.naam}
+                customerName={formData.naam || 'Klant'}
               />
             </div>
           )}
