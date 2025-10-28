@@ -135,45 +135,45 @@ export default function FunnelPage() {
               </div>
             </div>
 
-            {/* Stage 3: Lead Conversion */}
+            {/* Stage 3: AI Preview + Offerte */}
             <div className="relative pl-16">
               <div className="flex items-start gap-6">
                 <div className="flex-shrink-0 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-                  <Mail className="w-8 h-8 text-green-600" />
+                  <Sparkles className="w-8 h-8 text-green-600" />
                 </div>
                 <div className="flex-1">
                   <div className="bg-white border-2 border-green-500 rounded-lg p-6">
                     <div className="flex items-center justify-between mb-4">
-                      <h3 className="text-2xl font-bold text-gray-900">3. Qualified Leads</h3>
+                      <h3 className="text-2xl font-bold text-gray-900">3. AI Preview + Offerte ✨</h3>
                       <div className="text-right">
                         <div className="text-3xl font-bold text-green-600">300</div>
-                        <div className="text-sm text-gray-600">warme leads/maand</div>
+                        <div className="text-sm text-gray-600">offertes gegenereerd</div>
                       </div>
                     </div>
                     <p className="text-gray-700 mb-4">
-                      <strong>75% voltooit het formulier</strong> en laat contactgegevens achter. Je krijgt:
+                      <strong>Direct na uploaden:</strong> AI toont een preview én berekent de prijs. Klant ziet nu al het resultaat!
                     </p>
                     <div className="grid md:grid-cols-2 gap-3 mb-4">
                       <div className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm text-gray-700">Naam, email, telefoon</span>
+                        <span className="text-sm text-gray-700">AI preview van eindresultaat</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm text-gray-700">Project specificaties</span>
+                        <span className="text-sm text-gray-700">Automatische prijsberekening</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm text-gray-700">Foto's van huidige situatie</span>
+                        <span className="text-sm text-gray-700">Alle specificaties overzichtelijk</span>
                       </div>
                       <div className="flex items-start gap-2">
                         <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                        <span className="text-sm text-gray-700">Budget indicatie</span>
+                        <span className="text-sm text-gray-700">Klant is nu warm & geïnteresseerd</span>
                       </div>
                     </div>
                     <div className="bg-green-50 border border-green-200 rounded p-3">
                       <p className="text-sm text-green-800 font-medium">
-                        💡 Deze leads zijn HOT - ze hebben al geïnvesteerd in het proces en zijn klaar voor een offerte
+                        🎯 Klant heeft nu VISUEEL bewijs en is overtuigd - klaar voor de volgende stap!
                       </p>
                     </div>
                   </div>
