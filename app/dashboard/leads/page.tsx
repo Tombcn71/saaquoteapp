@@ -185,30 +185,117 @@ export default async function LeadsPage() {
                     <div>
                       <h4 className="font-semibold mb-3">Specificaties</h4>
                       <dl className="space-y-2 text-sm">
-                        <div className="flex justify-between">
-                          <dt className="text-muted-foreground">Materiaal:</dt>
-                          <dd className="font-medium">{lead.materiaal}</dd>
-                        </div>
-                        <div className="flex justify-between">
-                          <dt className="text-muted-foreground">Kleur:</dt>
-                          <dd className="font-medium">{lead.kleur}</dd>
-                        </div>
-                        <div className="flex justify-between">
-                          <dt className="text-muted-foreground">Type:</dt>
-                          <dd className="font-medium">{lead.kozijn_type}</dd>
-                        </div>
-                        <div className="flex justify-between">
-                          <dt className="text-muted-foreground">Glas:</dt>
-                          <dd className="font-medium">{lead.glas_type}</dd>
-                        </div>
-                        <div className="flex justify-between">
-                          <dt className="text-muted-foreground">Aantal ramen:</dt>
-                          <dd className="font-medium">{lead.aantal_ramen}</dd>
-                        </div>
-                        <div className="flex justify-between">
-                          <dt className="text-muted-foreground">Oppervlakte:</dt>
-                          <dd className="font-medium">{lead.vierkante_meter_ramen} m²</dd>
-                        </div>
+                        {/* Kozijnen specificaties */}
+                        {lead.form_type === 'kozijnen' && (
+                          <>
+                            {lead.materiaal && (
+                              <div className="flex justify-between">
+                                <dt className="text-muted-foreground">Materiaal:</dt>
+                                <dd className="font-medium">{lead.materiaal}</dd>
+                              </div>
+                            )}
+                            {lead.kleur && (
+                              <div className="flex justify-between">
+                                <dt className="text-muted-foreground">Kleur:</dt>
+                                <dd className="font-medium">{lead.kleur}</dd>
+                              </div>
+                            )}
+                            {lead.kozijn_type && (
+                              <div className="flex justify-between">
+                                <dt className="text-muted-foreground">Type:</dt>
+                                <dd className="font-medium">{lead.kozijn_type}</dd>
+                              </div>
+                            )}
+                            {lead.glas_type && (
+                              <div className="flex justify-between">
+                                <dt className="text-muted-foreground">Glas:</dt>
+                                <dd className="font-medium">{lead.glas_type}</dd>
+                              </div>
+                            )}
+                            {lead.aantal_ramen && (
+                              <div className="flex justify-between">
+                                <dt className="text-muted-foreground">Aantal ramen:</dt>
+                                <dd className="font-medium">{lead.aantal_ramen}</dd>
+                              </div>
+                            )}
+                            {lead.vierkante_meter_ramen && (
+                              <div className="flex justify-between">
+                                <dt className="text-muted-foreground">Oppervlakte:</dt>
+                                <dd className="font-medium">{lead.vierkante_meter_ramen} m²</dd>
+                              </div>
+                            )}
+                          </>
+                        )}
+
+                        {/* Vloeren specificaties */}
+                        {lead.form_type === 'vloeren' && lead.quote_breakdown && (() => {
+                          const formData = typeof lead.quote_breakdown === 'string' 
+                            ? JSON.parse(lead.quote_breakdown) 
+                            : lead.quote_breakdown
+                          return (
+                            <>
+                              {formData.type && (
+                                <div className="flex justify-between">
+                                  <dt className="text-muted-foreground">Type vloer:</dt>
+                                  <dd className="font-medium">{formData.type === 'hout' ? 'Houten vloer' : 'PVC vloer'}</dd>
+                                </div>
+                              )}
+                              {formData.surfaceArea && (
+                                <div className="flex justify-between">
+                                  <dt className="text-muted-foreground">Oppervlakte:</dt>
+                                  <dd className="font-medium">{formData.surfaceArea} m²</dd>
+                                </div>
+                              )}
+                              {formData.style && (
+                                <div className="flex justify-between">
+                                  <dt className="text-muted-foreground">Stijl/kleur:</dt>
+                                  <dd className="font-medium">{formData.style}</dd>
+                                </div>
+                              )}
+                              {formData.underfloorHeating !== undefined && (
+                                <div className="flex justify-between">
+                                  <dt className="text-muted-foreground">Vloerverwarming:</dt>
+                                  <dd className="font-medium">{formData.underfloorHeating ? 'Ja' : 'Nee'}</dd>
+                                </div>
+                              )}
+                            </>
+                          )
+                        })()}
+
+                        {/* Schilderwerk specificaties */}
+                        {lead.form_type === 'schilderwerk' && lead.quote_breakdown && (() => {
+                          const formData = typeof lead.quote_breakdown === 'string' 
+                            ? JSON.parse(lead.quote_breakdown) 
+                            : lead.quote_breakdown
+                          return (
+                            <>
+                              {formData.type && (
+                                <div className="flex justify-between">
+                                  <dt className="text-muted-foreground">Type werk:</dt>
+                                  <dd className="font-medium">{formData.type === 'binnen' ? 'Binnen schilderen' : 'Buiten schilderen'}</dd>
+                                </div>
+                              )}
+                              {formData.surfaceArea && (
+                                <div className="flex justify-between">
+                                  <dt className="text-muted-foreground">Oppervlakte:</dt>
+                                  <dd className="font-medium">{formData.surfaceArea} m²</dd>
+                                </div>
+                              )}
+                              {formData.color && (
+                                <div className="flex justify-between">
+                                  <dt className="text-muted-foreground">Kleur:</dt>
+                                  <dd className="font-medium">{formData.color}</dd>
+                                </div>
+                              )}
+                              {formData.includeCeiling !== undefined && (
+                                <div className="flex justify-between">
+                                  <dt className="text-muted-foreground">Plafond meenemen:</dt>
+                                  <dd className="font-medium">{formData.includeCeiling ? 'Ja' : 'Nee'}</dd>
+                                </div>
+                              )}
+                            </>
+                          )
+                        })()}
                       </dl>
                     </div>
 
@@ -226,6 +313,9 @@ export default async function LeadsPage() {
                             <span className="text-green-600">✓</span>
                             <span>Afvoer oude kozijnen</span>
                           </li>
+                        )}
+                        {!lead.montage && !lead.afvoer_oude_kozijnen && (
+                          <li className="text-muted-foreground text-sm">Geen extra opties geselecteerd</li>
                         )}
                       </ul>
 
