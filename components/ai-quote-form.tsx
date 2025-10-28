@@ -552,9 +552,9 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                   </>
                 ) : (
                   <>
-                    <span className="hidden sm:inline">{currentStep === 3 ? "Bereken Prijs & Preview" : "Volgende"}</span>
-                    <span className="sm:hidden">{currentStep === 3 ? "Bereken" : "Volgende"}</span>
-                    {currentStep < 3 && <ChevronRight className="w-4 h-4 ml-1" />}
+                    <span className="hidden sm:inline">{currentStep === 2 ? "Bereken Offerte" : currentStep === 3 ? "Bereken Prijs & Preview" : "Volgende"}</span>
+                    <span className="sm:hidden">{currentStep === 2 ? "Bereken" : currentStep === 3 ? "Bereken" : "Volgende"}</span>
+                    {currentStep < 2 && <ChevronRight className="w-4 h-4 ml-1" />}
                   </>
                 )}
               </Button>
