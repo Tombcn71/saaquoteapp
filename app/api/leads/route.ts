@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { neon } from '@neondatabase/serverless'
 import { randomUUID } from 'crypto'
-import { sendAppointmentConfirmation, sendBusinessNotification } from '@/lib/email'
+import { sendAppointmentConfirmation, sendBusinessNotification, sendQuoteOnly } from '@/lib/email'
 
 export const maxDuration = 60
 
@@ -184,20 +184,6 @@ export async function POST(request: Request) {
         if (companies.length > 0) {
           const company = companies[0]
           
-          // Parse appointment datetime
-          const appointmentDate = new Date(appointmentDatetime)
-          const formatDate = (date: Date) => {
-            const days = ['Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag']
-            const months = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
-            return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`
-          }
-          const formatTime = (date: Date) => {
-            return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
-          }
-
-          const formattedDate = formatDate(appointmentDate)
-          const formattedTime = formatTime(appointmentDate)
-          
           // Format project type for display
           const projectTypeMap: { [key: string]: string } = {
             'kozijnen': 'Kozijnen',
@@ -211,33 +197,68 @@ export async function POST(request: Request) {
             ? `€${parseFloat(finalQuoteTotal.toString()).toLocaleString('nl-NL')}`
             : 'Op aanvraag'
 
-          // Send confirmation to customer
-          await sendAppointmentConfirmation({
-            to: customerEmail,
-            customerName,
-            companyName: company.name,
-            companyEmail: company.owner_email,
-            companyPhone: company.owner_email, // TODO: Add phone field to companies table
-            projectType,
-            estimatedPrice: formattedPrice,
-            appointmentDate: formattedDate,
-            appointmentTime: formattedTime,
-            previewUrl: previewUrlsArray.length > 0 ? previewUrlsArray[0] : undefined
-          })
+          const baseUrl = process.env.NEXTAUTH_URL || 'https://saaquoteapp.vercel.app'
+          const bookingUrl = `${baseUrl}/book-appointment/${leadId}`
 
-          // Send notification to business
-          await sendBusinessNotification({
-            to: company.owner_email,
-            businessName: company.name,
-            leadName: customerName,
-            leadEmail: customerEmail,
-            leadPhone: customerPhone || 'Niet opgegeven',
-            projectType,
-            estimatedPrice: formattedPrice,
-            appointmentDate: formattedDate,
-            appointmentTime: formattedTime,
-            dashboardUrl: `${process.env.NEXTAUTH_URL || 'https://saaquoteapp.vercel.app'}/dashboard/leads`
-          })
+          if (appointmentDatetime) {
+            // Has appointment - send confirmation with appointment details
+            const appointmentDate = new Date(appointmentDatetime)
+            const formatDate = (date: Date) => {
+              const days = ['Zondag', 'Maandag', 'Dinsdag', 'Woensdag', 'Donderdag', 'Vrijdag', 'Zaterdag']
+              const months = ['jan', 'feb', 'mrt', 'apr', 'mei', 'jun', 'jul', 'aug', 'sep', 'okt', 'nov', 'dec']
+              return `${days[date.getDay()]} ${date.getDate()} ${months[date.getMonth()]} ${date.getFullYear()}`
+            }
+            const formatTime = (date: Date) => {
+              return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`
+            }
+
+            const formattedDate = formatDate(appointmentDate)
+            const formattedTime = formatTime(appointmentDate)
+
+            // Send confirmation to customer
+            await sendAppointmentConfirmation({
+              to: customerEmail,
+              customerName,
+              companyName: company.name,
+              companyEmail: company.owner_email,
+              companyPhone: company.owner_email, // TODO: Add phone field to companies table
+              projectType,
+              estimatedPrice: formattedPrice,
+              appointmentDate: formattedDate,
+              appointmentTime: formattedTime,
+              previewUrl: previewUrlsArray.length > 0 ? previewUrlsArray[0] : undefined
+            })
+
+            // Send notification to business
+            await sendBusinessNotification({
+              to: company.owner_email,
+              businessName: company.name,
+              leadName: customerName,
+              leadEmail: customerEmail,
+              leadPhone: customerPhone || 'Niet opgegeven',
+              projectType,
+              estimatedPrice: formattedPrice,
+              appointmentDate: formattedDate,
+              appointmentTime: formattedTime,
+              dashboardUrl: `${baseUrl}/dashboard/leads`
+            })
+          } else {
+            // No appointment - send quote only with booking link
+            await sendQuoteOnly({
+              to: customerEmail,
+              customerName,
+              companyName: company.name,
+              companyEmail: company.owner_email,
+              companyPhone: company.owner_email,
+              projectType,
+              estimatedPrice: formattedPrice,
+              previewUrl: previewUrlsArray.length > 0 ? previewUrlsArray[0] : undefined,
+              bookingUrl,
+              leadId
+            })
+            
+            console.log(`✅ Quote-only email sent with booking link: ${bookingUrl}`)
+          }
 
           console.log('✅ Email notificaties verstuurd')
         }

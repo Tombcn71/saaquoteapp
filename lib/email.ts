@@ -156,6 +156,118 @@ export async function sendAppointmentConfirmation(params: SendAppointmentConfirm
   }
 }
 
+interface SendQuoteOnlyParams {
+  to: string
+  customerName: string
+  companyName: string
+  companyEmail: string
+  companyPhone: string
+  projectType: string
+  estimatedPrice: string
+  previewUrl?: string
+  bookingUrl: string
+  leadId: string
+}
+
+export async function sendQuoteOnly(params: SendQuoteOnlyParams) {
+  const {
+    to,
+    customerName,
+    companyName,
+    companyEmail,
+    companyPhone,
+    projectType,
+    estimatedPrice,
+    previewUrl,
+    bookingUrl
+  } = params
+
+  try {
+    const resend = getResendClient()
+    if (!resend) {
+      console.log('📧 Skipping quote email - Resend not configured')
+      return { success: true, skipped: true }
+    }
+
+    const { data, error } = await resend.emails.send({
+      from: 'QuoteForm <noreply@yourdomain.com>',
+      to: [to],
+      subject: `📋 Je Offerte - ${projectType}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <style>
+              body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; }
+              .header { background: linear-gradient(135deg, #4285f4 0%, #3367d6 100%); color: white; padding: 30px; text-align: center; border-radius: 8px 8px 0 0; }
+              .content { background: #f9f9f9; padding: 30px; }
+              .card { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #4285f4; }
+              .button { display: inline-block; background: #4285f4; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 10px 0; }
+              .button-secondary { display: inline-block; background: #34a853; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; font-weight: bold; margin: 10px 0; }
+              .footer { background: #f0f0f0; padding: 20px; text-align: center; font-size: 12px; color: #666; border-radius: 0 0 8px 8px; }
+              .highlight { background: #e8f0fe; padding: 15px; border-radius: 6px; margin: 15px 0; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <h1 style="margin: 0;">📋 Je Offerte is Klaar!</h1>
+              <p style="margin: 10px 0 0 0; opacity: 0.9;">Bedankt voor je aanvraag, ${customerName}</p>
+            </div>
+            
+            <div class="content">
+              <h2 style="color: #4285f4;">Je Prijsindicatie</h2>
+              <div class="card">
+                <p style="margin: 0;"><strong>Project:</strong> ${projectType}</p>
+                <p style="margin: 10px 0 0 0;"><strong>Geschatte prijs:</strong> ${estimatedPrice}</p>
+              </div>
+
+              ${previewUrl ? `
+              <a href="${previewUrl}" class="button">🎨 Bekijk je AI Preview</a>
+              ` : ''}
+
+              <div class="highlight">
+                <h3 style="color: #34a853; margin: 0 0 10px 0;">📞 Wil je een gratis adviesgesprek?</h3>
+                <p style="margin: 0;">Plan een 15-minuten telefonisch advies om je project te bespreken. Geen verplichtingen!</p>
+                <a href="${bookingUrl}" class="button-secondary" style="display: inline-block; margin-top: 15px;">
+                  📅 Plan Gratis Adviesgesprek
+                </a>
+              </div>
+
+              <h3 style="color: #333; margin-top: 30px;">Contact met ${companyName}</h3>
+              <div class="card">
+                <p style="margin: 0;">📧 <strong>Email:</strong> ${companyEmail}</p>
+                <p style="margin: 10px 0 0 0;">📞 <strong>Telefoon:</strong> ${companyPhone}</p>
+              </div>
+
+              <p style="font-size: 14px; color: #666; margin-top: 30px;">
+                <strong>Vragen?</strong><br>
+                Neem contact op met ${companyName} via bovenstaande gegevens.
+              </p>
+            </div>
+
+            <div class="footer">
+              <p style="margin: 0;">Powered by <strong>QuoteForm</strong></p>
+              <p style="margin: 5px 0 0 0;">AI-powered quotes voor jouw project</p>
+            </div>
+          </body>
+        </html>
+      `,
+    })
+
+    if (error) {
+      console.error('❌ Email send error:', error)
+      return { success: false, error }
+    }
+
+    console.log('✅ Quote email sent:', data)
+    return { success: true, data }
+  } catch (error) {
+    console.error('❌ Email send exception:', error)
+    return { success: false, error }
+  }
+}
+
 export async function sendBusinessNotification(params: SendBusinessNotificationParams) {
   const {
     to,

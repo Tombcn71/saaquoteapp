@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { Upload, Sparkles, X, Loader2, CheckCircle } from 'lucide-react'
+import { Upload, Sparkles, X, Loader2, CheckCircle, Check } from 'lucide-react'
 import { useDropzone } from 'react-dropzone'
 import { AppointmentPicker } from '@/components/appointment-picker'
 
@@ -404,10 +404,19 @@ export function VloerenQuoteForm({ companyId, widgetId, className = '' }: Vloere
             )}
 
             {!submitted && formData.name && formData.email && (
-              <AppointmentPicker 
-                onAppointmentSelected={setAppointmentDatetime}
-                customerName={formData.name}
-              />
+              <div className="mb-4">
+                <div className="mb-3">
+                  <p className="text-sm font-semibold text-foreground mb-2">📅 Plan een gratis adviesgesprek (optioneel)</p>
+                  <p className="text-xs text-muted-foreground mb-3">15 minuten telefonisch advies over uw project</p>
+                </div>
+                <AppointmentPicker 
+                  onAppointmentSelected={setAppointmentDatetime}
+                  customerName={formData.name}
+                />
+                <p className="text-xs text-center text-muted-foreground mt-3">
+                  Of ontvang eerst alleen de offerte per email →
+                </p>
+              </div>
             )}
 
             <div className="flex gap-3">
@@ -416,7 +425,7 @@ export function VloerenQuoteForm({ companyId, widgetId, className = '' }: Vloere
               </Button>
               <Button
                 onClick={handleSubmit}
-                disabled={!formData.email || !formData.name || !appointmentDatetime || loading}
+                disabled={!formData.email || !formData.name || loading || submitted}
                 className="flex-1 bg-[#4285f4] hover:bg-[#3367d6] text-white"
               >
                 {loading ? (
@@ -424,8 +433,15 @@ export function VloerenQuoteForm({ companyId, widgetId, className = '' }: Vloere
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
                     Verzenden...
                   </>
+                ) : submitted ? (
+                  <>
+                    <Check className="w-4 h-4 mr-2" />
+                    Verzonden! Check je email{appointmentDatetime && ' voor bevestiging'}
+                  </>
+                ) : appointmentDatetime ? (
+                  'Bevestig Afspraak & Verzenden'
                 ) : (
-                  'Offerte aanvragen'
+                  'Ontvang Offerte per Email'
                 )}
               </Button>
             </div>
