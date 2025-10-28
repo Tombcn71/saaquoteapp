@@ -50,6 +50,11 @@ export default async function HomePage() {
                       Leads
                     </Button>
                   </Link>
+                  <Link href="/funnel">
+                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
+                      Hoe het werkt
+                    </Button>
+                  </Link>
                 </>
               ) : (
                 <>
