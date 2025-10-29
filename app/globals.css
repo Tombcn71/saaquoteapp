@@ -126,12 +126,14 @@
   * {
     @apply border-border outline-ring/50;
   }
-  body {
-    @apply bg-background text-foreground;
-  }
   
-  /* Dark mode by default for NanoBanana */
   html {
     color-scheme: dark;
+    overflow-x: hidden;
+  }
+  
+  body {
+    @apply bg-background text-foreground;
+    overflow-x: hidden;
   }
 }

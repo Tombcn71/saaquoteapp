@@ -79,7 +79,7 @@ export default async function HomePage() {
   ]
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950">
+    <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 overflow-x-hidden">
       {/* Navigation */}
       <nav className="border-b border-purple-500/20 bg-gray-950/80 backdrop-blur-sm sticky top-0 z-50">
         <div className="container mx-auto px-4">
@@ -299,7 +299,7 @@ export default async function HomePage() {
             {industries.map((industry, index) => (
               <Card 
                 key={index}
-                className="bg-gradient-to-br from-gray-900 to-gray-900/50 border-purple-500/20 hover:border-purple-500/40 transition-all hover:scale-105 cursor-pointer group relative overflow-hidden"
+                className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-purple-500/50 hover:border-purple-500/70 transition-all hover:scale-105 cursor-pointer group relative overflow-hidden"
               >
                 {/* Colored accent overlay */}
                 <div className={`absolute inset-0 bg-gradient-to-br ${industry.gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
@@ -314,7 +314,7 @@ export default async function HomePage() {
                   <div className="text-sm text-purple-300 font-semibold mb-3">
                     "{industry.subtitle}"
                   </div>
-                  <CardDescription className="text-white/90">
+                  <CardDescription className="text-gray-100">
                     {industry.description}
                   </CardDescription>
                 </CardHeader>
@@ -443,7 +443,7 @@ export default async function HomePage() {
             </Card>
 
             {/* Pro */}
-            <Card className="bg-gradient-to-br from-purple-900/30 to-pink-900/30 border-2 border-purple-500/50 hover:border-purple-500/70 transition-all relative">
+            <Card className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-purple-500/50 hover:border-purple-500/70 transition-all relative">
               <div className="absolute -top-4 left-1/2 -translate-x-1/2">
                 <span className="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-4 py-1 rounded-full text-sm font-medium shadow-lg shadow-purple-500/50">
                   Most Popular
@@ -453,29 +453,29 @@ export default async function HomePage() {
                 <CardTitle className="text-2xl text-white mb-2">Professional</CardTitle>
                 <div className="mb-4">
                   <span className="text-5xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">$49</span>
-                  <span className="text-gray-400">/month</span>
+                  <span className="text-gray-300">/month</span>
                 </div>
-                <CardDescription className="text-gray-300">For growing businesses</CardDescription>
+                <CardDescription className="text-gray-200">For growing businesses</CardDescription>
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3 mb-6">
-                  <li className="flex items-center gap-2 text-gray-200">
+                  <li className="flex items-center gap-2 text-white">
                     <Check className="w-5 h-5 text-purple-400" />
                     <span className="font-medium">5,000 AI previews/month</span>
                   </li>
-                  <li className="flex items-center gap-2 text-gray-200">
+                  <li className="flex items-center gap-2 text-white">
                     <Check className="w-5 h-5 text-purple-400" />
                     <span>Unlimited widgets</span>
                   </li>
-                  <li className="flex items-center gap-2 text-gray-200">
+                  <li className="flex items-center gap-2 text-white">
                     <Check className="w-5 h-5 text-purple-400" />
                     <span>Advanced analytics</span>
                   </li>
-                  <li className="flex items-center gap-2 text-gray-200">
+                  <li className="flex items-center gap-2 text-white">
                     <Check className="w-5 h-5 text-purple-400" />
                     <span>Custom branding</span>
                   </li>
-                  <li className="flex items-center gap-2 text-gray-200">
+                  <li className="flex items-center gap-2 text-white">
                     <Check className="w-5 h-5 text-purple-400" />
                     <span>Priority support</span>
                   </li>
