@@ -77,15 +77,13 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
     if (!formData.glasoppervlakte) return null
     
     const m2 = parseInt(formData.glasoppervlakte)
-    const minPrice = m2 * PRICE_PER_M2.min
-    const maxPrice = m2 * PRICE_PER_M2.max
+    let minPrice = m2 * PRICE_PER_M2.min  // Gekozen m² × €1.000
+    let maxPrice = m2 * PRICE_PER_M2.max  // Gekozen m² × €1.400
     
     // Als HR+++ gekozen, +10%
     if (formData.glasType === "hr+++") {
-      return {
-        min: Math.round(minPrice * 1.10),
-        max: Math.round(maxPrice * 1.10)
-      }
+      minPrice = Math.round(minPrice * 1.10)
+      maxPrice = Math.round(maxPrice * 1.10)
     }
     
     return { min: minPrice, max: maxPrice }
@@ -637,23 +635,18 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             )}
           </div>
 
-          {/* Contact & Belafspraak */}
+          {/* Belafspraak met Contact */}
           {!leadSaved && (
-            <div className="space-y-4">
-              <div className="bg-background rounded-lg p-4 space-y-3 text-left border-2 border-primary/20">
-                <h3 className="font-semibold text-base text-foreground mb-2">📋 Uw Contactgegevens</h3>
-                
-                <div>
-                  <Label className="text-foreground text-sm mb-1 block">Bedrijfsnaam (optioneel)</Label>
-                  <Input
-                    type="text"
-                    placeholder="Uw bedrijf"
-                    value={formData.bedrijfsnaam}
-                    onChange={(e) => setFormData({ ...formData, bedrijfsnaam: e.target.value })}
-                    className="bg-white border-input h-10"
-                  />
-                </div>
+            <div className="bg-primary/5 rounded-lg p-4 border-2 border-primary/20">
+              <div className="mb-4">
+                <p className="text-base font-semibold text-foreground mb-2">📞 Plan gratis belafspraak</p>
+                <p className="text-sm text-muted-foreground mb-4">
+                  We bellen je op gekozen moment (15 min) om exacte prijs te bespreken. Meestal valt deze lager uit! 💰
+                </p>
+              </div>
 
+              {/* Contact velden */}
+              <div className="space-y-3 mb-4">
                 <div>
                   <Label className="text-foreground text-sm mb-1 block">Naam *</Label>
                   <Input
@@ -691,19 +684,11 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                 </div>
               </div>
 
-              {/* Belafspraak */}
-              <div className="bg-primary/5 rounded-lg p-4 border-2 border-primary/20">
-                <div className="mb-3">
-                  <p className="text-sm font-semibold text-foreground mb-2">📞 Plan gratis belafspraak</p>
-                  <p className="text-xs text-muted-foreground mb-3">
-                    We bellen je op gekozen moment (15 min) om exacte prijs te bespreken. Meestal valt deze lager uit! 💰
-                  </p>
-                </div>
-                <AppointmentPicker 
-                  onAppointmentSelected={setAppointmentDatetime}
-                  customerName={formData.naam || 'Klant'}
-                />
-              </div>
+              {/* Appointment Picker */}
+              <AppointmentPicker 
+                onAppointmentSelected={setAppointmentDatetime}
+                customerName={formData.naam || 'Klant'}
+              />
             </div>
           )}
 
