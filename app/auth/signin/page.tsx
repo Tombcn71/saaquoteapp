@@ -46,32 +46,38 @@ export default function SignInPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: "var(--hero-bg)" }}>
-      <div className="w-full max-w-md">
+    <div className="min-h-screen flex items-center justify-center px-4 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 relative overflow-hidden">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-blue-900/20" />
+      <div className="absolute inset-0">
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl" />
+      </div>
+
+      <div className="w-full max-w-md relative z-10">
+        {/* Logo */}
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#4285f4] flex items-center justify-center relative">
-              <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="8" y1="13" x2="16" y2="13" />
-                <line x1="8" y1="17" x2="16" y2="17" />
-              </svg>
-              <Sparkles className="w-2 h-2 text-white absolute top-1 right-1" />
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/50">
+              <Sparkles className="w-6 h-6 text-white" />
             </div>
-            <span className="text-xl text-gray-900">QuoteForm</span>
+            <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
+              NanoBanana
+            </span>
           </Link>
         </div>
 
-        <Card className="border-2">
+        <Card className="border-2 border-purple-500/30 bg-gradient-to-br from-gray-900 to-gray-900/50 backdrop-blur-sm">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold text-center">Welkom terug</CardTitle>
-            <CardDescription className="text-center">Log in op je account om door te gaan</CardDescription>
+            <CardTitle className="text-3xl font-bold text-center text-white">Welcome Back</CardTitle>
+            <CardDescription className="text-center text-gray-400">
+              Sign in to your account to continue
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
+                <Label htmlFor="email" className="text-gray-300">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -80,10 +86,11 @@ export default function SignInPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={isLoading}
+                  className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password" className="text-gray-300">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -91,23 +98,24 @@ export default function SignInPage() {
                   onChange={(e) => setPassword(e.target.value)}
                   required
                   disabled={isLoading}
+                  className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500"
                 />
               </div>
-              {error && <p className="text-sm text-destructive">{error}</p>}
+              {error && <p className="text-sm text-red-400">{error}</p>}
               <Button
                 type="submit"
-                className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white"
+                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg shadow-purple-500/30"
                 disabled={isLoading}
               >
-                {isLoading ? "Inloggen..." : "Inloggen"}
+                {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <div className="text-sm text-center text-muted-foreground">
-              Heb je nog geen account?{" "}
-              <Link href="/auth/signup" className="text-[#4285f4] hover:underline font-medium">
-                Registreer
+            <div className="text-sm text-center text-gray-400">
+              Don't have an account?{" "}
+              <Link href="/auth/signup" className="text-purple-400 hover:text-purple-300 hover:underline font-medium">
+                Sign up
               </Link>
             </div>
           </CardFooter>

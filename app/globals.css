@@ -129,4 +129,9 @@
   body {
     @apply bg-background text-foreground;
   }
+  
+  /* Dark mode by default for NanoBanana */
+  html {
+    color-scheme: dark;
+  }
 }
