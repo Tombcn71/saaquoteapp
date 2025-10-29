@@ -173,15 +173,15 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
   }
 
   const handleNext = async () => {
-    if (currentStep === 4) {
-      // Stap 5: Foto upload (optioneel)
-      setCurrentStep(5)
-    } else if (currentStep === 5) {
+    if (currentStep === 2) {
+      // Stap 3: Foto upload (optioneel)
+      setCurrentStep(3)
+    } else if (currentStep === 3) {
       // Als foto's geupload, analyseer ze
       if (photos.length > 0) {
         await analyzePhotos()
       }
-      setCurrentStep(6) // Ga naar resultaat
+      setCurrentStep(4) // Ga naar resultaat
     } else {
       setCurrentStep(currentStep + 1)
     }
@@ -189,7 +189,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
 
   const handleSkipPhotos = () => {
     // Skip foto upload, ga direct naar resultaat
-    setCurrentStep(6)
+    setCurrentStep(4)
   }
 
   const analyzePhotos = async () => {
@@ -270,7 +270,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
     }
   }
 
-  const progressPercentage = (currentStep / 6) * 100
+  const progressPercentage = (currentStep / 4) * 100
 
   // Helper: genereer kozijnen dropdown opties op basis van woningtype
   const getKozijnenOptions = () => {
@@ -300,7 +300,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
 
   return (
     <Card className={`overflow-hidden bg-white shadow-2xl border-0 p-0 ${className}`}>
-      {currentStep < 6 ? (
+      {currentStep < 4 ? (
         <>
           <div className="bg-[#4285f4] px-4 sm:px-6 lg:px-8 py-6 rounded-t-xl">
             <div className="flex items-center gap-2 mb-2">
@@ -311,10 +311,8 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             </div>
             <p className="text-xs sm:text-sm italic text-blue-100">
               {currentStep === 1 && "Wat voor type woning heeft u?"}
-              {currentStep === 2 && "Hoeveel kozijnen wilt u vervangen?"}
-              {currentStep === 3 && "Wat is de totale glasoppervlakte?"}
-              {currentStep === 4 && "Welk type glas wenst u?"}
-              {currentStep === 5 && "Upload foto's voor AI preview (optioneel)"}
+              {currentStep === 2 && "Vul de details van uw kozijnen in"}
+              {currentStep === 3 && "Upload foto's voor AI preview (optioneel)"}
             </p>
           </div>
 
@@ -322,11 +320,9 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             <div className="mb-4">
               <div className="flex justify-between text-xs text-foreground mb-2">
                 <span className={currentStep >= 1 ? "font-bold" : ""}>Woningtype</span>
-                <span className={currentStep >= 2 ? "font-bold" : ""}>Kozijnen</span>
-                <span className={currentStep >= 3 ? "font-bold" : ""}>Glas m²</span>
-                <span className={currentStep >= 4 ? "font-bold" : ""}>Glastype</span>
-                <span className={currentStep >= 5 ? "font-bold" : ""}>Foto's</span>
-                <span className={currentStep >= 6 ? "font-bold" : ""}>Offerte</span>
+                <span className={currentStep >= 2 ? "font-bold" : ""}>Details</span>
+                <span className={currentStep >= 3 ? "font-bold" : ""}>Foto's</span>
+                <span className={currentStep >= 4 ? "font-bold" : ""}>Offerte</span>
               </div>
               <Progress 
                 value={progressPercentage} 
@@ -370,98 +366,95 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                 </div>
               )}
 
-              {/* Stap 2: Aantal Kozijnen */}
+              {/* Stap 2: Alle Details (Kozijnen + Glas m² + Glastype) */}
               {currentStep === 2 && (
-                <div className="space-y-4">
-                  <Label className="text-foreground text-base font-semibold mb-3 block">
-                    Hoeveel kozijnen wilt u vervangen?
-                  </Label>
-                  <Select
-                    value={formData.aantalKozijnen}
-                    onValueChange={(value) => setFormData({ ...formData, aantalKozijnen: value })}
-                  >
-                    <SelectTrigger className="bg-background border-0 h-12 text-base">
-                      <SelectValue placeholder="Kies aantal kozijnen" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getKozijnenOptions().map(num => (
-                        <SelectItem key={num} value={num.toString()}>
-                          {num} kozijnen
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
+                <div className="space-y-6">
+                  <div>
+                    <Label className="text-foreground text-base font-semibold mb-3 block">
+                      Hoeveel kozijnen wilt u vervangen?
+                    </Label>
+                    <Select
+                      value={formData.aantalKozijnen}
+                      onValueChange={(value) => setFormData({ ...formData, aantalKozijnen: value })}
+                    >
+                      <SelectTrigger className="bg-background border-0 h-12 text-base">
+                        <SelectValue placeholder="Kies aantal kozijnen" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getKozijnenOptions().map(num => (
+                          <SelectItem key={num} value={num.toString()}>
+                            {num} kozijnen
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-              {/* Stap 3: Glasoppervlakte */}
-              {currentStep === 3 && (
-                <div className="space-y-4">
-                  <Label className="text-foreground text-base font-semibold mb-3 block">
-                    Totale glasoppervlakte (alle ramen samen)
-                  </Label>
-                  <Select
-                    value={formData.glasoppervlakte}
-                    onValueChange={(value) => setFormData({ ...formData, glasoppervlakte: value })}
-                  >
-                    <SelectTrigger className="bg-background border-0 h-12 text-base">
-                      <SelectValue placeholder="Kies glasoppervlakte" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {getGlasoppervlakteOptions().map(num => (
-                        <SelectItem key={num} value={num.toString()}>
-                          {num} m²
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <p className="text-xs text-gray-500 mt-2">
-                    💡 Niet zeker? Kies een schatting - we bespreken de exacte maten in het adviesgesprek
+                  <div>
+                    <Label className="text-foreground text-base font-semibold mb-3 block">
+                      Totale glasoppervlakte (alle ramen samen)
+                    </Label>
+                    <Select
+                      value={formData.glasoppervlakte}
+                      onValueChange={(value) => setFormData({ ...formData, glasoppervlakte: value })}
+                    >
+                      <SelectTrigger className="bg-background border-0 h-12 text-base">
+                        <SelectValue placeholder="Kies glasoppervlakte" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {getGlasoppervlakteOptions().map(num => (
+                          <SelectItem key={num} value={num.toString()}>
+                            {num} m²
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div>
+                    <Label className="text-foreground text-base font-semibold mb-3 block">
+                      Welk type glas wenst u?
+                    </Label>
+                    <div className="grid grid-cols-1 gap-3">
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, glasType: 'hr++' })}
+                        className={`p-4 border-2 rounded-lg text-left transition-all ${
+                          formData.glasType === 'hr++'
+                            ? 'border-[#4285f4] bg-blue-50'
+                            : 'border-gray-200 hover:border-[#4285f4]'
+                        }`}
+                      >
+                        <div className="font-semibold text-gray-900">HR++ glas</div>
+                        <div className="text-sm text-gray-600 mt-1">
+                          Standaard isolatie - inbegrepen in prijs
+                        </div>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormData({ ...formData, glasType: 'hr+++' })}
+                        className={`p-4 border-2 rounded-lg text-left transition-all ${
+                          formData.glasType === 'hr+++'
+                            ? 'border-[#4285f4] bg-blue-50'
+                            : 'border-gray-200 hover:border-[#4285f4]'
+                        }`}
+                      >
+                        <div className="font-semibold text-gray-900">HR+++ glas</div>
+                        <div className="text-sm text-gray-600 mt-1">
+                          Beste isolatie - +10% op totaalprijs
+                        </div>
+                      </button>
+                    </div>
+                  </div>
+
+                  <p className="text-xs text-gray-500">
+                    💡 Niet zeker van de maten? Kies een schatting - we bespreken de exacte details in het adviesgesprek
                   </p>
                 </div>
               )}
 
-              {/* Stap 4: Glastype */}
-              {currentStep === 4 && (
-                <div className="space-y-4">
-                  <Label className="text-foreground text-base font-semibold mb-3 block">
-                    Welk type glas wenst u?
-                  </Label>
-                  <div className="grid grid-cols-1 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, glasType: 'hr++' })}
-                      className={`p-4 border-2 rounded-lg text-left transition-all ${
-                        formData.glasType === 'hr++'
-                          ? 'border-[#4285f4] bg-blue-50'
-                          : 'border-gray-200 hover:border-[#4285f4]'
-                      }`}
-                    >
-                      <div className="font-semibold text-gray-900">HR++ glas</div>
-                      <div className="text-sm text-gray-600 mt-1">
-                        Standaard isolatie - inbegrepen in prijs
-                      </div>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setFormData({ ...formData, glasType: 'hr+++' })}
-                      className={`p-4 border-2 rounded-lg text-left transition-all ${
-                        formData.glasType === 'hr+++'
-                          ? 'border-[#4285f4] bg-blue-50'
-                          : 'border-gray-200 hover:border-[#4285f4]'
-                      }`}
-                    >
-                      <div className="font-semibold text-gray-900">HR+++ glas</div>
-                      <div className="text-sm text-gray-600 mt-1">
-                        Beste isolatie - +10% op totaalprijs
-                      </div>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Stap 5: Foto Upload (optioneel) */}
-              {currentStep === 5 && (
+              {/* Stap 3: Foto Upload (optioneel) */}
+              {currentStep === 3 && (
                 <div className="space-y-4">
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                     <p className="text-sm font-semibold text-gray-900 mb-1">
@@ -507,7 +500,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
 
               {/* Navigation Buttons */}
               <div className="flex gap-2 pt-2 sm:pt-3">
-                {currentStep > 1 && currentStep < 6 && !isAnalyzing && (
+                {currentStep > 1 && currentStep < 4 && !isAnalyzing && (
                   <Button
                     type="button"
                     onClick={handlePrevious}
@@ -518,15 +511,13 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                     Vorige
                   </Button>
                 )}
-                {currentStep < 5 && (
+                {currentStep < 3 && (
                   <Button
                     type="button"
                     onClick={handleNext}
                     disabled={
                       (currentStep === 1 && !formData.woningtype) ||
-                      (currentStep === 2 && !formData.aantalKozijnen) ||
-                      (currentStep === 3 && !formData.glasoppervlakte) ||
-                      (currentStep === 4 && !formData.glasType)
+                      (currentStep === 2 && (!formData.aantalKozijnen || !formData.glasoppervlakte || !formData.glasType))
                     }
                     className="flex-1 bg-[#4285f4] hover:bg-[#3367d6] text-white font-bold h-10 text-sm"
                   >
@@ -534,7 +525,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                     <ChevronRight className="w-4 h-4 ml-1" />
                   </Button>
                 )}
-                {currentStep === 5 && photos.length > 0 && (
+                {currentStep === 3 && photos.length > 0 && (
                   <Button
                     type="button"
                     onClick={handleNext}
