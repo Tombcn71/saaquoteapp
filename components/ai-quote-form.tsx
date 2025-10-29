@@ -5,12 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Progress } from "@/components/ui/progress"
-import { ChevronLeft, ChevronRight, Loader2, Check, Sparkles, X, ZoomIn, Share2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, Loader2, Check, Sparkles, X, ZoomIn, Share2, Upload } from "lucide-react"
 import { PhotoUpload } from "@/components/photo-upload"
-import { calculatePriceFromAI } from "@/lib/pricing/ai-calculator"
 import { AppointmentPicker } from "@/components/appointment-picker"
 
 interface AIQuoteFormProps {
@@ -19,31 +17,81 @@ interface AIQuoteFormProps {
   widgetId?: string
 }
 
+// Woningtype data (uit marktonderzoek)
+const WONINGTYPE_DATA = {
+  appartement: {
+    label: 'Appartement',
+    kozijnenRange: { min: 6, max: 8 },
+    glasRange: { min: 10, max: 18 }
+  },
+  tussenwoning: {
+    label: 'Tussenwoning',
+    kozijnenRange: { min: 8, max: 10 },
+    glasRange: { min: 18, max: 22 }
+  },
+  hoekwoning: {
+    label: 'Hoekwoning',
+    kozijnenRange: { min: 10, max: 12 },
+    glasRange: { min: 20, max: 25 }
+  },
+  twee_onder_een_kap: {
+    label: 'Twee-onder-een-kap',
+    kozijnenRange: { min: 12, max: 15 },
+    glasRange: { min: 25, max: 30 }
+  },
+  vrijstaand: {
+    label: 'Vrijstaande woning',
+    kozijnenRange: { min: 15, max: 20 },
+    glasRange: { min: 30, max: 40 }
+  }
+}
+
+const PRICE_PER_M2 = {
+  min: 1000, // Basis kunststof
+  max: 1400  // Premium kunststof
+}
+
 export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteFormProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [photos, setPhotos] = useState<File[]>([])
   const [isAnalyzing, setIsAnalyzing] = useState(false)
   const [analysisResults, setAnalysisResults] = useState<any[]>([])
-  const [priceResult, setPriceResult] = useState<any>(null)
   const [enlargedImage, setEnlargedImage] = useState<string | null>(null)
   const [isSavingLead, setIsSavingLead] = useState(false)
   const [leadSaved, setLeadSaved] = useState(false)
   const [appointmentDatetime, setAppointmentDatetime] = useState<string>("")
 
   const [formData, setFormData] = useState({
-    materiaal: "", // kunststof, hout, aluminium
-    kleur: "", // wit, grijs, zwart, houtkleur, etc
-    kozijnType: "", // draaikiepraam, schuifraam, vaste beglazing, etc
-    vierkanteMeterRamen: "",
-    aantalRamen: "",
-    glasType: "", // dubbel glas, HR++, triple glas
-    montage: true,
-    afvoerOudeKozijnen: true,
+    woningtype: "",
+    aantalKozijnen: "",
+    glasoppervlakte: "",
+    glasType: "hr++", // hr++ of hr+++
     bedrijfsnaam: "",
     naam: "",
     email: "",
     telefoon: "",
   })
+
+  // Bereken prijs range op basis van glasoppervlakte en glastype
+  const calculatePriceRange = () => {
+    if (!formData.glasoppervlakte) return null
+    
+    const m2 = parseInt(formData.glasoppervlakte)
+    const minPrice = m2 * PRICE_PER_M2.min
+    const maxPrice = m2 * PRICE_PER_M2.max
+    
+    // Als HR+++ gekozen, +10%
+    if (formData.glasType === "hr+++") {
+      return {
+        min: Math.round(minPrice * 1.10),
+        max: Math.round(maxPrice * 1.10)
+      }
+    }
+    
+    return { min: minPrice, max: maxPrice }
+  }
+
+  const priceRange = calculatePriceRange()
 
   // Scroll to top when step changes
   useEffect(() => {
@@ -51,8 +99,8 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
   }, [currentStep])
 
   const handleSubmitLead = async () => {
-    if (!formData.naam || !formData.email) {
-      alert('Vul alstublieft uw naam en e-mail in')
+    if (!formData.naam || !formData.email || !appointmentDatetime) {
+      alert('Vul alstublieft uw contactgegevens in en kies een afspraak')
       return
     }
 
@@ -68,14 +116,10 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
         body: JSON.stringify({
           formType: 'kozijnen',
           formData: {
-            materiaal: formData.materiaal,
-            kleur: formData.kleur,
-            kozijnType: formData.kozijnType,
+            woningtype: formData.woningtype,
+            aantalKozijnen: formData.aantalKozijnen,
+            glasoppervlakte: formData.glasoppervlakte,
             glasType: formData.glasType,
-            aantalRamen: formData.aantalRamen,
-            vierkanteMeterRamen: formData.vierkanteMeterRamen,
-            montage: formData.montage,
-            afvoerOudeKozijnen: formData.afvoerOudeKozijnen,
           },
           customerInfo: {
             companyName: formData.bedrijfsnaam,
@@ -87,7 +131,7 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
           previewUrls: previewUrls,
           companyId: companyId || null,
           widgetId: widgetId || null,
-          estimatedPrice: priceResult?.total || 0,
+          estimatedPrice: priceRange?.min || 0,
           appointmentDatetime: appointmentDatetime || null,
         }),
       })
@@ -111,20 +155,17 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
 
   const handleShare = async (imageUrl: string, title: string) => {
     try {
-      // Check if Web Share API is supported
       if (navigator.share) {
-        // Fetch the image and convert to blob
         const response = await fetch(imageUrl)
         const blob = await response.blob()
         const file = new File([blob], 'kozijnen.jpg', { type: 'image/jpeg' })
         
         await navigator.share({
           title: title,
-          text: `Bekijk mijn nieuwe ${formData.materiaal} kozijnen in ${formData.kleur}!`,
+          text: `Bekijk mijn nieuwe kunststof kozijnen!`,
           files: [file]
         })
       } else {
-        // Fallback: copy link to clipboard
         await navigator.clipboard.writeText(imageUrl)
         alert('Link gekopieerd naar clipboard!')
       }
@@ -134,13 +175,23 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
   }
 
   const handleNext = async () => {
-    if (currentStep === 1) {
-      setCurrentStep(2)
-    } else if (currentStep === 2) {
-      // Foto's geupload, analyseer en bereken prijs
-      await analyzePhotos()
-      setCurrentStep(3)
+    if (currentStep === 4) {
+      // Stap 5: Foto upload (optioneel)
+      setCurrentStep(5)
+    } else if (currentStep === 5) {
+      // Als foto's geupload, analyseer ze
+      if (photos.length > 0) {
+        await analyzePhotos()
+      }
+      setCurrentStep(6) // Ga naar resultaat
+    } else {
+      setCurrentStep(currentStep + 1)
     }
+  }
+
+  const handleSkipPhotos = () => {
+    // Skip foto upload, ga direct naar resultaat
+    setCurrentStep(6)
   }
 
   const analyzePhotos = async () => {
@@ -150,14 +201,6 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
     const results = []
 
     try {
-      // Build kozijn specifications to send to Gemini
-      const kozijnSpecs = {
-        materiaal: formData.materiaal,
-        kleur: formData.kleur,
-        kozijnType: formData.kozijnType,
-        glasType: formData.glasType,
-      }
-
       console.log('🎨 Gemini Nano Banana: Genereren van kozijnen previews...')
 
       for (const photo of photos) {
@@ -178,26 +221,21 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ 
               imageUrl: url,
-              specs: kozijnSpecs 
+              specs: {
+                materiaal: 'kunststof',
+                kleur: 'wit',
+                kozijnType: 'draaikiepraam',
+                glasType: formData.glasType
+              }
             }),
           })
           
           if (!generateRes.ok) {
-            const errorData = await generateRes.json()
-            console.warn('⚠️ Gemini preview generatie mislukt:', errorData)
-            console.warn('⚠️ Gebruik originele foto als fallback')
-            
-            // Fallback: use original photo
+            console.warn('⚠️ Gemini preview generatie mislukt, gebruik origineel')
             results.push({ 
               url, 
               previewUrl: url, 
-              analysis: { 
-                window_count: parseInt(formData.aantalRamen) || 1,
-                window_type: formData.kozijnType,
-                estimated_size: 0,
-                condition: 'good',
-                notes: 'Preview niet beschikbaar (Gemini API key vereist)'
-              } 
+              analysis: { notes: 'Preview niet beschikbaar' } 
             })
           } else {
             const responseData = await generateRes.json()
@@ -205,57 +243,21 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             results.push({ 
               url, 
               previewUrl: responseData.previewImage, 
-              analysis: {
-                window_count: parseInt(formData.aantalRamen) || 1,
-                window_type: formData.kozijnType,
-                estimated_size: 0,
-                condition: 'good',
-                notes: 'AI preview gegenereerd met Gemini'
-              }
+              analysis: { notes: 'AI preview gegenereerd met Gemini' }
             })
           }
         } catch (error) {
           console.error('❌ Gemini preview error:', error)
-          console.warn('⚠️ Gebruik originele foto als fallback')
-          
-          // Fallback: use original photo
           results.push({ 
             url, 
             previewUrl: url, 
-            analysis: {
-              window_count: parseInt(formData.aantalRamen) || 1,
-              window_type: formData.kozijnType,
-              estimated_size: 0,
-              condition: 'good',
-              notes: 'Preview fout - originele foto getoond'
-            }
+            analysis: { notes: 'Preview fout - originele foto getoond' }
           })
         }
       }
 
       setAnalysisResults(results)
-      
-      console.log('📊 Alle Gemini previews gegenereerd:', results)
-      console.log('📋 Form data voor berekening:', formData)
-
-      // Bereken prijs op basis van kozijn specs
-      const priceCalculation = calculatePriceFromAI(formData, results)
-      
-      console.log('💰 Berekende prijs:', priceCalculation)
-      console.log('💰 Totaal:', priceCalculation.total)
-      console.log('💰 Breakdown:', priceCalculation.breakdown)
-      
-      setPriceResult({
-        total: priceCalculation.total,
-        breakdown: {
-          kozijnen: priceCalculation.breakdown.kozijnen,
-          glas: priceCalculation.breakdown.glas,
-          montage: priceCalculation.breakdown.montage,
-          afvoer: priceCalculation.breakdown.afvoer,
-        }
-      })
-      
-      console.log('✅ Prijs en previews gereed!')
+      console.log('✅ Alle previews gegenereerd:', results)
     } catch (error) {
       console.error('Analysis error:', error)
       alert('Er ging iets mis bij het genereren van de preview. Probeer opnieuw.')
@@ -270,399 +272,374 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
     }
   }
 
-  const progressPercentage = (currentStep / 3) * 100
+  const progressPercentage = (currentStep / 6) * 100
+
+  // Helper: genereer kozijnen dropdown opties op basis van woningtype
+  const getKozijnenOptions = () => {
+    if (!formData.woningtype) return []
+    const data = WONINGTYPE_DATA[formData.woningtype as keyof typeof WONINGTYPE_DATA]
+    if (!data) return []
+    
+    const options = []
+    for (let i = data.kozijnenRange.min; i <= data.kozijnenRange.max; i++) {
+      options.push(i)
+    }
+    return options
+  }
+
+  // Helper: genereer glasoppervlakte dropdown opties op basis van woningtype
+  const getGlasoppervlakteOptions = () => {
+    if (!formData.woningtype) return []
+    const data = WONINGTYPE_DATA[formData.woningtype as keyof typeof WONINGTYPE_DATA]
+    if (!data) return []
+    
+    const options = []
+    for (let i = data.glasRange.min; i <= data.glasRange.max; i++) {
+      options.push(i)
+    }
+    return options
+  }
 
   return (
     <Card className={`overflow-hidden bg-white shadow-2xl border-0 p-0 ${className}`}>
-      {currentStep < 4 ? (
+      {currentStep < 6 ? (
         <>
-            <div className="bg-[#4285f4] px-4 sm:px-6 lg:px-8 py-6 rounded-t-xl">
-              <div className="flex items-center gap-2 mb-2">
-                <Sparkles className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
-                <h2 className="font-bold text-base sm:text-lg lg:text-xl text-white">
-                  Direct een prijsindicatie en AI preview van uw nieuwe kozijnen.
-                </h2>
-              </div>
-              <p className="text-xs sm:text-sm italic text-blue-100">
-                {currentStep === 1 && "Vul uw voorkeuren in voor de nieuwe kozijnen"}
-                {currentStep === 2 && "Vul uw contactgegevens in"}
-                {currentStep === 3 && "Upload minimaal 1 foto van uw ramen"}
-              </p>
+          <div className="bg-[#4285f4] px-4 sm:px-6 lg:px-8 py-6 rounded-t-xl">
+            <div className="flex items-center gap-2 mb-2">
+              <Sparkles className="w-6 h-6 lg:w-7 lg:h-7 text-white" />
+              <h2 className="font-bold text-base sm:text-lg lg:text-xl text-white">
+                Direct een prijsindicatie voor uw nieuwe kozijnen.
+              </h2>
             </div>
-
-          <div className="px-4 sm:px-6 lg:px-8 py-6">
-          <div className="mb-4">
-            <div className="flex justify-between text-xs text-foreground mb-2">
-              <span className={currentStep >= 1 ? "font-bold" : ""}>Specificaties</span>
-              <span className={currentStep >= 2 ? "font-bold" : ""}>Contact</span>
-              <span className={currentStep >= 3 ? "font-bold" : ""}>Foto's</span>
-              <span className={currentStep >= 4 ? "font-bold" : ""}>Resultaat</span>
-            </div>
-            <Progress 
-              value={progressPercentage} 
-              className="h-2 bg-gray-200 [&>div]:bg-[#4285f4]" 
-              aria-label={`Stap ${currentStep} van 4`}
-              aria-valuenow={progressPercentage}
-              aria-valuemin={0}
-              aria-valuemax={100}
-            />
+            <p className="text-xs sm:text-sm italic text-blue-100">
+              {currentStep === 1 && "Wat voor type woning heeft u?"}
+              {currentStep === 2 && "Hoeveel kozijnen wilt u vervangen?"}
+              {currentStep === 3 && "Wat is de totale glasoppervlakte?"}
+              {currentStep === 4 && "Welk type glas wenst u?"}
+              {currentStep === 5 && "Upload foto's voor AI preview (optioneel)"}
+            </p>
           </div>
 
-          <form className="space-y-4">
-            {currentStep === 1 && (
-              <div className="space-y-4">
-                <div>
-                  <Label className="text-foreground text-sm mb-2 block">Materiaal Kozijnen *</Label>
-                  <Select
-                    value={formData.materiaal}
-                    onValueChange={(value) => setFormData({ ...formData, materiaal: value })}
-                  >
-                    <SelectTrigger className="bg-background border-0 h-11">
-                      <SelectValue placeholder="Kies materiaal" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="kunststof">Kunststof (PVC)</SelectItem>
-                      <SelectItem value="hout">Hout</SelectItem>
-                      <SelectItem value="aluminium">Aluminium</SelectItem>
-                      <SelectItem value="hout-aluminium">Hout/Aluminium combinatie</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label className="text-foreground text-sm mb-2 block">Kleur *</Label>
-                  <Select
-                    value={formData.kleur}
-                    onValueChange={(value) => setFormData({ ...formData, kleur: value })}
-                  >
-                    <SelectTrigger className="bg-background border-0 h-11">
-                      <SelectValue placeholder="Kies kleur" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="wit">Wit</SelectItem>
-                      <SelectItem value="creme">Crème</SelectItem>
-                      <SelectItem value="grijs">Grijs (RAL 7016)</SelectItem>
-                      <SelectItem value="antraciet">Antraciet (RAL 7021)</SelectItem>
-                      <SelectItem value="zwart">Zwart</SelectItem>
-                      <SelectItem value="donkergroen">Donkergroen (RAL 6009)</SelectItem>
-                      <SelectItem value="houtkleur">Houtkleur</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label className="text-foreground text-sm mb-2 block">Type Kozijn *</Label>
-                  <Select
-                    value={formData.kozijnType}
-                    onValueChange={(value) => setFormData({ ...formData, kozijnType: value })}
-                  >
-                    <SelectTrigger className="bg-background border-0 h-11">
-                      <SelectValue placeholder="Selecteer type" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="draaikiepraam">Draaikiepraam</SelectItem>
-                      <SelectItem value="draadraam">Draadraam</SelectItem>
-                      <SelectItem value="kiepraam">Kiepraam</SelectItem>
-                      <SelectItem value="schuifraam">Schuifraam</SelectItem>
-                      <SelectItem value="vaste-beglazing">Vaste beglazing</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label className="text-foreground text-sm mb-2 block">Type Glas *</Label>
-                  <Select
-                    value={formData.glasType}
-                    onValueChange={(value) => setFormData({ ...formData, glasType: value })}
-                  >
-                    <SelectTrigger className="bg-background border-0 h-11">
-                      <SelectValue placeholder="Kies glastype" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="dubbel">Dubbel glas</SelectItem>
-                      <SelectItem value="hr++">HR++ glas</SelectItem>
-                      <SelectItem value="triple">Triple glas</SelectItem>
-                      <SelectItem value="geluidswerend">Geluidswerend glas</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <Label className="text-foreground text-sm mb-2 block">Aantal Ramen *</Label>
-                  <Input
-                    type="number"
-                    placeholder="Bijv. 8"
-                    value={formData.aantalRamen}
-                    onChange={(e) => setFormData({ ...formData, aantalRamen: e.target.value })}
-                    className="bg-background border-0 h-11"
-                    required
-                    min="1"
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-foreground text-sm mb-2 block">Totaal m² Glas (schatting) *</Label>
-                  <Select
-                    value={formData.vierkanteMeterRamen}
-                    onValueChange={(value) => setFormData({ ...formData, vierkanteMeterRamen: value })}
-                  >
-                    <SelectTrigger className="bg-background border-0 h-11">
-                      <SelectValue placeholder="Selecteer oppervlakte" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="5-10">5-10 m²</SelectItem>
-                      <SelectItem value="10-15">10-15 m²</SelectItem>
-                      <SelectItem value="15-20">15-20 m²</SelectItem>
-                      <SelectItem value="20-30">20-30 m²</SelectItem>
-                      <SelectItem value="30-40">30-40 m²</SelectItem>
-                      <SelectItem value="40+">40+ m²</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-3">
-                  <Label className="text-foreground text-sm block">Extra Services</Label>
-                  
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="montage"
-                      checked={formData.montage}
-                      onCheckedChange={(checked) => setFormData({ ...formData, montage: checked as boolean })}
-                      className="border-input data-[state=checked]:bg-[#4285f4] data-[state=checked]:text-white"
-                    />
-                    <label htmlFor="montage" className="text-sm text-foreground cursor-pointer">
-                      Montage (aangeraden)
-                    </label>
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <Checkbox
-                      id="afvoer"
-                      checked={formData.afvoerOudeKozijnen}
-                      onCheckedChange={(checked) => setFormData({ ...formData, afvoerOudeKozijnen: checked as boolean })}
-                      className="border-input data-[state=checked]:bg-[#4285f4] data-[state=checked]:text-white"
-                    />
-                    <label htmlFor="afvoer" className="text-sm text-foreground cursor-pointer">
-                      Afvoer oude kozijnen
-                    </label>
-                  </div>
-                </div>
+          <div className="px-4 sm:px-6 lg:px-8 py-6">
+            <div className="mb-4">
+              <div className="flex justify-between text-xs text-foreground mb-2">
+                <span className={currentStep >= 1 ? "font-bold" : ""}>Woningtype</span>
+                <span className={currentStep >= 2 ? "font-bold" : ""}>Kozijnen</span>
+                <span className={currentStep >= 3 ? "font-bold" : ""}>Glas m²</span>
+                <span className={currentStep >= 4 ? "font-bold" : ""}>Glastype</span>
+                <span className={currentStep >= 5 ? "font-bold" : ""}>Foto's</span>
+                <span className={currentStep >= 6 ? "font-bold" : ""}>Offerte</span>
               </div>
-            )}
+              <Progress 
+                value={progressPercentage} 
+                className="h-2 bg-gray-200 [&>div]:bg-[#4285f4]" 
+              />
+            </div>
 
-            {currentStep === 2 && (
-              <div className="space-y-2">
-                <div>
-                  <Label className="text-foreground text-xs sm:text-sm font-medium mb-1 block">Upload foto's *</Label>
-                  <p className="text-xs text-muted-foreground mb-2">
-                    Minimaal 1 foto (binnen of buiten)
+            <form className="space-y-4">
+              {/* Stap 1: Woningtype */}
+              {currentStep === 1 && (
+                <div className="space-y-4">
+                  <Label className="text-foreground text-base font-semibold mb-3 block">
+                    Wat voor type woning heeft u?
+                  </Label>
+                  <div className="grid grid-cols-1 gap-3">
+                    {Object.entries(WONINGTYPE_DATA).map(([key, value]) => (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => {
+                          setFormData({ 
+                            ...formData, 
+                            woningtype: key,
+                            aantalKozijnen: "", // Reset
+                            glasoppervlakte: "" // Reset
+                          })
+                        }}
+                        className={`p-4 border-2 rounded-lg text-left transition-all ${
+                          formData.woningtype === key
+                            ? 'border-[#4285f4] bg-blue-50'
+                            : 'border-gray-200 hover:border-[#4285f4]'
+                        }`}
+                      >
+                        <div className="font-semibold text-gray-900">{value.label}</div>
+                        <div className="text-sm text-gray-600 mt-1">
+                          {value.kozijnenRange.min}-{value.kozijnenRange.max} kozijnen · {value.glasRange.min}-{value.glasRange.max} m² glas
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Stap 2: Aantal Kozijnen */}
+              {currentStep === 2 && (
+                <div className="space-y-4">
+                  <Label className="text-foreground text-base font-semibold mb-3 block">
+                    Hoeveel kozijnen wilt u vervangen?
+                  </Label>
+                  <Select
+                    value={formData.aantalKozijnen}
+                    onValueChange={(value) => setFormData({ ...formData, aantalKozijnen: value })}
+                  >
+                    <SelectTrigger className="bg-background border-0 h-12 text-base">
+                      <SelectValue placeholder="Kies aantal kozijnen" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getKozijnenOptions().map(num => (
+                        <SelectItem key={num} value={num.toString()}>
+                          {num} kozijnen
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Stap 3: Glasoppervlakte */}
+              {currentStep === 3 && (
+                <div className="space-y-4">
+                  <Label className="text-foreground text-base font-semibold mb-3 block">
+                    Totale glasoppervlakte (alle ramen samen)
+                  </Label>
+                  <Select
+                    value={formData.glasoppervlakte}
+                    onValueChange={(value) => setFormData({ ...formData, glasoppervlakte: value })}
+                  >
+                    <SelectTrigger className="bg-background border-0 h-12 text-base">
+                      <SelectValue placeholder="Kies glasoppervlakte" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {getGlasoppervlakteOptions().map(num => (
+                        <SelectItem key={num} value={num.toString()}>
+                          {num} m²
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-gray-500 mt-2">
+                    💡 Niet zeker? Kies een schatting - we bespreken de exacte maten in het adviesgesprek
                   </p>
+                </div>
+              )}
+
+              {/* Stap 4: Glastype */}
+              {currentStep === 4 && (
+                <div className="space-y-4">
+                  <Label className="text-foreground text-base font-semibold mb-3 block">
+                    Welk type glas wenst u?
+                  </Label>
+                  <div className="grid grid-cols-1 gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, glasType: 'hr++' })}
+                      className={`p-4 border-2 rounded-lg text-left transition-all ${
+                        formData.glasType === 'hr++'
+                          ? 'border-[#4285f4] bg-blue-50'
+                          : 'border-gray-200 hover:border-[#4285f4]'
+                      }`}
+                    >
+                      <div className="font-semibold text-gray-900">HR++ glas</div>
+                      <div className="text-sm text-gray-600 mt-1">
+                        Standaard isolatie - inbegrepen in prijs
+                      </div>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setFormData({ ...formData, glasType: 'hr+++' })}
+                      className={`p-4 border-2 rounded-lg text-left transition-all ${
+                        formData.glasType === 'hr+++'
+                          ? 'border-[#4285f4] bg-blue-50'
+                          : 'border-gray-200 hover:border-[#4285f4]'
+                      }`}
+                    >
+                      <div className="font-semibold text-gray-900">HR+++ glas</div>
+                      <div className="text-sm text-gray-600 mt-1">
+                        Beste isolatie - +10% op totaalprijs
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {/* Stap 5: Foto Upload (optioneel) */}
+              {currentStep === 5 && (
+                <div className="space-y-4">
+                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <p className="text-sm font-semibold text-gray-900 mb-1">
+                      📸 Upload foto's voor AI preview (optioneel maar aanbevolen!)
+                    </p>
+                    <p className="text-xs text-gray-600">
+                      Zie hoe je nieuwe kozijnen eruitzien met AI technologie ✨
+                    </p>
+                  </div>
+
                   <PhotoUpload 
                     onPhotosChange={setPhotos}
                     maxPhotos={5}
-                    minPhotos={1}
+                    minPhotos={0}
                   />
-                </div>
-                
-                {isAnalyzing && (
-                  <Card className="p-4 bg-primary/5 border-primary/20">
-                    <div className="flex items-center gap-3">
-                      <Loader2 className="w-5 h-5 text-primary animate-spin" />
-                      <div>
-                        <p className="text-sm font-medium text-foreground">
-                          AI analyseert uw foto's en genereert preview...
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          Dit kan 30-60 seconden duren
-                        </p>
+                  
+                  {isAnalyzing && (
+                    <Card className="p-4 bg-primary/5 border-primary/20">
+                      <div className="flex items-center gap-3">
+                        <Loader2 className="w-5 h-5 text-primary animate-spin" />
+                        <div>
+                          <p className="text-sm font-medium text-foreground">
+                            AI analyseert uw foto's en genereert preview...
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            Dit kan 30-60 seconden duren
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                  </Card>
+                    </Card>
+                  )}
+
+                  <Button
+                    type="button"
+                    onClick={handleSkipPhotos}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Overslaan - ga naar prijsindicatie →
+                  </Button>
+                </div>
+              )}
+
+              {/* Navigation Buttons */}
+              <div className="flex gap-2 pt-2 sm:pt-3">
+                {currentStep > 1 && currentStep < 6 && !isAnalyzing && (
+                  <Button
+                    type="button"
+                    onClick={handlePrevious}
+                    variant="outline"
+                    className="flex-1 bg-muted hover:bg-muted/90 text-foreground border-0 h-10 text-sm"
+                  >
+                    <ChevronLeft className="w-4 h-4 mr-1" />
+                    Vorige
+                  </Button>
+                )}
+                {currentStep < 5 && (
+                  <Button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={
+                      (currentStep === 1 && !formData.woningtype) ||
+                      (currentStep === 2 && !formData.aantalKozijnen) ||
+                      (currentStep === 3 && !formData.glasoppervlakte) ||
+                      (currentStep === 4 && !formData.glasType)
+                    }
+                    className="flex-1 bg-[#4285f4] hover:bg-[#3367d6] text-white font-bold h-10 text-sm"
+                  >
+                    Volgende
+                    <ChevronRight className="w-4 h-4 ml-1" />
+                  </Button>
+                )}
+                {currentStep === 5 && photos.length > 0 && (
+                  <Button
+                    type="button"
+                    onClick={handleNext}
+                    disabled={isAnalyzing}
+                    className="flex-1 bg-[#4285f4] hover:bg-[#3367d6] text-white font-bold h-10 text-sm"
+                  >
+                    {isAnalyzing ? (
+                      <>
+                        <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                        Genereren...
+                      </>
+                    ) : (
+                      <>
+                        AI Preview Genereren
+                        <Sparkles className="w-4 h-4 ml-2" />
+                      </>
+                    )}
+                  </Button>
                 )}
               </div>
-            )}
-
-            <div className="flex gap-2 pt-2 sm:pt-3">
-              {currentStep > 1 && !isAnalyzing && (
-                <Button
-                  type="button"
-                  onClick={handlePrevious}
-                  variant="outline"
-                  className="flex-1 bg-muted hover:bg-muted/90 text-foreground border-0 h-10 text-sm"
-                >
-                  <ChevronLeft className="w-4 h-4 mr-1" />
-                  Vorige
-                </Button>
-              )}
-              <Button
-                type="button"
-                onClick={handleNext}
-                disabled={
-                  (currentStep === 1 && (!formData.materiaal || !formData.kleur || !formData.kozijnType || !formData.glasType || !formData.aantalRamen || !formData.vierkanteMeterRamen)) ||
-                  (currentStep === 2 && (!formData.naam || !formData.email || !formData.telefoon)) ||
-                  (currentStep === 3 && photos.length < 1) ||
-                  isAnalyzing
-                }
-                className="flex-1 bg-[#4285f4] hover:bg-[#3367d6] text-white font-bold h-10 text-sm disabled:opacity-50"
-              >
-                {isAnalyzing ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    <span className="hidden sm:inline">Analyseren & Genereren...</span>
-                    <span className="sm:hidden">Bezig...</span>
-                  </>
-                ) : (
-                  <>
-                    <span className="hidden sm:inline">{currentStep === 3 ? "Bereken Prijs & Preview" : "Volgende"}</span>
-                    <span className="sm:hidden">{currentStep === 3 ? "Bereken" : "Volgende"}</span>
-                    {currentStep < 3 && <ChevronRight className="w-4 h-4 ml-1" />}
-                  </>
-                )}
-              </Button>
-            </div>
-          </form>
+            </form>
           </div>
         </>
       ) : (
-        <div className="text-center space-y-6">
-          <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full mb-2">
+        // Stap 6: Resultaat
+        <div className="p-6 space-y-6">
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full mb-4">
               <Check className="w-4 h-4" />
-              <span className="text-sm font-semibold">AI Analyse & Preview Klaar</span>
+              <span className="text-sm font-semibold">Berekening Klaar!</span>
             </div>
 
-            <h2 className="font-bold text-2xl text-foreground">Uw Instant Offerte:</h2>
-
-          <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-lg p-6 border-2 border-primary/20">
-            <p className="text-4xl font-bold text-primary mb-2">
-              €{priceResult?.total || '4.500'}
-            </p>
-            <p className="text-sm text-muted-foreground">
-              Totale offerte voor {formData.aantalRamen} {formData.materiaal} raamkozijnen
-            </p>
-          </div>
-
-          <div className="bg-background rounded-lg p-4 space-y-2 text-left">
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Kozijnen ({formData.materiaal})</span>
-              <span className="font-medium">€{priceResult?.breakdown.kozijnen || 2800}</span>
-            </div>
-            <div className="flex justify-between text-sm">
-              <span className="text-muted-foreground">Glas ({formData.glasType})</span>
-              <span className="font-medium">€{priceResult?.breakdown.glas || 900}</span>
-            </div>
-            {formData.montage && (
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Montage</span>
-                <span className="font-medium">€{priceResult?.breakdown.montage || 600}</span>
+            {/* Prijs Indicatie */}
+            {priceRange && (
+              <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl p-6 mb-6">
+                <h3 className="text-lg font-semibold text-gray-900 mb-4">
+                  💰 Uw Prijsindicatie
+                </h3>
+                <div className="flex items-center justify-center gap-4 mb-4">
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-1">Vanaf</p>
+                    <p className="text-3xl font-bold text-[#4285f4]">
+                      €{priceRange.min.toLocaleString('nl-NL')}
+                    </p>
+                  </div>
+                  <div className="text-2xl text-gray-400">-</div>
+                  <div className="text-center">
+                    <p className="text-sm text-gray-600 mb-1">Tot</p>
+                    <p className="text-3xl font-bold text-[#4285f4]">
+                      €{priceRange.max.toLocaleString('nl-NL')}
+                    </p>
+                  </div>
+                </div>
+                <div className="text-sm text-gray-700 space-y-1">
+                  <p>✓ Vanaf-prijs: basis kunststof kozijnen</p>
+                  <p>✓ Tot-prijs: premium opties & afwerking</p>
+                  <p className="font-semibold mt-3">📞 Exacte prijs bepalen we in gratis adviesgesprek (15 min)</p>
+                </div>
               </div>
             )}
-            {formData.afvoerOudeKozijnen && (
-            <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Afvoer oude kozijnen</span>
-                <span className="font-medium">€{priceResult?.breakdown.afvoer || 200}</span>
-            </div>
-            )}
-          </div>
 
-          {/* Voor & Na Vergelijking */}
-          {analysisResults.length > 0 && (
-            <div className="bg-background rounded-lg p-4 text-left border-2 border-primary/20">
-              <h3 className="font-semibold text-base text-foreground mb-3">🎨 Voor & Na: Uw nieuwe {formData.materiaal} kozijnen</h3>
-              <div className="space-y-6">
-                {analysisResults.map((result, idx) => (
-                  <div key={idx} className="space-y-3">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      {/* Originele foto */}
+            {/* AI Preview (als foto's geüpload) */}
+            {analysisResults.length > 0 && (
+              <div className="bg-background rounded-lg p-4 text-left border-2 border-primary/20 mb-6">
+                <h3 className="font-semibold text-base text-foreground mb-3">🎨 AI Preview: Uw nieuwe kozijnen</h3>
+                <div className="space-y-4">
+                  {analysisResults.map((result, idx) => (
+                    <div key={idx} className="grid grid-cols-2 gap-3">
                       <div className="space-y-2">
-                        <div 
-                          className="relative rounded-lg overflow-hidden border-2 border-border group"
-                        >
+                        <div className="relative rounded-lg overflow-hidden border-2 border-border">
                           <img
                             src={result.url}
-                            alt={`Huidige kozijnen ${idx + 1}`}
-                            className="w-full h-auto object-contain max-h-64 cursor-pointer"
+                            alt={`Huidig ${idx + 1}`}
+                            className="w-full h-32 object-cover cursor-pointer"
                             onClick={() => setEnlargedImage(result.url)}
                           />
-                          <div className="absolute top-2 right-2 flex gap-2">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleShare(result.url, 'Huidige kozijnen')
-                              }}
-                              className="bg-[#4285f4]/80 p-1.5 rounded-full hover:bg-[#4285f4] transition-colors"
-                              aria-label="Deel huidige kozijn foto"
-                              title="Deel foto"
-                            >
-                              <Share2 className="w-4 h-4 text-white" />
-                            </button>
-                            <button
-                              onClick={() => setEnlargedImage(result.url)}
-                              className="bg-[#4285f4]/80 p-1.5 rounded-full hover:bg-[#4285f4] transition-colors"
-                              aria-label="Vergroot huidige kozijn foto"
-                              title="Vergroot foto"
-                            >
-                              <ZoomIn className="w-4 h-4 text-white" />
-                            </button>
-                          </div>
                         </div>
-                        <p className="text-sm text-center text-muted-foreground font-medium">
-                          📸 Huidige kozijnen
-                        </p>
+                        <p className="text-xs text-center text-muted-foreground">📸 Huidig</p>
                       </div>
-
-                      {/* AI Preview */}
                       <div className="space-y-2">
-                        <div 
-                          className="relative rounded-lg overflow-hidden border-2 border-border group"
-                        >
+                        <div className="relative rounded-lg overflow-hidden border-2 border-primary">
                           <img
                             src={result.previewUrl || result.url}
-                            alt={`Nieuwe kozijnen ${idx + 1}`}
-                            className="w-full h-auto object-contain max-h-64 cursor-pointer"
+                            alt={`Nieuw ${idx + 1}`}
+                            className="w-full h-32 object-cover cursor-pointer"
                             onClick={() => setEnlargedImage(result.previewUrl || result.url)}
                           />
-                          <div className="absolute top-2 right-2 flex gap-2">
-                            <button
-                              onClick={(e) => {
-                                e.stopPropagation()
-                                handleShare(result.previewUrl || result.url, 'Nieuwe kozijnen')
-                              }}
-                              className="bg-[#4285f4]/80 p-1.5 rounded-full hover:bg-[#4285f4] transition-colors"
-                              aria-label="Deel nieuwe kozijn preview"
-                              title="Deel preview"
-                            >
-                              <Share2 className="w-4 h-4 text-white" />
-                            </button>
-                            <button
-                              onClick={() => setEnlargedImage(result.previewUrl || result.url)}
-                              className="bg-[#4285f4]/80 p-1.5 rounded-full hover:bg-[#4285f4] transition-colors"
-                              aria-label="Vergroot nieuwe kozijn preview"
-                              title="Vergroot preview"
-                            >
-                              <ZoomIn className="w-4 h-4 text-white" />
-                            </button>
-                          </div>
+                        </div>
+                        <p className="text-xs text-center text-primary font-medium">✨ Nieuw</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                        <p className="text-sm text-center text-primary font-medium">
-                          ✨ Nieuwe kozijnen
-                        </p>
-                </div>
-                </div>
-                </div>
-                ))}
-                </div>
-              <div className="mt-4 p-3 bg-primary/5 rounded-lg">
-                <p className="text-xs text-foreground text-center">
-                  ✨ <strong>Powered by Google Gemini "Nano Banana"</strong> - Deze previews zijn gegenereerd door AI op basis van uw gekozen specificaties: {formData.materiaal} kozijnen in {formData.kleur} met {formData.glasType}.
+                <p className="text-xs text-gray-600 mt-3 text-center">
+                  Powered by Google Gemini AI
                 </p>
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
-
+          {/* Contact & Belafspraak */}
           {!leadSaved && (
-            <div className="mt-6 space-y-4">
-              {/* Contact Informatie */}
+            <div className="space-y-4">
               <div className="bg-background rounded-lg p-4 space-y-3 text-left border-2 border-primary/20">
                 <h3 className="font-semibold text-base text-foreground mb-2">📋 Uw Contactgegevens</h3>
                 
@@ -714,12 +691,12 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
                 </div>
               </div>
 
-              {/* Appointment Booking */}
+              {/* Belafspraak */}
               <div className="bg-primary/5 rounded-lg p-4 border-2 border-primary/20">
                 <div className="mb-3">
-                  <p className="text-sm font-semibold text-foreground mb-2">📅 Plan gratis adviesgesprek voor precieze offerte</p>
+                  <p className="text-sm font-semibold text-foreground mb-2">📞 Plan gratis belafspraak</p>
                   <p className="text-xs text-muted-foreground mb-3">
-                    In 15 minuten bepalen we samen de exacte prijs. Deze valt meestal lager uit! 💰
+                    We bellen je op gekozen moment (15 min) om exacte prijs te bespreken. Meestal valt deze lager uit! 💰
                   </p>
                 </div>
                 <AppointmentPicker 
@@ -730,11 +707,12 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             </div>
           )}
 
+          {/* Submit Button */}
           <Button 
             type="button"
             onClick={handleSubmitLead}
-            disabled={!formData.naam || !formData.email || !appointmentDatetime || isSavingLead || leadSaved}
-            className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white font-bold h-12 text-base disabled:opacity-50"
+            disabled={!formData.naam || !formData.email || !formData.telefoon || !appointmentDatetime || isSavingLead || leadSaved}
+            className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white font-bold h-12 text-base"
           >
             {isSavingLead ? (
               <>
@@ -744,32 +722,29 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
             ) : leadSaved ? (
               <>
                 <Check className="w-4 h-4 mr-2" />
-                Verzonden! Check je email voor de afspraakbevestiging
+                Verzonden! Check je email voor bevestiging
               </>
             ) : (
-              'Bevestig Afspraak & Ontvang Offerte'
+              'Bevestig Belafspraak & Ontvang Offerte'
             )}
           </Button>
 
+          {/* Reset */}
           <Button
             variant="ghost"
             onClick={() => {
               setCurrentStep(1)
               setPhotos([])
               setAnalysisResults([])
-              setPriceResult(null)
               setLeadSaved(false)
               setIsSavingLead(false)
               setAppointmentDatetime("")
               setFormData({
-                materiaal: "",
-                kleur: "",
-                kozijnType: "",
-                vierkanteMeterRamen: "",
-                aantalRamen: "",
-                glasType: "",
-                montage: true,
-                afvoerOudeKozijnen: true,
+                woningtype: "",
+                aantalKozijnen: "",
+                glasoppervlakte: "",
+                glasType: "hr++",
+                bedrijfsnaam: "",
                 naam: "",
                 email: "",
                 telefoon: "",
@@ -782,47 +757,29 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
         </div>
       )}
 
-          {/* Lightbox Modal voor vergrote foto's */}
-          {enlargedImage && (
-            <div 
-              className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 backdrop-blur-sm"
+      {/* Lightbox voor vergrote foto's */}
+      {enlargedImage && (
+        <div 
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4"
+          onClick={() => setEnlargedImage(null)}
+        >
+          <div className="relative max-w-7xl max-h-full">
+            <button
               onClick={() => setEnlargedImage(null)}
+              className="absolute -top-12 right-0 text-white hover:text-gray-300 flex items-center gap-2"
             >
-              <div className="relative max-w-7xl max-h-full">
-                <div className="absolute -top-12 right-0 flex items-center gap-4">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation()
-                      handleShare(enlargedImage, 'Mijn nieuwe kozijnen')
-                    }}
-                    className="text-white hover:text-gray-300 flex items-center gap-2 text-lg"
-                  >
-                    <Share2 className="w-5 h-5" />
-                    Delen
-                  </button>
-                  <button
-                    onClick={() => setEnlargedImage(null)}
-                    className="text-white hover:text-gray-300 flex items-center gap-2 text-lg"
-                  >
-                    <X className="w-6 h-6" />
-                    Sluiten
-                  </button>
-                </div>
-                <img
-                  src={enlargedImage}
-                  alt="Vergrote weergave"
-                  className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
-                  onClick={(e) => e.stopPropagation()}
-                />
-                <p className="text-white text-center mt-4 text-sm">
-                  Klik buiten de foto om te sluiten
-                </p>
-              </div>
+              <X className="w-6 h-6" />
+              Sluiten
+            </button>
+            <img
+              src={enlargedImage}
+              alt="Vergroot"
+              className="max-w-full max-h-[90vh] object-contain rounded-lg"
+              onClick={(e) => e.stopPropagation()}
+            />
+          </div>
         </div>
       )}
     </Card>
   )
 }
-
-
-
