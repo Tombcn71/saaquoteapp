@@ -1,9 +1,6 @@
-import { AIQuoteForm } from '@/components/ai-quote-form'
-import { VloerenQuoteForm } from '@/components/vloeren-quote-form'
-import { SchilderwerkQuoteForm } from '@/components/schilderwerk-quote-form'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { formConfigs } from '@/lib/form-configs'
+import { HairSalonWidget } from '@/components/hair-salon-widget'
 import { neon } from '@neondatabase/serverless'
+import { Sparkles } from 'lucide-react'
 
 function getDatabase() {
   const connectionString = process.env.DATABASE_URL
@@ -12,16 +9,30 @@ function getDatabase() {
 }
 
 export default async function EmbedPage({ params }: { params: { widgetId: string } }) {
-  // Fetch widget to get company_id
+  // Fetch widget to get company info
   const sql = getDatabase()
   let companyId = undefined
+  let companyName = undefined
+  let primaryColor = undefined
   
   try {
     const widgets = await sql`
-      SELECT company_id FROM widgets WHERE id = ${params.widgetId}
+      SELECT w.*, c.name as company_name, c.widget_primary_color
+      FROM widgets w
+      LEFT JOIN companies c ON w.company_id = c.id
+      WHERE w.id = ${params.widgetId}
     `
     if (widgets.length > 0) {
       companyId = widgets[0].company_id
+      companyName = widgets[0].company_name
+      primaryColor = widgets[0].primary_color || widgets[0].widget_primary_color
+      
+      // Update view count
+      await sql`
+        UPDATE widgets 
+        SET views = views + 1, updated_at = NOW()
+        WHERE id = ${params.widgetId}
+      `
     }
   } catch (error) {
     console.error('Error fetching widget:', error)
@@ -41,49 +52,21 @@ export default async function EmbedPage({ params }: { params: { widgetId: string
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-4">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
-              <span className="text-2xl">✨</span>
+              <Sparkles className="w-6 h-6 text-white" />
             </div>
             <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
               NanoBanana
             </span>
           </div>
-          <p className="text-gray-400 text-sm">Powered by Google Gemini Nano</p>
+          <p className="text-gray-400 text-sm">Powered by AI · On-Device Processing</p>
         </div>
 
-        <Tabs defaultValue="kozijnen" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 mb-4 bg-slate-900/50 border border-purple-500/20">
-            <TabsTrigger 
-              value="kozijnen" 
-              className="text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-400"
-            >
-              {formConfigs.kozijnen.icon} Kozijnen
-            </TabsTrigger>
-            <TabsTrigger 
-              value="vloeren" 
-              className="text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-400"
-            >
-              {formConfigs.vloeren.icon} Vloeren
-            </TabsTrigger>
-            <TabsTrigger 
-              value="schilderwerk" 
-              className="text-sm data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-400"
-            >
-              {formConfigs.schilderwerk.icon} Schilderwerk
-            </TabsTrigger>
-          </TabsList>
-          
-          <TabsContent value="kozijnen">
-            <AIQuoteForm widgetId={params.widgetId} companyId={companyId} />
-          </TabsContent>
-          
-          <TabsContent value="vloeren">
-            <VloerenQuoteForm widgetId={params.widgetId} companyId={companyId} />
-          </TabsContent>
-          
-          <TabsContent value="schilderwerk">
-            <SchilderwerkQuoteForm widgetId={params.widgetId} companyId={companyId} />
-          </TabsContent>
-        </Tabs>
+        <HairSalonWidget 
+          widgetId={params.widgetId}
+          companyId={companyId}
+          companyName={companyName}
+          primaryColor={primaryColor}
+        />
 
         {/* Powered by footer */}
         <div className="text-center mt-8 text-gray-500 text-xs">
@@ -93,4 +76,3 @@ export default async function EmbedPage({ params }: { params: { widgetId: string
     </div>
   )
 }
-
