@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     console.log("Starting Replicate haircut transformation...")
 
     const output = await replicate.run(
-      "flux-kontext-apps/change-haircut:latest",
+      "flux-kontext-apps/change-haircut",
       {
         input: {
           image: image,
