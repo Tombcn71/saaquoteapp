@@ -204,6 +204,33 @@ export function HairSalonWidget({
       </CardHeader>
       
       <CardContent className="space-y-6">
+        {/* Hairstyle Selection - ALWAYS VISIBLE */}
+        <div className="space-y-2">
+          <Label htmlFor="hairstyle" className="text-white">Choose your desired hairstyle</Label>
+          <Select value={prompt} onValueChange={setPrompt}>
+            <SelectTrigger className="bg-slate-950/50 border-purple-500/20 text-white">
+              <SelectValue placeholder="Select a hairstyle" />
+            </SelectTrigger>
+            <SelectContent className="bg-slate-800 border-purple-500/20 text-white">
+              <SelectItem value="short pixie cut">Short Pixie Cut</SelectItem>
+              <SelectItem value="bob haircut">Bob Haircut</SelectItem>
+              <SelectItem value="long wavy hair">Long Wavy Hair</SelectItem>
+              <SelectItem value="shoulder length layers">Shoulder Length Layers</SelectItem>
+              <SelectItem value="buzz cut">Buzz Cut</SelectItem>
+              <SelectItem value="curly afro">Curly Afro</SelectItem>
+              <SelectItem value="slicked back undercut">Slicked Back Undercut</SelectItem>
+              <SelectItem value="messy textured hair">Messy Textured Hair</SelectItem>
+              <SelectItem value="long straight hair">Long Straight Hair</SelectItem>
+              <SelectItem value="side part professional">Side Part Professional</SelectItem>
+              <SelectItem value="shaggy layers">Shaggy Layers</SelectItem>
+              <SelectItem value="french crop">French Crop</SelectItem>
+              <SelectItem value="modern mullet">Modern Mullet</SelectItem>
+              <SelectItem value="bald fade">Bald Fade</SelectItem>
+              <SelectItem value="man bun">Man Bun</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
         {/* Upload Section */}
         {!selectedImage ? (
           <div className="border-2 border-dashed border-purple-500/30 rounded-lg p-12 text-center hover:border-purple-500/50 transition-colors">
@@ -228,33 +255,6 @@ export function HairSalonWidget({
           </div>
         ) : (
           <>
-            {/* Hairstyle Selection */}
-            <div className="space-y-2">
-              <Label htmlFor="hairstyle" className="text-white">Choose your desired hairstyle</Label>
-              <Select value={prompt} onValueChange={setPrompt}>
-                <SelectTrigger className="bg-slate-950/50 border-purple-500/20 text-white">
-                  <SelectValue placeholder="Select a hairstyle" />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-900 border-purple-500/20">
-                  <SelectItem value="short pixie cut">Short Pixie Cut</SelectItem>
-                  <SelectItem value="bob haircut">Bob Haircut</SelectItem>
-                  <SelectItem value="long wavy hair">Long Wavy Hair</SelectItem>
-                  <SelectItem value="shoulder length layers">Shoulder Length Layers</SelectItem>
-                  <SelectItem value="buzz cut">Buzz Cut</SelectItem>
-                  <SelectItem value="curly afro">Curly Afro</SelectItem>
-                  <SelectItem value="slicked back undercut">Slicked Back Undercut</SelectItem>
-                  <SelectItem value="messy textured hair">Messy Textured Hair</SelectItem>
-                  <SelectItem value="long straight hair">Long Straight Hair</SelectItem>
-                  <SelectItem value="side part professional">Side Part Professional</SelectItem>
-                  <SelectItem value="shaggy layers">Shaggy Layers</SelectItem>
-                  <SelectItem value="french crop">French Crop</SelectItem>
-                  <SelectItem value="modern mullet">Modern Mullet</SelectItem>
-                  <SelectItem value="bald fade">Bald Fade</SelectItem>
-                  <SelectItem value="man bun">Man Bun</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
             {/* Image Preview Grid */}
             <div className="grid md:grid-cols-2 gap-6">
               {/* Original */}
