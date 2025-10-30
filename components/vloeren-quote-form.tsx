@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
@@ -56,6 +56,16 @@ export function VloerenQuoteForm({ companyId, widgetId, className = '' }: Vloere
   const handleBack = () => {
     setStep(step - 1)
   }
+
+  // Auto-submit wanneer afspraak bevestigd is
+  useEffect(() => {
+    if (appointmentDatetime && formData.name && formData.email && !loading && !submitted) {
+      const timer = setTimeout(() => {
+        handleSubmit()
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [appointmentDatetime])
 
   const handleSubmit = async () => {
     setLoading(true)

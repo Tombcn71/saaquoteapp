@@ -96,6 +96,17 @@ export function AIQuoteForm({ className = "", companyId, widgetId }: AIQuoteForm
     window.scrollTo({ top: 0, behavior: 'auto' })
   }, [currentStep])
 
+  // Auto-submit wanneer afspraak bevestigd is
+  useEffect(() => {
+    if (appointmentDatetime && formData.naam && formData.email && formData.telefoon && !isSavingLead && !leadSaved) {
+      // Kleine delay zodat gebruiker de groene bevestiging ziet
+      const timer = setTimeout(() => {
+        handleSubmitLead()
+      }, 1000)
+      return () => clearTimeout(timer)
+    }
+  }, [appointmentDatetime])
+
   const handleSubmitLead = async () => {
     if (!formData.naam || !formData.email || !appointmentDatetime) {
       alert('Vul alstublieft uw contactgegevens in en kies een afspraak')
