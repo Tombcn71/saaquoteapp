@@ -23,7 +23,12 @@ export async function POST(req: Request) {
       model: "flux-kontext-apps/change-haircut",
       input: {
         input_image: image,
-        prompt: prompt || "Change the hairstyle to a modern professional cut",
+        haircut: prompt || "modern professional cut",
+        hair_color: "No change",
+        gender: "none",
+        aspect_ratio: "match_input_image",
+        output_format: "png",
+        safety_tolerance: 2
       },
       // Optional: add webhook URL when deployed
       // webhook: `${process.env.NEXTAUTH_URL}/api/replicate/webhook`,
