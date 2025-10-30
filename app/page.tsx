@@ -178,9 +178,9 @@ export default async function HomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="relative py-20 px-4 overflow-hidden">
-        {/* Background gradient */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 -z-10" />
+      <section className="relative py-20 px-4 overflow-hidden bg-white">
+        {/* Background gradient - subtle */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50/30 via-white to-purple-50/30 -z-10" />
         
         <div className="container mx-auto max-w-6xl">
           <div className="text-center max-w-3xl mx-auto mb-12">
