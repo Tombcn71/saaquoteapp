@@ -105,3 +105,33 @@ export function calculatePriceFromAI(
   }
 }
 
+// Simple wrapper for chatbot
+export function calculateKozijnenPrice(params: {
+  woningtype?: string
+  aantalKozijnen: string
+  glasoppervlakte: string
+  glasType: string
+  materiaal?: string
+  montage?: boolean
+  afvoerOudeKozijnen?: boolean
+}): { totaal: number; breakdown: any } {
+  const formData = {
+    postcode: '1000AA',
+    materiaal: params.materiaal || 'kunststof',
+    kleur: 'wit',
+    kozijnType: 'draaikiepraam',
+    vierkanteMeterRamen: params.glasoppervlakte,
+    aantalRamen: params.aantalKozijnen,
+    glasType: params.glasType,
+    montage: params.montage !== false,
+    afvoerOudeKozijnen: params.afvoerOudeKozijnen || false
+  }
+  
+  const result = calculatePriceFromAI(formData, [])
+  
+  return {
+    totaal: result.total,
+    breakdown: result.breakdown
+  }
+}
+
