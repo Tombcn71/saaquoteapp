@@ -1,8 +1,9 @@
 import { NextResponse } from 'next/server'
-import OpenAI from 'openai'
+import OpenAI from 'openai' // OpenAI GPT-4 voor conversaties
 import { GoogleGenerativeAI } from '@google/generative-ai'
 import { calculateKozijnenPrice } from '@/lib/pricing/ai-calculator'
 
+// Chatbot API route
 export const maxDuration = 60
 
 const openai = new OpenAI({
