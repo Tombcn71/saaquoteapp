@@ -18,63 +18,72 @@ export default async function HomePage() {
       title: "Hair Salons & Stylists",
       subtitle: "Try This Hairstyle - AI Preview",
       description: "Quick, on-device face and hairline analysis to realistically project new cuts and colors instantly.",
-      gradient: "from-pink-500/20 to-purple-500/20"
+      gradient: "from-pink-500/20 to-purple-500/20",
+      demoUrl: "/demo/hair-salon"
     },
     {
       icon: <Palette className="w-8 h-8" />,
       title: "Artists & Galleries",
       subtitle: "My Art on the Wall",
       description: "On-device wall analysis (size, color, lighting) to place artwork at the correct scale and lighting.",
-      gradient: "from-purple-500/20 to-blue-500/20"
+      gradient: "from-purple-500/20 to-blue-500/20",
+      demoUrl: "/demo/art-gallery"
     },
     {
       icon: <Smile className="w-8 h-8" />,
       title: "Dentists & Orthodontists",
       subtitle: "My Smile AI View",
       description: "Fast processing of dental photos to instantly project veneers or teeth whitening results.",
-      gradient: "from-blue-500/20 to-cyan-500/20"
+      gradient: "from-blue-500/20 to-cyan-500/20",
+      demoUrl: "/demo/dentist"
     },
     {
       icon: <HandMetal className="w-8 h-8" />,
       title: "Nail Studios",
       subtitle: "My Nails Preview",
       description: "Real-time hand and nail tracking to instantly visualize different colors, shapes, and nail art designs.",
-      gradient: "from-cyan-500/20 to-teal-500/20"
+      gradient: "from-cyan-500/20 to-teal-500/20",
+      demoUrl: "/demo/nail-studio"
     },
     {
       icon: <UtensilsCrossed className="w-8 h-8" />,
       title: "Restaurants & Chefs",
       subtitle: "Meal on Table Visualization",
       description: "3D dish model projection on the customer's own table to show portion size and presentation.",
-      gradient: "from-orange-500/20 to-red-500/20"
+      gradient: "from-orange-500/20 to-red-500/20",
+      demoUrl: "/demo/restaurant"
     },
     {
       icon: <Sofa className="w-8 h-8" />,
       title: "Furniture Stores",
       subtitle: "Furniture in My Room",
       description: "Place 3D furniture models in customer's room (AR functionality) with realistic shadows and lighting.",
-      gradient: "from-amber-500/20 to-orange-500/20"
+      gradient: "from-amber-500/20 to-orange-500/20",
+      demoUrl: "/demo/furniture"
     },
     {
       icon: <Home className="w-8 h-8" />,
       title: "House Painters",
       subtitle: "Color Tester Widget",
       description: "Project colors or patterns directly on wall sections seen through the camera. Quick existing wall color recognition.",
-      gradient: "from-green-500/20 to-emerald-500/20"
+      gradient: "from-green-500/20 to-emerald-500/20",
+      demoUrl: "/demo/house-painter"
     },
     {
       icon: <Leaf className="w-8 h-8" />,
       title: "Florists & Garden Centers",
       subtitle: "Plant in Pot Matcher",
       description: "Scan a plant and pot to visualize how the combination looks in the customer's space.",
-      gradient: "from-emerald-500/20 to-green-500/20"
+      gradient: "from-emerald-500/20 to-green-500/20",
+      demoUrl: "/demo/florist"
     },
     {
       icon: <Camera className="w-8 h-8" />,
       title: "Tattoo & Piercing Shops",
       subtitle: "Tattoo on Skin Preview",
       description: "Place tattoo designs at the correct scale on arm, leg, or torso, accounting for skin contours.",
-      gradient: "from-violet-500/20 to-purple-500/20"
+      gradient: "from-violet-500/20 to-purple-500/20",
+      demoUrl: "/demo/tattoo"
     }
   ]
 
@@ -297,28 +306,29 @@ export default async function HomePage() {
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {industries.map((industry, index) => (
-              <Card 
-                key={index}
-                className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-purple-500/50 hover:border-purple-500/70 transition-all hover:scale-105 cursor-pointer group relative overflow-hidden"
-              >
-                {/* Colored accent overlay */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${industry.gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
-                
-                <CardHeader className="relative z-10">
-                  <div className={`w-14 h-14 bg-gradient-to-br ${industry.gradient} rounded-xl flex items-center justify-center mb-4 text-white transition-all`}>
-                    {industry.icon}
-                  </div>
-                  <CardTitle className="text-xl text-white mb-2">
-                    {industry.title}
-                  </CardTitle>
-                  <div className="text-sm text-purple-300 font-semibold mb-3">
-                    "{industry.subtitle}"
-                  </div>
-                  <CardDescription className="text-gray-100">
-                    {industry.description}
-                  </CardDescription>
-                </CardHeader>
-              </Card>
+              <Link href={industry.demoUrl} key={index} className="block h-full">
+                <Card 
+                  className="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-purple-500/50 hover:border-purple-500/70 transition-all hover:scale-105 cursor-pointer group relative overflow-hidden h-full"
+                >
+                  {/* Colored accent overlay */}
+                  <div className={`absolute inset-0 bg-gradient-to-br ${industry.gradient} opacity-10 group-hover:opacity-20 transition-opacity`} />
+                  
+                  <CardHeader className="relative z-10">
+                    <div className={`w-14 h-14 bg-gradient-to-br ${industry.gradient} rounded-xl flex items-center justify-center mb-4 text-white transition-all`}>
+                      {industry.icon}
+                    </div>
+                    <CardTitle className="text-xl text-white mb-2">
+                      {industry.title}
+                    </CardTitle>
+                    <div className="text-sm text-purple-300 font-semibold mb-3">
+                      "{industry.subtitle}"
+                    </div>
+                    <CardDescription className="text-gray-100">
+                      {industry.description}
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+              </Link>
             ))}
           </div>
         </div>
