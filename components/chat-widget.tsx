@@ -176,13 +176,24 @@ export function ChatWidget({ companyId, widgetId, companyName = "Demo Bedrijf" }
         {messages.map((message, index) => (
           <div
             key={index}
-            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
+            className={`flex gap-2 ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
+            {/* Bot Avatar - links */}
+            {message.role === 'assistant' && (
+              <div className="flex-shrink-0">
+                <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#4285f4] to-[#3367d6] flex items-center justify-center shadow-md overflow-hidden">
+                  {/* TODO: Replace with actual image */}
+                  {/* <img src="/avatar-salesman.png" alt="Assistant" className="w-full h-full object-cover" /> */}
+                  <span className="text-xl">👨‍💼</span>
+                </div>
+              </div>
+            )}
+            
             <div
-              className={`max-w-[80%] rounded-lg p-3 ${
+              className={`max-w-[75%] rounded-lg p-3 ${
                 message.role === 'user'
-                  ? 'bg-[#4285f4] text-white'
-                  : 'bg-gray-100 text-gray-900'
+                  ? 'bg-[#4285f4] text-white rounded-br-sm'
+                  : 'bg-gray-100 text-gray-900 rounded-bl-sm'
               }`}
             >
               {message.photoUrl && (
@@ -232,9 +243,15 @@ export function ChatWidget({ companyId, widgetId, companyName = "Demo Bedrijf" }
         ))}
         
         {isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-gray-100 text-gray-900 rounded-lg p-3">
-              <Loader2 className="w-5 h-5 animate-spin" />
+          <div className="flex gap-2 justify-start">
+            <div className="flex-shrink-0">
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#4285f4] to-[#3367d6] flex items-center justify-center shadow-md">
+                <span className="text-xl">👨‍💼</span>
+              </div>
+            </div>
+            <div className="bg-gray-100 text-gray-900 rounded-lg rounded-bl-sm p-3 flex items-center gap-2">
+              <Loader2 className="w-4 h-4 animate-spin" />
+              <span className="text-sm">Aan het typen...</span>
             </div>
           </div>
         )}
