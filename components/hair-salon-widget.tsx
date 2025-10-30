@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Upload, Scissors, Loader2, Sparkles, Check } from 'lucide-react'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 interface HairSalonWidgetProps {
   widgetId?: string
@@ -21,7 +22,7 @@ export function HairSalonWidget({
   primaryColor = '#8b5cf6' 
 }: HairSalonWidgetProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const [prompt, setPrompt] = useState('modern professional short haircut')
+  const [prompt, setPrompt] = useState('short pixie cut')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -227,20 +228,31 @@ export function HairSalonWidget({
           </div>
         ) : (
           <>
-            {/* Prompt Input */}
+            {/* Hairstyle Selection */}
             <div className="space-y-2">
-              <Label htmlFor="prompt" className="text-white">Describe your desired hairstyle</Label>
-              <Input
-                id="prompt"
-                type="text"
-                value={prompt}
-                onChange={(e) => setPrompt(e.target.value)}
-                placeholder="e.g., modern professional short haircut"
-                className="bg-slate-950/50 border-purple-500/20 text-white"
-              />
-              <p className="text-gray-400 text-xs">
-                Examples: "long wavy hair", "short pixie cut", "curly afro style", "blonde highlights"
-              </p>
+              <Label htmlFor="hairstyle" className="text-white">Choose your desired hairstyle</Label>
+              <Select value={prompt} onValueChange={setPrompt}>
+                <SelectTrigger className="bg-slate-950/50 border-purple-500/20 text-white">
+                  <SelectValue placeholder="Select a hairstyle" />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-900 border-purple-500/20">
+                  <SelectItem value="short pixie cut">Short Pixie Cut</SelectItem>
+                  <SelectItem value="bob haircut">Bob Haircut</SelectItem>
+                  <SelectItem value="long wavy hair">Long Wavy Hair</SelectItem>
+                  <SelectItem value="shoulder length layers">Shoulder Length Layers</SelectItem>
+                  <SelectItem value="buzz cut">Buzz Cut</SelectItem>
+                  <SelectItem value="curly afro">Curly Afro</SelectItem>
+                  <SelectItem value="slicked back undercut">Slicked Back Undercut</SelectItem>
+                  <SelectItem value="messy textured hair">Messy Textured Hair</SelectItem>
+                  <SelectItem value="long straight hair">Long Straight Hair</SelectItem>
+                  <SelectItem value="side part professional">Side Part Professional</SelectItem>
+                  <SelectItem value="shaggy layers">Shaggy Layers</SelectItem>
+                  <SelectItem value="french crop">French Crop</SelectItem>
+                  <SelectItem value="modern mullet">Modern Mullet</SelectItem>
+                  <SelectItem value="bald fade">Bald Fade</SelectItem>
+                  <SelectItem value="man bun">Man Bun</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Image Preview Grid */}
