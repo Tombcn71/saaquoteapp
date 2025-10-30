@@ -68,8 +68,11 @@ export function HairSalonWidget({
 
       const data = await response.json()
 
-      if (!data.success || !data.predictionId) {
-        setError(data.error || 'Failed to start transformation')
+      console.log('API Response:', data)
+
+      if (!response.ok || !data.success || !data.predictionId) {
+        console.error('API Error:', data)
+        setError(data.error || data.details || 'Failed to start transformation')
         setLoading(false)
         return
       }
