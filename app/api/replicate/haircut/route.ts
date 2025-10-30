@@ -22,7 +22,7 @@ export async function POST(req: Request) {
       "flux-kontext-apps/change-haircut",
       {
         input: {
-          image: image,
+          input_image: image,
           prompt: prompt || "Change the hairstyle to a modern professional cut",
         }
       }
