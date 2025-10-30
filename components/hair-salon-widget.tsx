@@ -72,74 +72,26 @@ export function HairSalonWidget({
       console.log('Response OK:', response.ok)
       console.log('Response Status:', response.status)
       console.log('Data:', JSON.stringify(data, null, 2))
-      console.log('predictionId:', data.predictionId)
       console.log('=== END ===')
 
       if (!response.ok) {
         console.error('Response not OK:', response.status)
-        setError(data.error || data.details || 'Failed to start transformation')
+        setError(data.error || data.details || 'Failed to generate haircut')
         setLoading(false)
         return
       }
 
-      if (!data.success) {
-        console.error('Data.success is false')
-        setError(data.error || data.details || 'Failed to start transformation')
+      if (!data.success || !data.imageUrl) {
+        console.error('No image URL in response!')
+        setError(data.error || 'No image generated')
         setLoading(false)
         return
       }
 
-      if (!data.predictionId) {
-        console.error('No predictionId in response!')
-        console.error('Full data object:', data)
-        setError('No prediction ID received from server')
-        setLoading(false)
-        return
-      }
-
-      // Poll for result
-      const predictionId = data.predictionId
-      console.log('Polling for prediction:', predictionId)
-
-      let attempts = 0
-      const maxAttempts = 60 // 60 * 2 seconds = 2 minutes max
-
-      const pollStatus = async () => {
-        try {
-          const statusResponse = await fetch(`/api/replicate/status/${predictionId}`)
-          const statusData = await statusResponse.json()
-
-          console.log('Status:', statusData.status)
-
-          if (statusData.status === 'succeeded' && statusData.output) {
-            setResult(statusData.output)
-            setLoading(false)
-            return
-          }
-
-          if (statusData.status === 'failed') {
-            setError(statusData.error || 'Generation failed')
-            setLoading(false)
-            return
-          }
-
-          // Still processing, poll again
-          attempts++
-          if (attempts < maxAttempts) {
-            setTimeout(pollStatus, 2000) // Poll every 2 seconds
-          } else {
-            setError('Timeout - please try again')
-            setLoading(false)
-          }
-        } catch (err) {
-          console.error('Polling error:', err)
-          setError('Failed to check status')
-          setLoading(false)
-        }
-      }
-
-      // Start polling
-      setTimeout(pollStatus, 2000)
+      // Show the result!
+      console.log('✅ Got image URL:', data.imageUrl)
+      setResult(data.imageUrl)
+      setLoading(false)
 
     } catch (err: any) {
       console.error('Transform error:', err)

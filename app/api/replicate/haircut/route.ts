@@ -36,40 +36,52 @@ export async function POST(req: Request) {
       gender: "none"
     })
 
-    // Create prediction
-    const prediction = await replicate.predictions.create({
-      model: "flux-kontext-apps/change-haircut",
-      input: {
-        input_image: image,
-        haircut: prompt || "Pixie Cut",
-        hair_color: "No change",
-        gender: "none",
-        aspect_ratio: "match_input_image",
-        output_format: "png",
-        safety_tolerance: 2
+    // Run prediction and WAIT for result
+    console.log("Starting prediction and waiting for result...")
+    
+    const output = await replicate.run(
+      "flux-kontext-apps/change-haircut",
+      {
+        input: {
+          input_image: image,
+          haircut: prompt || "Pixie Cut",
+          hair_color: "No change",
+          gender: "none",
+          aspect_ratio: "match_input_image",
+          output_format: "png",
+          safety_tolerance: 2
+        }
       }
-    })
+    )
 
-    console.log("Prediction created successfully:", {
-      id: prediction.id,
-      status: prediction.status,
-      fullResponse: JSON.stringify(prediction, null, 2)
-    })
+    console.log("=== REPLICATE OUTPUT ===")
+    console.log("Type:", typeof output)
+    console.log("Is Array:", Array.isArray(output))
+    console.log("Full output:", JSON.stringify(output, null, 2))
+    console.log("=== END ===")
 
-    if (!prediction.id) {
-      console.error("ERROR: No prediction ID in response")
+    // Extract image URL
+    let imageUrl: string | null = null
+    
+    if (Array.isArray(output) && output.length > 0) {
+      imageUrl = output[0]
+    } else if (typeof output === 'string') {
+      imageUrl = output
+    }
+
+    if (!imageUrl) {
+      console.error("ERROR: No image URL in output")
       return NextResponse.json({ 
-        error: "No prediction ID received from Replicate",
-        details: "Replicate returned a response but without an ID",
-        fullResponse: prediction
+        error: "No image generated",
+        details: "Replicate completed but returned no image URL",
+        fullOutput: output
       }, { status: 500 })
     }
 
-    console.log("=== Returning success response ===")
+    console.log("=== SUCCESS - Returning image URL ===")
     return NextResponse.json({ 
       success: true, 
-      predictionId: prediction.id,
-      status: prediction.status
+      imageUrl: imageUrl
     })
 
   } catch (error: any) {
