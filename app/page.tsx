@@ -3,15 +3,129 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/lib/auth"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Check, Sparkles, Zap, Users, BarChart3, Code, ArrowRight } from "lucide-react"
-import { AIQuoteForm } from "@/components/ai-quote-form"
-import { VloerenQuoteForm } from "@/components/vloeren-quote-form"
-import { SchilderwerkQuoteForm } from "@/components/schilderwerk-quote-form"
-import { formConfigs } from "@/lib/form-configs"
+import { Badge } from "@/components/ui/badge"
+import { Check, Sparkles, Zap, Users, BarChart3, Bot, ArrowRight, MessageSquare, Calculator, Calendar, Euro, TrendingUp, Shield, Palette, Home as HomeIcon, Hammer, Frame } from "lucide-react"
 
 export default async function HomePage() {
   const session = await getServerSession(authOptions)
+
+  const niches = [
+    {
+      icon: <Palette className="w-12 h-12 text-orange-600" />,
+      name: "Schilders",
+      description: "AI chatbot voor schilderwerk offertes",
+      features: ["m² berekening", "Binnen/buiten", "Spuitwerk"],
+      gradient: "from-orange-500/10 to-red-500/10",
+      demo: "/demo/chat?niche=schilders"
+    },
+    {
+      icon: <HomeIcon className="w-12 h-12 text-blue-600" />,
+      name: "Vloerenleggers",
+      description: "Automatische vloer offertes met AI",
+      features: ["Type vloer", "Vloerverwarming", "Plinten"],
+      gradient: "from-blue-500/10 to-cyan-500/10",
+      demo: "/demo/chat?niche=vloeren"
+    },
+    {
+      icon: <Hammer className="w-12 h-12 text-gray-700" />,
+      name: "Metselaars",
+      description: "Chat assistent voor metselwerk",
+      features: ["Type project", "m² schatting", "Materiaal"],
+      gradient: "from-gray-500/10 to-stone-500/10",
+      demo: "/demo/chat?niche=metselaars"
+    },
+    {
+      icon: <Frame className="w-12 h-12 text-green-600" />,
+      name: "Kozijnen",
+      description: "AI preview voor nieuwe ramen",
+      features: ["Foto analyse", "AI preview", "Prijs calc"],
+      gradient: "from-green-500/10 to-emerald-500/10",
+      demo: "/demo/chat?niche=kozijnen"
+    }
+  ]
+
+  const features = [
+    {
+      icon: <Bot className="w-6 h-6" />,
+      title: "AI Chatbot",
+      description: "OpenAI GPT-4 powered conversaties die leads kwalificeren"
+    },
+    {
+      icon: <Calculator className="w-6 h-6" />,
+      title: "Auto Prijsberekening",
+      description: "Jouw eigen prijslijst, automatisch berekend tijdens chat"
+    },
+    {
+      icon: <Calendar className="w-6 h-6" />,
+      title: "Afspraak Planning",
+      description: "Direct afspraken inplannen vanuit de chat"
+    },
+    {
+      icon: <BarChart3 className="w-6 h-6" />,
+      title: "Lead Dashboard",
+      description: "Alle leads en afspraken in één overzicht"
+    },
+    {
+      icon: <MessageSquare className="w-6 h-6" />,
+      title: "Foto Analyse",
+      description: "AI analyseert klant foto's en schat het werk"
+    },
+    {
+      icon: <Zap className="w-6 h-6" />,
+      title: "5min Setup",
+      description: "Kopieer widget code, plak op je site - klaar!"
+    }
+  ]
+
+  const plans = [
+    {
+      name: "Starter",
+      price: "79",
+      period: "maand",
+      description: "Perfect voor kleine bedrijven",
+      features: [
+        "1 niche chatbot",
+        "50 leads per maand",
+        "Standaard prijsberekening",
+        "Email support",
+        "Lead dashboard"
+      ],
+      cta: "Start Gratis Trial",
+      highlighted: false
+    },
+    {
+      name: "Professional",
+      price: "199",
+      period: "maand",
+      description: "Voor groeiende bedrijven",
+      features: [
+        "2 niche chatbots",
+        "200 leads per maand",
+        "Custom prijsberekening",
+        "AI foto analyse",
+        "Priority support",
+        "WhatsApp notificaties"
+      ],
+      cta: "Start Gratis Trial",
+      highlighted: true
+    },
+    {
+      name: "Enterprise",
+      price: "499",
+      period: "maand",
+      description: "Voor grote organisaties",
+      features: [
+        "Onbeperkt chatbots",
+        "Onbeperkt leads",
+        "White-label branding",
+        "API toegang",
+        "Dedicated account manager",
+        "Custom integraties"
+      ],
+      cta: "Contact Sales",
+      highlighted: false
+    }
+  ]
 
   return (
     <div className="min-h-screen bg-white">
@@ -20,62 +134,40 @@ export default async function HomePage() {
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             <Link href="/" className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#4285f4] flex items-center justify-center relative">
-                <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="8" y1="13" x2="16" y2="13" />
-                  <line x1="8" y1="17" x2="16" y2="17" />
-                </svg>
-                <Sparkles className="w-2 h-2 text-white absolute top-1 right-1" />
+              <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#4285f4] to-[#3367d6] flex items-center justify-center">
+                <Bot className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl text-gray-900">QuoteForm</span>
+              <span className="text-xl font-bold bg-gradient-to-r from-[#4285f4] to-[#3367d6] bg-clip-text text-transparent">
+                LeadBot
+              </span>
             </Link>
             
-            <div className="flex items-center gap-4">
+            <div className="hidden md:flex items-center gap-6">
+              <Link href="#niches" className="text-gray-700 hover:text-gray-900 text-sm font-medium">
+                Niches
+              </Link>
+              <Link href="#features" className="text-gray-700 hover:text-gray-900 text-sm font-medium">
+                Features
+              </Link>
+              <Link href="#pricing" className="text-gray-700 hover:text-gray-900 text-sm font-medium">
+                Prijzen
+              </Link>
               {session ? (
-                <>
-                  <Link href="/dashboard">
-                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
-                      Dashboard
-                    </Button>
-                  </Link>
-                  <Link href="/dashboard/widgets">
-                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
-                      Widgets
-                    </Button>
-                  </Link>
-                  <Link href="/dashboard/leads">
-                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
-                      Leads
-                    </Button>
-                  </Link>
-                  <Link href="/funnel">
-                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
-                      Hoe het werkt
-                    </Button>
-                  </Link>
-                </>
+                <Link href="/dashboard">
+                  <Button className="bg-[#4285f4] hover:bg-[#3367d6]">
+                    Dashboard
+                  </Button>
+                </Link>
               ) : (
                 <>
-                  <Link href="/funnel">
-                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
-                      Hoe het werkt
-                    </Button>
-                  </Link>
-                  <Link href="#pricing">
-                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
-                      Prijzen
-                    </Button>
-                  </Link>
                   <Link href="/auth/signin">
-                    <Button variant="ghost" className="text-gray-700 hover:text-gray-900">
+                    <Button variant="ghost" className="text-gray-700">
                       Inloggen
                     </Button>
                   </Link>
                   <Link href="/auth/signup">
-                    <Button className="bg-[#4285f4] hover:bg-[#3367d6] text-white">
-                      Gratis Starten
+                    <Button className="bg-gradient-to-r from-[#4285f4] to-[#3367d6] hover:opacity-90">
+                      Gratis Proberen
                     </Button>
                   </Link>
                 </>
@@ -85,425 +177,277 @@ export default async function HomePage() {
         </div>
       </nav>
 
-      {/* Hero Section with Live Demo */}
-      <section className="py-12 px-4 bg-gray-50">
-        <div className="container mx-auto max-w-7xl">
-          <div className="grid lg:grid-cols-2 gap-12 items-start">
-            {/* Left: Hero Text */}
-            <div className="pt-8 pl-8">
-              
-              <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-none tracking-tight">
-                Meer Leads met<br />
-                <span>Slimme AI Quotes</span>
-              </h1>
-              <p className="text-xl text-gray-600 mb-8">
-                Plaats onze widget op je website. Klanten uploaden foto's, AI genereert previews 
-                van nieuwe kozijnen en berekent direct de prijs. Jij ontvangt kwalitatieve leads.
-              </p>
-
-              <div className="space-y-4 mb-8">
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-1">
-                    <Check className="w-4 h-4 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">AI Preview Generatie</h3>
-                    <p className="text-gray-600">Google Gemini toont klanten hoe nieuwe kozijnen eruit zien</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-1">
-                    <Check className="w-4 h-4 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Instant Prijsberekening</h3>
-                    <p className="text-gray-600">Automatische offerte op basis van materiaal en specificaties</p>
-                  </div>
-                </div>
-                <div className="flex items-start gap-3">
-                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0 mt-1">
-                    <Check className="w-4 h-4 text-green-600" />
-                  </div>
-                  <div>
-                    <h3 className="font-semibold text-gray-900">Copy-Paste Widget</h3>
-                    <p className="text-gray-600">60 seconden implementatie, geen developer nodig</p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex flex-col sm:flex-row gap-4">
-                <Link href="/auth/signup">
-                  <Button 
-                    size="lg" 
-                    className="bg-[#4285f4] hover:bg-[#3367d6] text-white text-lg px-8 h-14 w-full sm:w-auto"
-                  >
-                    Start Gratis Trial
-                    <ArrowRight className="ml-2 w-5 h-5" />
-                  </Button>
-                </Link>
-                <Link href="#pricing">
-                  <Button 
-                    size="lg" 
-                    variant="outline" 
-                    className="text-gray-700 border-gray-300 text-lg px-8 h-14 w-full sm:w-auto"
-                  >
-                    Bekijk Prijzen
-                  </Button>
-                </Link>
-              </div>
-
-              {/* Platform Compatibility */}
-              <div className="mt-8">
-                <p className="text-xs text-gray-500 mb-2">Werkt op alle platforms:</p>
-                <p className="text-sm text-gray-600">WordPress · Wix · Squarespace · Webflow · Shopify · en meer</p>o
-              </div>
+      {/* Hero Section */}
+      <section className="relative py-20 px-4 overflow-hidden">
+        {/* Background gradient */}
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-purple-50 -z-10" />
+        
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <Badge className="mb-4 bg-blue-100 text-blue-700 hover:bg-blue-100">
+              <Sparkles className="w-3 h-3 mr-1" />
+              Powered by OpenAI GPT-4
+            </Badge>
+            
+            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
+              AI Chatbots die<br />
+              <span className="bg-gradient-to-r from-[#4285f4] to-[#9333ea] bg-clip-text text-transparent">
+                Leads Automatisch
+              </span>{" "}
+              Kwalificeren
+            </h1>
+            
+            <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+              Conversationele AI assistenten voor ambachtelijke bedrijven.
+              Vraagt specs, berekent prijs, plant afspraak - volledig automatisch.
+            </p>
+            
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <Link href="/auth/signup">
+                <Button size="lg" className="bg-gradient-to-r from-[#4285f4] to-[#3367d6] hover:opacity-90 text-white text-lg px-8 h-14">
+                  <Bot className="w-5 h-5 mr-2" />
+                  Start Gratis 14-Dagen Trial
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
+              </Link>
+              <Link href="/demo/chat">
+                <Button size="lg" variant="outline" className="text-lg px-8 h-14 border-2">
+                  <MessageSquare className="w-5 h-5 mr-2" />
+                  Bekijk Live Demo
+                </Button>
+              </Link>
             </div>
+            
+            <p className="text-sm text-gray-500 mt-4">
+              ✅ Geen creditcard nodig • ✅ 5 minuten setup • ✅ Cancel anytime
+            </p>
+          </div>
 
-            {/* Right: Live Demo Form with Tabs */}
-            <div className="lg:sticky lg:top-24 max-w-lg mx-auto lg:mx-0">
-              <div className="mb-4 text-center lg:text-left">
-                <span className="inline-flex items-center gap-2 bg-blue-400 text-white px-4 py-2 rounded-full text-sm font-semibold">
-                  <Zap className="w-4 h-4" />
-                  Live Demo - Probeer het nu!
-                </span>
-              </div>
-              
-              <Tabs defaultValue="kozijnen" className="w-full">
-                <TabsList className="grid w-full grid-cols-3 mb-4">
-                  <TabsTrigger value="kozijnen" className="text-sm">
-                    {formConfigs.kozijnen.icon} Kozijnen
-                  </TabsTrigger>
-                  <TabsTrigger value="vloeren" className="text-sm">
-                    {formConfigs.vloeren.icon} Vloeren
-                  </TabsTrigger>
-                  <TabsTrigger value="schilderwerk" className="text-sm">
-                    {formConfigs.schilderwerk.icon} Schilderwerk
-                  </TabsTrigger>
-                </TabsList>
-                
-                <TabsContent value="kozijnen">
-                  <AIQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} widgetId="homepage-demo" />
-                </TabsContent>
-                
-                <TabsContent value="vloeren">
-                  <VloerenQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} widgetId="homepage-demo" />
-                </TabsContent>
-                
-                <TabsContent value="schilderwerk">
-                  <SchilderwerkQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} widgetId="homepage-demo" />
-                </TabsContent>
-              </Tabs>
-              
-              <p className="text-center text-sm text-gray-500 mt-4">
-                👆 Test het formulier - geen account nodig voor de demo
-              </p>
+          {/* Stats */}
+          <div className="grid md:grid-cols-3 gap-8 max-w-3xl mx-auto">
+            <div className="text-center">
+              <div className="text-4xl font-bold text-gray-900 mb-1">300%</div>
+              <div className="text-sm text-gray-600">Meer gekwalificeerde leads</div>
             </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-gray-900 mb-1">24/7</div>
+              <div className="text-sm text-gray-600">Altijd beschikbaar</div>
+            </div>
+            <div className="text-center">
+              <div className="text-4xl font-bold text-gray-900 mb-1">5min</div>
+              <div className="text-sm text-gray-600">Setup tijd</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Niches Section */}
+      <section id="niches" className="py-20 px-4 bg-gray-50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-4">
+              Voor Elk Ambacht een Bot
+            </h2>
+            <p className="text-xl text-gray-600">
+              Gespecialiseerde chatbots voor jouw sector
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {niches.map((niche, index) => (
+              <Card key={index} className="hover:shadow-lg transition-shadow border-2 hover:border-blue-500">
+                <CardHeader>
+                  <div className={`w-20 h-20 rounded-2xl bg-gradient-to-br ${niche.gradient} flex items-center justify-center mb-4`}>
+                    {niche.icon}
+                  </div>
+                  <CardTitle className="text-2xl">{niche.name}</CardTitle>
+                  <CardDescription className="text-base">{niche.description}</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 mb-4">
+                    {niche.features.map((feature, i) => (
+                      <div key={i} className="flex items-center gap-2 text-sm text-gray-600">
+                        <Check className="w-4 h-4 text-green-600" />
+                        {feature}
+                      </div>
+                    ))}
+                  </div>
+                  <Link href={niche.demo}>
+                    <Button variant="outline" className="w-full">
+                      Probeer Live Demo
+                      <ArrowRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto max-w-6xl px-4">
-          <div className="text-center mb-16">
+      <section id="features" className="py-20 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Alles wat je nodig hebt
+              Alles Wat Je Nodig Hebt
             </h2>
             <p className="text-xl text-gray-600">
-              Een complete oplossing voor kozijnbedrijven
+              Van eerste contact tot geboekte afspraak
             </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="border-2 hover:border-[#4285f4] transition-colors">
-              <CardHeader>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <Sparkles className="w-6 h-6 text-[#4285f4]" />
-                </div>
-                <CardTitle className="text-xl">AI Preview Generator</CardTitle>
-                <CardDescription>
-                  Google Gemini AI genereert realistische previews van nieuwe kozijnen 
-                  op basis van klantfoto's
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-2 hover:border-[#4285f4] transition-colors">
-              <CardHeader>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <Zap className="w-6 h-6 text-[#4285f4]" />
-                </div>
-                <CardTitle className="text-xl">Instant Prijsberekening</CardTitle>
-                <CardDescription>
-                  Automatische berekening op basis van materiaal, type, glas en oppervlakte. 
-                  Klant ziet direct de prijs
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-2 hover:border-[#4285f4] transition-colors">
-              <CardHeader>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <Code className="w-6 h-6 text-[#4285f4]" />
-                </div>
-                <CardTitle className="text-xl">Easy Embed</CardTitle>
-                <CardDescription>
-                  Copy-paste één regel code op je website. Geen developer nodig. 
-                  Widget werkt direct
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-2 hover:border-[#4285f4] transition-colors">
-              <CardHeader>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <Users className="w-6 h-6 text-[#4285f4]" />
-                </div>
-                <CardTitle className="text-xl">Lead Management</CardTitle>
-                <CardDescription>
-                  Alle offerteaanvragen overzichtelijk in je dashboard. Filter, exporteer 
-                  en beheer je leads
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-2 hover:border-[#4285f4] transition-colors">
-              <CardHeader>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <BarChart3 className="w-6 h-6 text-[#4285f4]" />
-                </div>
-                <CardTitle className="text-xl">Real-time Analytics</CardTitle>
-                <CardDescription>
-                  Track views, conversies en ROI. Zie direct welke leads de meeste waarde 
-                  hebben
-                </CardDescription>
-              </CardHeader>
-            </Card>
-
-            <Card className="border-2 hover:border-[#4285f4] transition-colors">
-              <CardHeader>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mb-4">
-                  <Check className="w-6 h-6 text-[#4285f4]" />
-                </div>
-                <CardTitle className="text-xl">Multi-tenant</CardTitle>
-                <CardDescription>
-                  Veilige scheiding tussen bedrijven. Jouw data blijft van jou. 
-                  Enterprise-grade security
-                </CardDescription>
-              </CardHeader>
-            </Card>
+            {features.map((feature, index) => (
+              <Card key={index} className="border-0 shadow-md">
+                <CardHeader>
+                  <div className="w-12 h-12 rounded-lg bg-blue-100 flex items-center justify-center mb-4 text-blue-600">
+                    {feature.icon}
+                  </div>
+                  <CardTitle className="text-lg">{feature.title}</CardTitle>
+                  <CardDescription>{feature.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            ))}
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section id="pricing" className="py-20 bg-gray-50">
-        <div className="container mx-auto max-w-6xl px-4">
-          <div className="text-center mb-16">
+      <section id="pricing" className="py-20 px-4 bg-gray-50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="text-center mb-12">
             <h2 className="text-4xl font-bold text-gray-900 mb-4">
-              Simpele, eerlijke prijzen
+              Simpele, Transparante Prijzen
             </h2>
             <p className="text-xl text-gray-600">
-              Start gratis, upgrade wanneer je groeit
+              14 dagen gratis proberen. Daarna kies je een plan.
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
-            {/* Free Plan */}
-            <Card className="border-2 hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-8">
-                <CardTitle className="text-2xl mb-2">Starter</CardTitle>
-                <div className="mb-4">
-                  <span className="text-4xl font-bold text-gray-900">€0</span>
-                  <span className="text-gray-600">/maand</span>
-                </div>
-                <CardDescription>Perfect om te testen</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>10 leads per maand</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>1 widget</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>AI previews</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>Basis analytics</span>
-                  </li>
-                </ul>
-                <Link href="/auth/signup">
-                  <Button variant="outline" className="w-full border-gray-300">
-                    Start Gratis
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            {/* Pro Plan */}
-            <Card className="border-2 border-[#4285f4] hover:shadow-xl transition-shadow relative">
-              <div className="absolute -top-4 left-1/2 -translate-x-1/2">
-                <span className="bg-[#4285f4] text-white px-4 py-1 rounded-full text-sm font-medium">
-                  Populair
-                </span>
-              </div>
-              <CardHeader className="pb-8 pt-8">
-                <CardTitle className="text-2xl mb-2">Professional</CardTitle>
-                <div className="mb-4">
-                  <span className="text-4xl font-bold text-gray-900">€99</span>
-                  <span className="text-gray-600">/maand</span>
-                </div>
-                <CardDescription>Voor groeiende bedrijven</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span className="font-medium">200 leads per maand</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>Onbeperkt widgets</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>AI previews</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>Geavanceerde analytics</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>Custom branding</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>Email support</span>
-                  </li>
-                </ul>
-                <Link href="/auth/signup">
-                  <Button className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white">
-                    Start 14 Dagen Gratis
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-
-            {/* Enterprise Plan */}
-            <Card className="border-2 hover:shadow-lg transition-shadow">
-              <CardHeader className="pb-8">
-                <CardTitle className="text-2xl mb-2">Enterprise</CardTitle>
-                <div className="mb-4">
-                  <span className="text-4xl font-bold text-gray-900">€299</span>
-                  <span className="text-gray-600">/maand</span>
-                </div>
-                <CardDescription>Voor grote organisaties</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <ul className="space-y-3 mb-6">
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span className="font-medium">Onbeperkt leads</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>Onbeperkt widgets</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>AI previews</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>White-label</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>API access</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>Priority support</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <Check className="w-5 h-5 text-[#4285f4]" />
-                    <span>Dedicated account manager</span>
-                  </li>
-                </ul>
-                <Link href="/auth/signup">
-                  <Button variant="outline" className="w-full border-gray-300">
-                    Contact Sales
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
+          <div className="grid md:grid-cols-3 gap-8">
+            {plans.map((plan, index) => (
+              <Card key={index} className={`relative ${plan.highlighted ? 'border-2 border-blue-500 shadow-xl' : ''}`}>
+                {plan.highlighted && (
+                  <div className="absolute -top-4 left-0 right-0 flex justify-center">
+                    <Badge className="bg-gradient-to-r from-[#4285f4] to-[#3367d6] text-white">
+                      Most Popular
+                    </Badge>
+                  </div>
+                )}
+                <CardHeader>
+                  <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                  <CardDescription>{plan.description}</CardDescription>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold text-gray-900">€{plan.price}</span>
+                    <span className="text-gray-600">/{plan.period}</span>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <ul className="space-y-3 mb-6">
+                    {plan.features.map((feature, i) => (
+                      <li key={i} className="flex items-start gap-2">
+                        <Check className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                        <span className="text-sm text-gray-700">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                  <Link href="/auth/signup">
+                    <Button 
+                      className={`w-full ${
+                        plan.highlighted 
+                          ? 'bg-gradient-to-r from-[#4285f4] to-[#3367d6]' 
+                          : ''
+                      }`}
+                      variant={plan.highlighted ? 'default' : 'outline'}
+                    >
+                      {plan.cta}
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))}
           </div>
+
+          <p className="text-center text-sm text-gray-500 mt-8">
+            Alle plannen inclusief: SSL, hosting, updates & Nederlandse support
+          </p>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gradient-to-br from-[#4285f4] to-[#3367d6]">
-        <div className="container mx-auto max-w-4xl px-4 text-center">
-          <h2 className="text-4xl font-bold text-white mb-6">
-            Klaar om te starten?
-          </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Join 100+ kozijnbedrijven die al meer leads genereren met onze AI widget
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link href="/auth/signup">
-              <Button 
-                size="lg" 
-                className="bg-white text-[#4285f4] hover:bg-gray-100 text-lg px-8 h-14"
-              >
-                Start Gratis Trial
-                <ArrowRight className="ml-2 w-5 h-5" />
-              </Button>
-            </Link>
-            <Link href="#pricing">
-              <Button 
-                size="lg" 
-                variant="outline"
-                className="border-2 border-white text-white hover:bg-white/10 text-lg px-8 h-14"
-              >
-                Bekijk Prijzen
-              </Button>
-            </Link>
-          </div>
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-4xl">
+          <Card className="bg-gradient-to-br from-[#4285f4] to-[#9333ea] text-white border-0">
+            <CardContent className="p-12 text-center">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Klaar om te Starten?
+              </h2>
+              <p className="text-xl mb-8 text-blue-100">
+                14 dagen gratis proberen. Geen creditcard nodig.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Link href="/auth/signup">
+                  <Button size="lg" className="bg-white text-blue-600 hover:bg-gray-100 text-lg px-8">
+                    Start Gratis Trial
+                    <ArrowRight className="w-5 h-5 ml-2" />
+                  </Button>
+                </Link>
+                <Link href="/demo/chat">
+                  <Button size="lg" variant="outline" className="border-2 border-white text-white hover:bg-white/10 text-lg px-8">
+                    Bekijk Demo
+                  </Button>
+                </Link>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-gray-50 border-t border-gray-200 py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-            <div className="flex items-center gap-2">
-              <div className="w-7 h-7 rounded-lg bg-[#4285f4] flex items-center justify-center relative">
-                <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                  <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                  <polyline points="14 2 14 8 20 8" />
-                  <line x1="8" y1="13" x2="16" y2="13" />
-                  <line x1="8" y1="17" x2="16" y2="17" />
-                </svg>
-                <Sparkles className="w-2 h-2 text-white absolute top-1 right-1" />
+      <footer className="border-t border-gray-200 py-12 px-4 bg-gray-50">
+        <div className="container mx-auto max-w-6xl">
+          <div className="grid md:grid-cols-4 gap-8">
+            <div>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#4285f4] to-[#3367d6] flex items-center justify-center">
+                  <Bot className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-lg font-bold text-gray-900">LeadBot</span>
               </div>
-              <span className="text-gray-900">QuoteForm</span>
+              <p className="text-sm text-gray-600">
+                AI chatbots voor ambachtelijke bedrijven
+              </p>
             </div>
-            <div className="flex gap-8 text-sm text-gray-600">
-              <Link href="#" className="hover:text-[#4285f4]">Privacy</Link>
-              <Link href="#" className="hover:text-[#4285f4]">Voorwaarden</Link>
-              <Link href="#" className="hover:text-[#4285f4]">Contact</Link>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-4">Product</h3>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li><Link href="#niches">Niches</Link></li>
+                <li><Link href="#features">Features</Link></li>
+                <li><Link href="#pricing">Prijzen</Link></li>
+                <li><Link href="/demo/chat">Demo</Link></li>
+              </ul>
             </div>
-            <p className="text-sm text-gray-600">
-              © 2024 QuoteForm. All rights reserved.
-            </p>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-4">Bedrijf</h3>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li><Link href="/about">Over ons</Link></li>
+                <li><Link href="/contact">Contact</Link></li>
+                <li><Link href="/privacy">Privacy</Link></li>
+                <li><Link href="/terms">Voorwaarden</Link></li>
+              </ul>
+            </div>
+            <div>
+              <h3 className="font-semibold text-gray-900 mb-4">Support</h3>
+              <ul className="space-y-2 text-sm text-gray-600">
+                <li><Link href="/help">Help Center</Link></li>
+                <li><Link href="/docs">Documentatie</Link></li>
+                <li><Link href="/contact">Contact</Link></li>
+              </ul>
+            </div>
+          </div>
+          <div className="border-t border-gray-200 mt-8 pt-8 text-center text-sm text-gray-600">
+            <p>© 2025 LeadBot. Alle rechten voorbehouden.</p>
           </div>
         </div>
       </footer>

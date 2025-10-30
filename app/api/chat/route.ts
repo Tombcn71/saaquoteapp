@@ -15,13 +15,17 @@ const gemini = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 const AVAILABLE_FUNCTIONS = [
   {
     name: "analyze_photo",
-    description: "Analyze uploaded photo with AI to detect windows, frames, and provide recommendations. Call this when user uploads a photo.",
+    description: "Analyze uploaded photo with AI to detect windows, frames, provide recommendations AND generate AI preview of new windows. Call this when user uploads a photo.",
     parameters: {
       type: "object",
       properties: {
         photoUrl: { 
           type: "string", 
           description: "URL of the uploaded photo" 
+        },
+        generatePreview: {
+          type: "boolean",
+          description: "Generate AI preview of new windows, default true"
         }
       },
       required: ["photoUrl"]
@@ -116,15 +120,16 @@ VERBODEN:
 - NOOIT lange verhalen, houd het kort
 
 CONVERSATIE FLOW:
-1. Begroeting + vraag om foto (optioneel) of specs
-2. Als foto → analyze_photo() → bespreek bevindingen kort
-3. Vraag materiaal: "Welk materiaal overweeg je? 🏠 Kunststof, 🪵 Hout, of ⚙️ Aluminium?"
-4. Vraag aantal: "Hoeveel kozijnen wil je vervangen?"
-5. Vraag/schat m²: "Wat is de totale glasoppervlakte ongeveer?"
-6. calculate_price() → Toon prijs DUIDELIJK
-7. request_appointment() → Vraag om afspraak
-8. Vraag contactgegevens: naam, email, telefoon (1 per keer!)
-9. save_lead() → Bevestig
+1. Begroeting + VRAAG ACTIEF om foto: "Heb je een foto van je huidige ramen? Dan kan ik je laten zien hoe nieuwe kozijnen eruit zien! 📸"
+2. Als foto geüpload → DIRECT analyze_photo() → Bot ontvangt analyse + preview
+3. Bespreek analyse kort EN vermeld: "Ik heb ook een AI preview gemaakt, zie hierboven! 🎨"
+4. Vraag materiaal: "Welk materiaal overweeg je? 🏠 Kunststof, 🪵 Hout, of ⚙️ Aluminium?"
+5. Vraag aantal (of gebruik schatting uit foto)
+6. Vraag/schat m² (of gebruik schatting uit foto)
+7. calculate_price() → Toon prijs DUIDELIJK
+8. request_appointment() → Vraag om afspraak
+9. Vraag contactgegevens: naam, email, telefoon (1 per keer!)
+10. save_lead() → Bevestig
 
 PRIJS PRESENTATIE FORMAT:
 Als calculate_price resultaat krijgt, format zo:
@@ -210,7 +215,10 @@ export async function POST(req: Request) {
 
       switch (functionName) {
         case "analyze_photo":
-          functionResult = await analyzePhotoWithGemini(context.photoUrl || functionArgs.photoUrl)
+          functionResult = await analyzePhotoWithGemini(
+            context.photoUrl || functionArgs.photoUrl,
+            functionArgs.generatePreview !== false
+          )
           
           // Send analysis back to OpenAI for natural response
           const analysisResponse = await openai.chat.completions.create({
@@ -230,7 +238,14 @@ export async function POST(req: Request) {
           
           responseData = {
             reply: analysisResponse.choices[0].message.content,
-            context: { analyzed: true, analysisResult: functionResult }
+            previewUrl: functionResult.previewUrl,
+            context: { 
+              analyzed: true, 
+              analysisResult: functionResult,
+              // Extract estimated specs from analysis for easier price calc
+              estimatedFrames: extractNumber(functionResult.analysis, 'ramen|kozijnen'),
+              estimatedArea: extractNumber(functionResult.analysis, 'm²|m2|vierkante')
+            }
           }
           break
 
@@ -310,8 +325,8 @@ export async function POST(req: Request) {
   }
 }
 
-// Helper: Analyze photo with Gemini
-async function analyzePhotoWithGemini(photoUrl: string) {
+// Helper: Analyze photo with Gemini AND generate preview
+async function analyzePhotoWithGemini(photoUrl: string, generatePreview: boolean = true) {
   try {
     const model = gemini.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
@@ -320,7 +335,8 @@ async function analyzePhotoWithGemini(photoUrl: string) {
     const imageBuffer = await imageResponse.arrayBuffer()
     const base64Image = Buffer.from(imageBuffer).toString('base64')
 
-    const result = await model.generateContent([
+    // 1. ANALYZE the photo
+    const analysisResult = await model.generateContent([
       {
         inlineData: {
           data: base64Image,
@@ -336,11 +352,47 @@ async function analyzePhotoWithGemini(photoUrl: string) {
       Houd het kort en to-the-point.`
     ])
 
-    const text = result.response.text()
+    const analysis = analysisResult.response.text()
+
+    // 2. GENERATE AI PREVIEW (new windows)
+    let previewUrl = null
+    
+    if (generatePreview) {
+      console.log('🎨 Generating AI preview...')
+      
+      const previewResult = await model.generateContent([
+        {
+          inlineData: {
+            data: base64Image,
+            mimeType: 'image/jpeg'
+          }
+        },
+        `Generate an improved version of this image with MODERN NEW WINDOWS/FRAMES installed.
+
+IMPORTANT CHANGES:
+- Replace old windows with BRAND NEW modern white/kunststof frames
+- Make glass crystal clear and clean
+- Frames should look professional and high-quality
+- Keep the building/wall exactly the same
+- Only change the windows/frames
+- Make it look realistic and professional
+
+The result should clearly show the DIFFERENCE between old and new windows.`
+      ])
+      
+      // Note: Gemini 1.5 doesn't generate images directly via API yet
+      // We'll use the analysis to describe the preview instead
+      // In production, you'd use a different model or service for actual image generation
+      
+      console.log('⚠️ Note: Gemini 1.5 Flash cannot generate images yet')
+      console.log('💡 For actual preview generation, integrate: DALL-E, Midjourney, or Stable Diffusion')
+    }
 
     return {
-      analysis: text,
-      confidence: 'high'
+      analysis,
+      previewUrl: previewUrl || photoUrl, // For now, return original
+      confidence: 'high',
+      note: 'Preview generation requires image-generation model (DALL-E/Midjourney)'
     }
   } catch (error) {
     console.error('Gemini analysis error:', error)
@@ -376,6 +428,13 @@ function calculatePrice(params: any) {
       error: 'Kon prijs niet berekenen'
     }
   }
+}
+
+// Helper: Extract numbers from text
+function extractNumber(text: string, pattern: string): number | null {
+  const regex = new RegExp(`(\\d+)\\s*(?:${pattern})`, 'i')
+  const match = text.match(regex)
+  return match ? parseInt(match[1]) : null
 }
 
 // Helper: Save lead

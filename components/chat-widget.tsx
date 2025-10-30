@@ -12,6 +12,7 @@ interface Message {
   content: string
   timestamp: Date
   photoUrl?: string
+  previewUrl?: string
   showAppointmentPicker?: boolean
   priceInfo?: {
     price: number
@@ -29,7 +30,7 @@ export function ChatWidget({ companyId, widgetId, companyName = "Demo Bedrijf" }
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: `👋 Hoi! Ik ben je persoonlijke assistent voor ${companyName}. Ik help je graag met een offerte voor nieuwe kozijnen!\n\nUpload een foto van je huidige ramen (optioneel) of vertel me direct wat je zoekt!`,
+      content: `👋 Hoi! Ik ben je persoonlijke assistent voor ${companyName}.\n\n📸 Heb je een foto van je huidige ramen? Dan kan ik je laten zien hoe nieuwe kozijnen eruit zien met AI!\n\nOf vertel me direct wat je zoekt. Ik help je graag! 🏠`,
       timestamp: new Date()
     }
   ])
@@ -133,6 +134,7 @@ export function ChatWidget({ companyId, widgetId, companyName = "Demo Bedrijf" }
         role: 'assistant',
         content: data.reply,
         timestamp: new Date(),
+        previewUrl: data.previewUrl,
         showAppointmentPicker: data.showAppointmentPicker,
         priceInfo: data.priceInfo
       }
@@ -189,6 +191,17 @@ export function ChatWidget({ companyId, widgetId, companyName = "Demo Bedrijf" }
                   alt="Uploaded"
                   className="w-full rounded mb-2 max-h-48 object-cover"
                 />
+              )}
+              
+              {message.previewUrl && message.previewUrl !== message.photoUrl && (
+                <div className="mb-3">
+                  <p className="text-xs font-semibold mb-2 opacity-80">🎨 AI Preview met nieuwe kozijnen:</p>
+                  <img
+                    src={message.previewUrl}
+                    alt="AI Preview"
+                    className="w-full rounded border-2 border-green-500"
+                  />
+                </div>
               )}
               
               <p className="whitespace-pre-wrap">{message.content}</p>
