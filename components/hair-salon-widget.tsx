@@ -53,6 +53,7 @@ export function HairSalonWidget({
     setResult(null)
 
     try {
+      // Start the prediction
       const response = await fetch('/api/replicate/haircut', {
         method: 'POST',
         headers: {
@@ -66,17 +67,59 @@ export function HairSalonWidget({
 
       const data = await response.json()
 
-      if (data.success && data.output) {
-        // Replicate returns an array of URLs
-        const imageUrl = Array.isArray(data.output) ? data.output[0] : data.output
-        setResult(imageUrl)
-      } else {
-        setError(data.error || 'Failed to transform image')
+      if (!data.success || !data.predictionId) {
+        setError(data.error || 'Failed to start transformation')
+        setLoading(false)
+        return
       }
+
+      // Poll for result
+      const predictionId = data.predictionId
+      console.log('Polling for prediction:', predictionId)
+
+      let attempts = 0
+      const maxAttempts = 60 // 60 * 2 seconds = 2 minutes max
+
+      const pollStatus = async () => {
+        try {
+          const statusResponse = await fetch(`/api/replicate/status/${predictionId}`)
+          const statusData = await statusResponse.json()
+
+          console.log('Status:', statusData.status)
+
+          if (statusData.status === 'succeeded' && statusData.output) {
+            setResult(statusData.output)
+            setLoading(false)
+            return
+          }
+
+          if (statusData.status === 'failed') {
+            setError(statusData.error || 'Generation failed')
+            setLoading(false)
+            return
+          }
+
+          // Still processing, poll again
+          attempts++
+          if (attempts < maxAttempts) {
+            setTimeout(pollStatus, 2000) // Poll every 2 seconds
+          } else {
+            setError('Timeout - please try again')
+            setLoading(false)
+          }
+        } catch (err) {
+          console.error('Polling error:', err)
+          setError('Failed to check status')
+          setLoading(false)
+        }
+      }
+
+      // Start polling
+      setTimeout(pollStatus, 2000)
+
     } catch (err: any) {
       console.error('Transform error:', err)
       setError('Something went wrong. Please try again.')
-    } finally {
       setLoading(false)
     }
   }
@@ -269,9 +312,44 @@ export function HairSalonWidget({
               </Button>
             )}
 
+            {/* Share & Download buttons */}
+            {result && (
+              <div className="flex gap-3">
+                <Button
+                  onClick={() => {
+                    const a = document.createElement('a')
+                    a.href = result
+                    a.download = 'my-new-hairstyle.jpg'
+                    a.click()
+                  }}
+                  variant="outline"
+                  className="flex-1 border-purple-500/30 text-purple-300 hover:bg-purple-500/10"
+                >
+                  Download Photo
+                </Button>
+                <Button
+                  onClick={() => {
+                    if (navigator.share) {
+                      navigator.share({
+                        title: 'My New Hairstyle!',
+                        text: 'Check out my new hairstyle preview!',
+                        url: result
+                      })
+                    } else {
+                      // Fallback: WhatsApp direct
+                      window.open(`https://wa.me/?text=${encodeURIComponent('Check out my new hairstyle! ' + result)}`, '_blank')
+                    }
+                  }}
+                  className="flex-1 bg-green-600 hover:bg-green-700 text-white"
+                >
+                  Share on WhatsApp
+                </Button>
+              </div>
+            )}
+
             {/* Booking Form - Only show after result */}
             {result && (
-              <div className="border-t border-purple-500/20 pt-6 space-y-4">
+              <div className="border-t border-purple-500/20 pt-6 space-y-4 mt-6">
                 <h3 className="text-xl font-bold text-white">Love this look? Book your appointment!</h3>
                 
                 <div className="space-y-3">
