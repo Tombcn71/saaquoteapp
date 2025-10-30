@@ -68,11 +68,31 @@ export function HairSalonWidget({
 
       const data = await response.json()
 
-      console.log('API Response:', data)
+      console.log('=== FRONTEND RECEIVED ===')
+      console.log('Response OK:', response.ok)
+      console.log('Response Status:', response.status)
+      console.log('Data:', JSON.stringify(data, null, 2))
+      console.log('predictionId:', data.predictionId)
+      console.log('=== END ===')
 
-      if (!response.ok || !data.success || !data.predictionId) {
-        console.error('API Error:', data)
+      if (!response.ok) {
+        console.error('Response not OK:', response.status)
         setError(data.error || data.details || 'Failed to start transformation')
+        setLoading(false)
+        return
+      }
+
+      if (!data.success) {
+        console.error('Data.success is false')
+        setError(data.error || data.details || 'Failed to start transformation')
+        setLoading(false)
+        return
+      }
+
+      if (!data.predictionId) {
+        console.error('No predictionId in response!')
+        console.error('Full data object:', data)
+        setError('No prediction ID received from server')
         setLoading(false)
         return
       }
