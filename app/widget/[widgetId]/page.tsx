@@ -1,5 +1,5 @@
 import { neon } from '@neondatabase/serverless'
-import { HairSalonWidget } from '@/components/hair-salon-widget'
+import { AIQuoteForm } from '@/components/ai-quote-form'
 import { notFound } from 'next/navigation'
 
 function getDatabase() {
@@ -27,10 +27,10 @@ export default async function WidgetPage({ params }: { params: { widgetId: strin
 
   if (!widget.is_active) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-950 p-4">
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-white mb-2">Widget Not Available</h1>
-          <p className="text-gray-400">This widget is currently inactive.</p>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Widget niet beschikbaar</h1>
+          <p className="text-gray-600">Deze widget is momenteel niet actief.</p>
         </div>
       </div>
     )
@@ -44,19 +44,31 @@ export default async function WidgetPage({ params }: { params: { widgetId: strin
   `
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 p-4 md:p-8">
+    <div 
+      className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 p-4 md:p-8"
+      style={{
+        '--primary': widget.primary_color || widget.widget_primary_color || '#3b82f6'
+      } as any}
+    >
       <div className="max-w-4xl mx-auto">
-        <HairSalonWidget 
-          widgetId={params.widgetId}
-          companyId={widget.company_id}
-          companyName={widget.company_name}
-          primaryColor={widget.primary_color || widget.widget_primary_color}
-        />
+        {widget.company_name && (
+          <div className="text-center mb-6">
+            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              {widget.company_name}
+            </h1>
+            <p className="text-gray-600">
+              Krijg direct een prijsindicatie en AI preview van je nieuwe kozijnen
+            </p>
+          </div>
+        )}
+        
+        <AIQuoteForm companyId={widget.company_id} widgetId={params.widgetId} />
         
         <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Powered by NanoBanana</p>
+          <p>Powered by KozijnSaaS</p>
         </div>
       </div>
     </div>
   )
 }
+
