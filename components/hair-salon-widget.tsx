@@ -22,7 +22,7 @@ export function HairSalonWidget({
   primaryColor = '#8b5cf6' 
 }: HairSalonWidgetProps) {
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
-  const [prompt, setPrompt] = useState('short pixie cut')
+  const [prompt, setPrompt] = useState('Pixie Cut')
   const [loading, setLoading] = useState(false)
   const [result, setResult] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
@@ -212,21 +212,26 @@ export function HairSalonWidget({
               <SelectValue placeholder="Select a hairstyle" />
             </SelectTrigger>
             <SelectContent className="bg-slate-800 border-purple-500/20 text-white">
-              <SelectItem value="short pixie cut">Short Pixie Cut</SelectItem>
-              <SelectItem value="bob haircut">Bob Haircut</SelectItem>
-              <SelectItem value="long wavy hair">Long Wavy Hair</SelectItem>
-              <SelectItem value="shoulder length layers">Shoulder Length Layers</SelectItem>
-              <SelectItem value="buzz cut">Buzz Cut</SelectItem>
-              <SelectItem value="curly afro">Curly Afro</SelectItem>
-              <SelectItem value="slicked back undercut">Slicked Back Undercut</SelectItem>
-              <SelectItem value="messy textured hair">Messy Textured Hair</SelectItem>
-              <SelectItem value="long straight hair">Long Straight Hair</SelectItem>
-              <SelectItem value="side part professional">Side Part Professional</SelectItem>
-              <SelectItem value="shaggy layers">Shaggy Layers</SelectItem>
-              <SelectItem value="french crop">French Crop</SelectItem>
-              <SelectItem value="modern mullet">Modern Mullet</SelectItem>
-              <SelectItem value="bald fade">Bald Fade</SelectItem>
-              <SelectItem value="man bun">Man Bun</SelectItem>
+              <SelectItem value="Pixie Cut">Pixie Cut</SelectItem>
+              <SelectItem value="Bob">Bob</SelectItem>
+              <SelectItem value="Lob">Lob (Long Bob)</SelectItem>
+              <SelectItem value="Layered">Layered</SelectItem>
+              <SelectItem value="Shag">Shag</SelectItem>
+              <SelectItem value="Wavy">Wavy</SelectItem>
+              <SelectItem value="Curly">Curly</SelectItem>
+              <SelectItem value="Straight">Straight</SelectItem>
+              <SelectItem value="Undercut">Undercut</SelectItem>
+              <SelectItem value="Mohawk">Mohawk</SelectItem>
+              <SelectItem value="Crew Cut">Crew Cut</SelectItem>
+              <SelectItem value="Slicked Back">Slicked Back</SelectItem>
+              <SelectItem value="Side-Parted">Side-Parted</SelectItem>
+              <SelectItem value="Messy Bun">Messy Bun</SelectItem>
+              <SelectItem value="High Ponytail">High Ponytail</SelectItem>
+              <SelectItem value="French Braid">French Braid</SelectItem>
+              <SelectItem value="Dreadlocks">Dreadlocks</SelectItem>
+              <SelectItem value="Cornrows">Cornrows</SelectItem>
+              <SelectItem value="Box Braids">Box Braids</SelectItem>
+              <SelectItem value="Updo">Updo</SelectItem>
             </SelectContent>
           </Select>
         </div>
