@@ -11,7 +11,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Sparkles, LogOut, Settings, User } from "lucide-react"
+import { Sparkles, LogOut, Settings, User, Target } from "lucide-react"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 
 interface DashboardHeaderProps {
@@ -65,6 +65,13 @@ export function DashboardHeader({ user }: DashboardHeaderProps) {
               className="text-sm font-medium text-muted-foreground hover:text-[#4285f4] transition-colors"
             >
               Leads
+            </Link>
+            <Link
+              href="/dashboard/sales-leads"
+              className="text-sm font-medium text-yellow-600 hover:text-yellow-700 transition-colors flex items-center gap-1"
+            >
+              <Target className="w-4 h-4" />
+              Sales Leads
             </Link>
             <Link
               href="/dashboard/settings"

@@ -182,15 +182,15 @@ export default async function HomePage() {
                 </TabsList>
                 
                 <TabsContent value="kozijnen">
-                  <AIQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} />
+                  <AIQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} widgetId="homepage-demo" />
                 </TabsContent>
                 
                 <TabsContent value="vloeren">
-                  <VloerenQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} />
+                  <VloerenQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} widgetId="homepage-demo" />
                 </TabsContent>
                 
                 <TabsContent value="schilderwerk">
-                  <SchilderwerkQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} />
+                  <SchilderwerkQuoteForm companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID} widgetId="homepage-demo" />
                 </TabsContent>
               </Tabs>
               
