@@ -112,7 +112,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+        <Loader2 className="w-8 h-8 animate-spin text-[#4285f4]" />
       </div>
     )
   }
@@ -120,20 +120,16 @@ export default function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-          Settings
-        </h1>
-        <p className="text-gray-400 mt-2">
-          Adjust your pricing per form type. These prices are used for automatic quotes.
+        <h1 className="text-3xl font-bold text-gray-900">Instellingen</h1>
+        <p className="text-gray-600 mt-2">
+          Pas je prijzen aan per formulier type. Deze prijzen worden gebruikt voor automatische offertes.
         </p>
       </div>
 
       {/* Success/Error Message */}
       {message && (
-        <div className={`flex items-center gap-2 p-4 rounded-lg border ${
-          message.type === 'success' 
-            ? 'bg-green-500/10 text-green-400 border-green-500/20' 
-            : 'bg-red-500/10 text-red-400 border-red-500/20'
+        <div className={`flex items-center gap-2 p-4 rounded-lg ${
+          message.type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'
         }`}>
           {message.type === 'success' ? (
             <CheckCircle2 className="w-5 h-5" />
@@ -145,39 +141,24 @@ export default function SettingsPage() {
       )}
 
       <Tabs defaultValue="kozijnen" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 bg-slate-900/50 border border-purple-500/20">
-          <TabsTrigger 
-            value="kozijnen"
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-400"
-          >
-            Windows
-          </TabsTrigger>
-          <TabsTrigger 
-            value="vloeren"
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-400"
-          >
-            Floors
-          </TabsTrigger>
-          <TabsTrigger 
-            value="schilderwerk"
-            className="data-[state=active]:bg-gradient-to-r data-[state=active]:from-purple-500 data-[state=active]:to-pink-500 data-[state=active]:text-white text-gray-400"
-          >
-            Painting
-          </TabsTrigger>
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="kozijnen">Kozijnen</TabsTrigger>
+          <TabsTrigger value="vloeren">Vloeren</TabsTrigger>
+          <TabsTrigger value="schilderwerk">Schilderwerk</TabsTrigger>
         </TabsList>
 
         {/* Kozijnen Pricing */}
         <TabsContent value="kozijnen">
-          <Card className="bg-slate-900/50 border-purple-500/20">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white">Window Pricing</CardTitle>
-              <CardDescription className="text-gray-400">
-                Set base price and multipliers for different materials and glass types
+              <CardTitle>Kozijnen Prijzen</CardTitle>
+              <CardDescription>
+                Stel basisprijs en multipliers in voor verschillende materialen en glas types
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <Label htmlFor="kozijnen-base" className="text-gray-300">Base price per window (€)</Label>
+                <Label htmlFor="kozijnen-base">Basisprijs per kozijn (€)</Label>
                 <Input
                   id="kozijnen-base"
                   type="number"
@@ -186,15 +167,14 @@ export default function SettingsPage() {
                     ...kozijnenPricing,
                     base_price_per_window: parseFloat(e.target.value)
                   })}
-                  className="bg-slate-950/50 border-purple-500/20 text-white"
                 />
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold mb-3 text-gray-300">Material Multipliers</h3>
+                <h3 className="text-sm font-semibold mb-3">Materiaal Multipliers</h3>
                 <div className="grid grid-cols-3 gap-4">
                   <div>
-                    <Label className="text-gray-300">Plastic</Label>
+                    <Label>Kunststof</Label>
                     <Input
                       type="number"
                       step="0.1"
@@ -206,11 +186,10 @@ export default function SettingsPage() {
                           kunststof: parseFloat(e.target.value)
                         }
                       })}
-                      className="bg-slate-950/50 border-purple-500/20 text-white"
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-300">Wood</Label>
+                    <Label>Hout</Label>
                     <Input
                       type="number"
                       step="0.1"
@@ -222,11 +201,10 @@ export default function SettingsPage() {
                           hout: parseFloat(e.target.value)
                         }
                       })}
-                      className="bg-slate-950/50 border-purple-500/20 text-white"
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-300">Aluminum</Label>
+                    <Label>Aluminium</Label>
                     <Input
                       type="number"
                       step="0.1"
@@ -238,17 +216,16 @@ export default function SettingsPage() {
                           aluminium: parseFloat(e.target.value)
                         }
                       })}
-                      className="bg-slate-950/50 border-purple-500/20 text-white"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-sm font-semibold mb-3 text-gray-300">Glass Type Multipliers</h3>
+                <h3 className="text-sm font-semibold mb-3">Glas Type Multipliers</h3>
                 <div className="grid grid-cols-4 gap-4">
                   <div>
-                    <Label className="text-gray-300">Single</Label>
+                    <Label>Enkel</Label>
                     <Input
                       type="number"
                       step="0.1"
@@ -260,11 +237,10 @@ export default function SettingsPage() {
                           enkel: parseFloat(e.target.value)
                         }
                       })}
-                      className="bg-slate-950/50 border-purple-500/20 text-white"
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-300">Double</Label>
+                    <Label>Dubbel</Label>
                     <Input
                       type="number"
                       step="0.1"
@@ -276,11 +252,10 @@ export default function SettingsPage() {
                           dubbel: parseFloat(e.target.value)
                         }
                       })}
-                      className="bg-slate-950/50 border-purple-500/20 text-white"
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-300">HR++</Label>
+                    <Label>HR++</Label>
                     <Input
                       type="number"
                       step="0.1"
@@ -292,11 +267,10 @@ export default function SettingsPage() {
                           'hr++': parseFloat(e.target.value)
                         }
                       })}
-                      className="bg-slate-950/50 border-purple-500/20 text-white"
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-300">Triple</Label>
+                    <Label>Triple</Label>
                     <Input
                       type="number"
                       step="0.1"
@@ -308,7 +282,6 @@ export default function SettingsPage() {
                           triple: parseFloat(e.target.value)
                         }
                       })}
-                      className="bg-slate-950/50 border-purple-500/20 text-white"
                     />
                   </div>
                 </div>
@@ -317,15 +290,15 @@ export default function SettingsPage() {
               <Button
                 onClick={() => savePricing('kozijnen', kozijnenPricing)}
                 disabled={saving === 'kozijnen'}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white"
               >
                 {saving === 'kozijnen' ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Saving...
+                    Opslaan...
                   </>
                 ) : (
-                  'Save Settings'
+                  'Opslaan'
                 )}
               </Button>
             </CardContent>
@@ -334,19 +307,19 @@ export default function SettingsPage() {
 
         {/* Vloeren Pricing */}
         <TabsContent value="vloeren">
-          <Card className="bg-slate-900/50 border-purple-500/20">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white">Floor Pricing</CardTitle>
-              <CardDescription className="text-gray-400">
-                Set prices per m² for different floor types
+              <CardTitle>Vloeren Prijzen</CardTitle>
+              <CardDescription>
+                Stel prijzen per m² in voor verschillende vloer types
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h3 className="text-sm font-semibold mb-3 text-gray-300">Price per m² (material)</h3>
+                <h3 className="text-sm font-semibold mb-3">Prijs per m² (materiaal)</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-gray-300">Wood floor (€/m²)</Label>
+                    <Label>Houten vloer (€/m²)</Label>
                     <Input
                       type="number"
                       value={vloerenPricing.price_per_m2.hout}
@@ -357,11 +330,10 @@ export default function SettingsPage() {
                           hout: parseFloat(e.target.value)
                         }
                       })}
-                      className="bg-slate-950/50 border-purple-500/20 text-white"
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-300">PVC floor (€/m²)</Label>
+                    <Label>PVC vloer (€/m²)</Label>
                     <Input
                       type="number"
                       value={vloerenPricing.price_per_m2.pvc}
@@ -372,14 +344,13 @@ export default function SettingsPage() {
                           pvc: parseFloat(e.target.value)
                         }
                       })}
-                      className="bg-slate-950/50 border-purple-500/20 text-white"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="vloeren-installation" className="text-gray-300">Installation cost per m² (€)</Label>
+                <Label htmlFor="vloeren-installation">Legkosten per m² (€)</Label>
                 <Input
                   id="vloeren-installation"
                   type="number"
@@ -388,12 +359,11 @@ export default function SettingsPage() {
                     ...vloerenPricing,
                     installation_cost_per_m2: parseFloat(e.target.value)
                   })}
-                  className="bg-slate-950/50 border-purple-500/20 text-white"
                 />
               </div>
 
               <div>
-                <Label htmlFor="vloeren-minimum" className="text-gray-300">Minimum order value (€)</Label>
+                <Label htmlFor="vloeren-minimum">Minimale orderwaarde (€)</Label>
                 <Input
                   id="vloeren-minimum"
                   type="number"
@@ -402,22 +372,21 @@ export default function SettingsPage() {
                     ...vloerenPricing,
                     minimum_order: parseFloat(e.target.value)
                   })}
-                  className="bg-slate-950/50 border-purple-500/20 text-white"
                 />
               </div>
 
               <Button
                 onClick={() => savePricing('vloeren', vloerenPricing)}
                 disabled={saving === 'vloeren'}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white"
               >
                 {saving === 'vloeren' ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Saving...
+                    Opslaan...
                   </>
                 ) : (
-                  'Save Settings'
+                  'Opslaan'
                 )}
               </Button>
             </CardContent>
@@ -426,19 +395,19 @@ export default function SettingsPage() {
 
         {/* Schilderwerk Pricing */}
         <TabsContent value="schilderwerk">
-          <Card className="bg-slate-900/50 border-purple-500/20">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white">Painting Pricing</CardTitle>
-              <CardDescription className="text-gray-400">
-                Set prices per m² for interior and exterior painting
+              <CardTitle>Schilderwerk Prijzen</CardTitle>
+              <CardDescription>
+                Stel prijzen per m² in voor binnen- en buitenschilderwerk
               </CardDescription>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h3 className="text-sm font-semibold mb-3 text-gray-300">Material cost per m²</h3>
+                <h3 className="text-sm font-semibold mb-3">Materiaalkosten per m²</h3>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <Label className="text-gray-300">Interior (€/m²)</Label>
+                    <Label>Binnen (€/m²)</Label>
                     <Input
                       type="number"
                       value={schilderwerkPricing.price_per_m2.binnen}
@@ -449,11 +418,10 @@ export default function SettingsPage() {
                           binnen: parseFloat(e.target.value)
                         }
                       })}
-                      className="bg-slate-950/50 border-purple-500/20 text-white"
                     />
                   </div>
                   <div>
-                    <Label className="text-gray-300">Exterior (€/m²)</Label>
+                    <Label>Buiten (€/m²)</Label>
                     <Input
                       type="number"
                       value={schilderwerkPricing.price_per_m2.buiten}
@@ -464,14 +432,13 @@ export default function SettingsPage() {
                           buiten: parseFloat(e.target.value)
                         }
                       })}
-                      className="bg-slate-950/50 border-purple-500/20 text-white"
                     />
                   </div>
                 </div>
               </div>
 
               <div>
-                <Label htmlFor="schilder-labor" className="text-gray-300">Labor cost per m² (€)</Label>
+                <Label htmlFor="schilder-labor">Arbeidskosten per m² (€)</Label>
                 <Input
                   id="schilder-labor"
                   type="number"
@@ -480,12 +447,11 @@ export default function SettingsPage() {
                     ...schilderwerkPricing,
                     labor_cost_per_m2: parseFloat(e.target.value)
                   })}
-                  className="bg-slate-950/50 border-purple-500/20 text-white"
                 />
               </div>
 
               <div>
-                <Label htmlFor="schilder-minimum" className="text-gray-300">Minimum order value (€)</Label>
+                <Label htmlFor="schilder-minimum">Minimale orderwaarde (€)</Label>
                 <Input
                   id="schilder-minimum"
                   type="number"
@@ -494,22 +460,21 @@ export default function SettingsPage() {
                     ...schilderwerkPricing,
                     minimum_order: parseFloat(e.target.value)
                   })}
-                  className="bg-slate-950/50 border-purple-500/20 text-white"
                 />
               </div>
 
               <Button
                 onClick={() => savePricing('schilderwerk', schilderwerkPricing)}
                 disabled={saving === 'schilderwerk'}
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white"
+                className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white"
               >
                 {saving === 'schilderwerk' ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Saving...
+                    Opslaan...
                   </>
                 ) : (
-                  'Save Settings'
+                  'Opslaan'
                 )}
               </Button>
             </CardContent>

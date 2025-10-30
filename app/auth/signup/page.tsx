@@ -48,63 +48,55 @@ export default function SignUpPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12 bg-gradient-to-b from-gray-950 via-gray-900 to-gray-950 relative overflow-hidden">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/20 via-pink-900/20 to-blue-900/20" />
-      <div className="absolute inset-0">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-pink-500/10 rounded-full blur-3xl" />
-      </div>
-
-      <div className="w-full max-w-md relative z-10">
-        {/* Logo */}
+    <div className="min-h-screen flex items-center justify-center px-4" style={{ backgroundColor: "var(--hero-bg)" }}>
+      <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-purple-500/50">
-              <Sparkles className="w-6 h-6 text-white" />
+            <div className="w-7 h-7 rounded-lg bg-[#4285f4] flex items-center justify-center relative">
+              <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                <polyline points="14 2 14 8 20 8" />
+                <line x1="8" y1="13" x2="16" y2="13" />
+                <line x1="8" y1="17" x2="16" y2="17" />
+              </svg>
+              <Sparkles className="w-2 h-2 text-white absolute top-1 right-1" />
             </div>
-            <span className="text-2xl font-bold bg-gradient-to-r from-purple-400 to-pink-400 bg-clip-text text-transparent">
-              NanoBanana
-            </span>
+            <span className="text-xl text-gray-900">QuoteForm</span>
           </Link>
         </div>
 
-        <Card className="border-2 border-purple-500/30 bg-gradient-to-br from-gray-900 to-gray-900/50 backdrop-blur-sm">
+        <Card className="border-2">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-3xl font-bold text-center text-white">Get Started</CardTitle>
-            <CardDescription className="text-center text-gray-400">
-              Create your account and add AI widgets to your website
-            </CardDescription>
+            <CardTitle className="text-2xl font-bold text-center">Start met QuoteForm</CardTitle>
+            <CardDescription className="text-center">Maak een account aan en plaats de widget op je website</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="companyName" className="text-gray-300">Company Name *</Label>
+                <Label htmlFor="companyName">Bedrijfsnaam *</Label>
                 <Input
                   id="companyName"
                   type="text"
-                  placeholder="Your Company Inc."
+                  placeholder="Mijn Bedrijf BV"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
                   required
                   disabled={isLoading}
-                  className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="name" className="text-gray-300">Your Name</Label>
+                <Label htmlFor="name">Jouw naam</Label>
                 <Input
                   id="name"
                   type="text"
-                  placeholder="John Doe"
+                  placeholder="Jan Jansen"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   disabled={isLoading}
-                  className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="email" className="text-gray-300">Email</Label>
+                <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
                   type="email"
@@ -113,11 +105,10 @@ export default function SignUpPage() {
                   onChange={(e) => setEmail(e.target.value)}
                   required
                   disabled={isLoading}
-                  className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500"
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="password" className="text-gray-300">Password</Label>
+                <Label htmlFor="password">Password</Label>
                 <Input
                   id="password"
                   type="password"
@@ -127,24 +118,23 @@ export default function SignUpPage() {
                   required
                   minLength={8}
                   disabled={isLoading}
-                  className="bg-gray-800/50 border-purple-500/30 text-white placeholder:text-gray-500 focus:border-purple-500"
                 />
               </div>
-              {error && <p className="text-sm text-red-400">{error}</p>}
+              {error && <p className="text-sm text-destructive">{error}</p>}
               <Button
                 type="submit"
-                className="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white shadow-lg shadow-purple-500/30"
+                className="w-full bg-[#4285f4] hover:bg-[#3367d6] text-white"
                 disabled={isLoading}
               >
-                {isLoading ? "Creating Account..." : "Create Account"}
+                {isLoading ? "Account Aanmaken..." : "Account Aanmaken"}
               </Button>
             </form>
           </CardContent>
           <CardFooter className="flex flex-col space-y-4">
-            <div className="text-sm text-center text-gray-400">
-              Already have an account?{" "}
-              <Link href="/auth/signin" className="text-purple-400 hover:text-purple-300 hover:underline font-medium">
-                Sign in
+            <div className="text-sm text-center text-muted-foreground">
+              Heb je al een account?{" "}
+              <Link href="/auth/signin" className="text-[#4285f4] hover:underline font-medium">
+                Inloggen
               </Link>
             </div>
           </CardFooter>
