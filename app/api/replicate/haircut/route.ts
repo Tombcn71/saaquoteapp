@@ -35,24 +35,17 @@ export async function POST(req: Request) {
       // webhook_events_filter: ["completed"]
     })
 
-    const predictionId = prediction?.id
-    const predictionStatus = prediction?.status
-    
-    console.log("Prediction created:", predictionId, "status:", predictionStatus)
-
-    if (!predictionId) {
-      console.error("No prediction ID received from Replicate")
-      return NextResponse.json({ 
-        error: "No prediction ID received",
-        fullResponse: prediction
-      }, { status: 500 })
-    }
+    // LOG EVERYTHING
+    console.log("=== FULL PREDICTION RESPONSE ===")
+    console.log(JSON.stringify(prediction, null, 2))
+    console.log("=== END ===")
 
     // Return prediction ID immediately
     return NextResponse.json({ 
       success: true, 
-      predictionId: predictionId,
-      status: predictionStatus
+      predictionId: prediction.id,
+      status: prediction.status,
+      fullPrediction: prediction
     })
 
   } catch (error: any) {
