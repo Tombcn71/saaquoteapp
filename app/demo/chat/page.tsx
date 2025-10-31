@@ -41,7 +41,7 @@ export default function ChatDemoPage() {
         <ChatWidget 
           companyId={process.env.NEXT_PUBLIC_DEMO_COMPANY_ID}
           widgetId="chat-demo"
-          companyName="QuoteForm Demo"
+          companyName="LeadBot Demo"
         />
 
         {/* Instructions */}
