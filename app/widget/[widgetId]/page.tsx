@@ -1,5 +1,5 @@
 import { neon } from '@neondatabase/serverless'
-import { AIQuoteForm } from '@/components/ai-quote-form'
+import { ChatWidget } from '@/components/chat-widget'
 import { notFound } from 'next/navigation'
 
 function getDatabase() {
@@ -57,15 +57,15 @@ export default async function WidgetPage({ params }: { params: { widgetId: strin
               {widget.company_name}
             </h1>
             <p className="text-gray-600">
-              Krijg direct een prijsindicatie en AI preview van je nieuwe kozijnen
+              Chat met onze AI assistent voor een direct advies en offerte
             </p>
           </div>
         )}
         
-        <AIQuoteForm companyId={widget.company_id} widgetId={params.widgetId} />
+        <ChatWidget companyId={widget.company_id} widgetId={params.widgetId} />
         
         <div className="mt-6 text-center text-sm text-gray-500">
-          <p>Powered by KozijnSaaS</p>
+          <p>Powered by LeadBot</p>
         </div>
       </div>
     </div>

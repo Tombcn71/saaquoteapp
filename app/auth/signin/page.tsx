@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Sparkles } from "lucide-react"
+import { Bot } from "lucide-react"
 
 export default function SignInPage() {
   const router = useRouter()
@@ -50,16 +50,12 @@ export default function SignInPage() {
       <div className="w-full max-w-md">
         <div className="flex justify-center mb-8">
           <Link href="/" className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-[#4285f4] flex items-center justify-center relative">
-              <svg className="w-4 h-4 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                <polyline points="14 2 14 8 20 8" />
-                <line x1="8" y1="13" x2="16" y2="13" />
-                <line x1="8" y1="17" x2="16" y2="17" />
-              </svg>
-              <Sparkles className="w-2 h-2 text-white absolute top-1 right-1" />
+            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#4285f4] to-[#3367d6] flex items-center justify-center">
+              <Bot className="w-5 h-5 text-white" />
             </div>
-            <span className="text-xl text-gray-900">QuoteForm</span>
+            <span className="text-xl font-bold bg-gradient-to-r from-[#4285f4] to-[#3367d6] bg-clip-text text-transparent">
+              LeadBot
+            </span>
           </Link>
         </div>
 
