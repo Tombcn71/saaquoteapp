@@ -431,6 +431,7 @@ export default async function HomePage() {
             <div>
               <h3 className="font-semibold text-gray-900 mb-4">Bedrijf</h3>
               <ul className="space-y-2 text-sm text-gray-600">
+                <li><Link href="/voor-bedrijven" className="hover:text-[#4285f4] font-medium">💼 Ben je een bedrijf?</Link></li>
                 <li><Link href="/about">Over ons</Link></li>
                 <li><Link href="/contact">Contact</Link></li>
                 <li><Link href="/privacy">Privacy</Link></li>
