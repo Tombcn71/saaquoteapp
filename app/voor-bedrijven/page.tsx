@@ -84,7 +84,7 @@ export default function VoorBedrijvenPage() {
                 height="100%"
                 frameBorder="0"
                 allow="camera; microphone; autoplay; encrypted-media;"
-                src="https://form.typeform.com/to/YOUR_TYPEFORM_ID"
+                src="https://form.typeform.com/to/URUImQIp"
                 style={{ border: 0 }}
               />
             </div>
